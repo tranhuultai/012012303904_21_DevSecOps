@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment / local secrets
+.env
+.env.*
+!.env.example
+
+# Private keys / certificates
+*.pem
+*.key
+keys/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Test / local temporary files
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local logs
+*.log
