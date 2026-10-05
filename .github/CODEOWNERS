@@ -1,0 +1,11 @@
+# CODEOWNERS
+# Repository owner is used during bootstrap.
+# Replace the temporary owner on project areas when the GitHub usernames of SV1, SV2 and SV3 are confirmed.
+
+/.github/ @tranhuultai
+
+# Security configuration: SV1 + SV3
+/Code/DevSecOpsGate/security/ @tranhuultai
+
+# Gate policies: SV2 + SV3
+/Code/DevSecOpsGate/policy/ @tranhuultai
