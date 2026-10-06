@@ -34,3 +34,9 @@ Thumbs.db
 
 # Local logs
 *.log
+
+# Terraform (chỉ quét, không apply)
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
