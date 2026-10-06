@@ -49,55 +49,18 @@ Các thực nghiệm:
 
 ```text
 012012303904_21_DevSecOps/
-├── .github/
-│   ├── workflows/
-│   │   └── ci.yml
-│   ├── CODEOWNERS
-│   └── pull_request_template.md
-│
-├── Code/
-│   └── DevSecOpsGate/
-│       ├── src/
-│       │   └── test/
-│       ├── infra/
-│       ├── deploy/
-│       ├── Dockerfile
-│       ├── Dockerfile.vuln
-│       ├── .dockerignore
-│       ├── lab/
-│       │   └── workflows-vuln/
-│       ├── rules/
-│       │   └── semgrep/
-│       ├── tools/
-│       │   └── test/
-│       ├── schemas/
-│       ├── policy/
-│       │   ├── g0/
-│       │   ├── g1/
-│       │   └── g2/
-│       ├── security/
-│       ├── ground_truth/
-│       │   └── patches/
-│       └── tests/
-│           ├── README.md
-│           ├── make_variants.sh
-│           ├── eval_policies.py
-│           ├── collect_timings.py
-│           ├── analysis.ipynb
-│           └── results/
-│               ├── raw/
-│               ├── runs.csv
-│               ├── findings.csv
-│               ├── decisions.csv
-│               ├── triage.csv
-│               └── metrics/
-│
-├── DOCX/
-├── PPTX/
-├── Extra/
-├── README.md
-├── requirements.txt
-└── .gitignore
+├── .github/            CODEOWNERS, pull_request_template.md; workflows/ khi có pipeline
+├── Code/DevSecOps/     (+ pytest.ini, Dockerfile, .dockerignore khi có)
+│   ├── src/            app FastAPI: app/, test/, requirements.txt
+│   ├── infra/  deploy/ Terraform (chỉ quét); manifest Kubernetes
+│   ├── lab/            docker/Dockerfile.vuln (E4); workflows-vuln/ (mẫu để gieo D26–D28 bằng patch)
+│   ├── rules/          semgrep/, conftest/: luật PHÁT HIỆN lỗi (đầu vào của máy quét)
+│   ├── tools/  schemas/   script, tools/test/ (fixture); findings, exception, severity_map
+│   ├── policy/         g0/ g1/ g2/: luật QUYẾT ĐỊNH chặn của gate
+│   ├── security/  ground_truth/   exceptions.yaml, kev/; ground_truth.csv, patches/
+│   └── tests/          script thí nghiệm, analysis.ipynb; results/{raw,metrics,triage}/ và runs, findings, decisions .csv
+├── DOCX/  PPTX/  Extra/
+└── README.md  requirements.txt  .gitignore  .gitattributes  (+ .gitleaks.toml khi có)
 ```
 
 ## Tài liệu
@@ -105,4 +68,4 @@ Các thực nghiệm:
 - Báo cáo: `DOCX/`
 - Slide: `PPTX/`
 - Tài liệu bổ sung và phiên bản công cụ: `Extra/`
-- Dữ liệu và mã phục vụ thực nghiệm: `Code/DevSecOpsGate/tests/`
+- Dữ liệu và mã phục vụ thực nghiệm: `Code/DevSecOps/tests/`

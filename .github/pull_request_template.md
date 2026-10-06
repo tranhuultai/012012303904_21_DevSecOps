@@ -8,11 +8,11 @@
 
 ## Issue liên quan
 
-<!-- Ghi số issue, ví dụ: #12. Nếu không có, ghi N/A. -->
+<!-- Ghi `Closes #<số>`. Nếu không có issue, ghi N/A. -->
 
-## Seeded bug
+## Mã trong bộ đáp án
 
-<!-- Nếu PR liên quan đến lỗi gieo cài Dxx/Nxx, ghi mã lỗi. Nếu không, ghi N/A. -->
+<!-- Ghi mã Dxx hoặc Cxx nếu PR thêm hoặc sửa patch của bộ đáp án. Nxx là mẫu có sẵn trong baseline, không phải patch. Nếu không liên quan, ghi N/A. -->
 
 ## Kiểm thử
 

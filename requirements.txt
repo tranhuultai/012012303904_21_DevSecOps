@@ -1,0 +1,8 @@
+# Môi trường kiểm thử và phân tích. App có tệp riêng: Code/DevSecOps/src/requirements.txt
+pytest==9.1.1
+httpx==0.28.1
+jsonschema==4.26.0
+PyYAML==6.0.3
+pandas==3.0.6
+matplotlib==3.11.2
+notebook==7.6.3
