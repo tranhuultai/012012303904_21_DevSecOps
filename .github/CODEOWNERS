@@ -1,11 +1,19 @@
-# CODEOWNERS
-# File and folder ownership for required reviews.
+# Người duyệt bắt buộc cho các đường dẫn nhạy cảm.
+# Mỗi đường dẫn có hai chủ để tác giả không phải tự duyệt PR của mình.
+# Dòng khớp sau cùng thắng.
 
-# Repository configuration: SV1
-/.github/ @tranhuultai
+# Pipeline và cấu hình repo
+/.github/                       @tranhuultai @duy13-computer
 
-# Security configuration: SV1 + SV3
-/Code/DevSecOpsGate/security/ @tranhuultai @gialong611
+# Luật quyết định chặn của gate
+/Code/DevSecOps/policy/         @gialong611 @duy13-computer
 
-# Gate policies: SV2 + SV3
-/Code/DevSecOpsGate/policy/ @duy13-computer @gialong611
+# Ngoại lệ và dữ liệu KEV
+/Code/DevSecOps/security/       @gialong611 @tranhuultai
+
+# Script chuẩn hóa, chạy gate; schema dữ liệu
+/Code/DevSecOps/tools/          @duy13-computer @gialong611
+/Code/DevSecOps/schemas/        @duy13-computer @gialong611
+
+# Bộ đáp án (không sửa sau khi đóng băng)
+/Code/DevSecOps/ground_truth/   @gialong611 @duy13-computer
