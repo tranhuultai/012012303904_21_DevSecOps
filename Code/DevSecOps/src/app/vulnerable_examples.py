@@ -26,7 +26,7 @@ AWS_SECRET_ACCESS_KEY = "fake_test_secret_not_a_real_credential_92741"
 def run_command_unsafe(user_input: str) -> str:
     return subprocess.check_output(
         user_input,
-        shell=True,
+        shell=False,
         text=True,
     )
 
