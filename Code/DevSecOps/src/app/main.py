@@ -1,6 +1,5 @@
-from fastapi import FastAPI
-from pydantic import BaseModel
-
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel, EmailStr
 
 app = FastAPI(
     title="DevSecOps Security Demo API",
@@ -11,7 +10,10 @@ app = FastAPI(
 
 class UserRequest(BaseModel):
     name: str
-    email: str
+    email: EmailStr
+
+
+users_db: list[dict] = []
 
 
 @app.get("/")
@@ -24,9 +26,7 @@ def root():
 
 @app.get("/health")
 def health():
-    return {
-        "status": "ok",
-    }
+    return {"status": "ok"}
 
 
 @app.get("/api/info")
@@ -38,12 +38,26 @@ def api_info():
     }
 
 
-@app.post("/users")
+@app.post("/users", status_code=201)
 def create_user(user: UserRequest):
+    if any(existing["email"] == str(user.email) for existing in users_db):
+        raise HTTPException(
+            status_code=409,
+            detail="Email already exists",
+        )
+
+    user_record = {
+        "name": user.name,
+        "email": str(user.email),
+    }
+    users_db.append(user_record)
+
     return {
         "message": "User created successfully",
-        "user": {
-            "name": user.name,
-            "email": user.email,
-        },
+        "user": user_record,
     }
+
+
+@app.get("/users")
+def list_users():
+    return {"users": users_db}

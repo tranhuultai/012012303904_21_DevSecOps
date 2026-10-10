@@ -1,62 +1,45 @@
 """
-INTENTIONALLY VULNERABLE CODE
---------------------------------
-This file exists only for the DevSecOps security scanning experiment.
+INTENTIONALLY VULNERABLE SECURITY FIXTURES
+==========================================
 
-DO NOT use these examples in a production application.
+This file contains deliberately vulnerable examples for the
+DevSecOps security scanning experiment.
+
+NEVER import or execute these functions in the application.
+Scan this file with Gitleaks and Semgrep/OpenGrep.
 """
 
 import os
 import subprocess
 
 
-# ---------------------------------------------------------
-# VUL-01: Hardcoded secret
+# VUL-01: Hardcoded secret-like values
 # Expected detector: Gitleaks
-# ---------------------------------------------------------
+# These are fabricated test strings, NOT real credentials.
+AWS_ACCESS_KEY_ID = "AKIAQATESTKEY9Z7X2M4P"
+AWS_SECRET_ACCESS_KEY = "fake_test_secret_not_a_real_credential_92741"
 
-AWS_ACCESS_KEY_ID = "AKIAIOSFODNN7EXAMPLE"
-AWS_SECRET_ACCESS_KEY = "EXAMPLE_SECRET_ONLY_FOR_SECURITY_TESTING"
 
-
-# ---------------------------------------------------------
 # VUL-02: Command injection
-# Expected detector: Semgrep
-# ---------------------------------------------------------
-
-def run_command(user_input: str) -> str:
-    """
-    Intentionally unsafe example.
-
-    DO NOT use shell=True with untrusted user input.
-    """
-    result = subprocess.check_output(
+# Expected detector: Semgrep/OpenGrep
+# Deliberately unsafe. Do not call this function.
+def run_command_unsafe(user_input: str) -> str:
+    return subprocess.check_output(
         user_input,
         shell=True,
         text=True,
     )
 
-    return result
+
+# VUL-03: Read secret from environment
+# This is NOT inherently a vulnerability.
+# Environment variables are commonly used to provide secrets.
+def get_api_key() -> str | None:
+    return os.getenv("API_KEY")
 
 
-# ---------------------------------------------------------
-# VUL-03: Use of environment secret without validation
-# This is included as a test fixture for secret handling.
-# ---------------------------------------------------------
-
-def get_api_key():
-    api_key = os.getenv("API_KEY")
-
-    return api_key
-
-
-# ---------------------------------------------------------
 # VUL-04: Unsafe dynamic evaluation
-# Expected detector: Semgrep
-# ---------------------------------------------------------
-
-def calculate_expression(expression: str):
-    """
-    Intentionally unsafe example.
-    """
+# Expected detector: Semgrep/OpenGrep
+# Deliberately unsafe. Do not call this function.
+def calculate_expression_unsafe(expression: str):
     return eval(expression)

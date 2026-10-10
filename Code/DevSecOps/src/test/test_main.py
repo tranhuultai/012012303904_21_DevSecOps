@@ -9,7 +9,7 @@ client = TestClient(app)
 def test_root():
     response = client.get("/")
 
-    assert response.status_code == 200
+    assert response.status_code == 201
 
     data = response.json()
 
@@ -20,14 +20,14 @@ def test_root():
 def test_health():
     response = client.get("/health")
 
-    assert response.status_code == 200
+    assert response.status_code == 201
     assert response.json()["status"] == "ok"
 
 
 def test_api_info():
     response = client.get("/api/info")
 
-    assert response.status_code == 200
+    assert response.status_code == 201
 
     data = response.json()
 
@@ -43,7 +43,7 @@ def test_create_user():
 
     response = client.post("/users", json=payload)
 
-    assert response.status_code == 200
+    assert response.status_code == 201
 
     data = response.json()
 
@@ -59,4 +59,14 @@ def test_create_user_invalid_payload():
 
     response = client.post("/users", json=payload)
 
+    assert response.status_code == 422
+
+def test_create_user_invalid_email():
+    response = client.post(
+        "/users",
+        json={
+            "name": "Nguyen Van A",
+            "email": "not-an-email",
+        },
+    )
     assert response.status_code == 422
