@@ -1,0 +1,115 @@
+name: DevSecOps CI
+
+on:
+  push:
+    branches: ["main", "develop"]
+  pull_request:
+    branches: ["main", "develop"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Run Python tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: Code/DevSecOps/src/requirements.txt
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r Code/DevSecOps/src/requirements.txt
+
+      - name: Check Python syntax
+        run: python -m compileall -q Code/DevSecOps/src
+
+      - name: Run tests
+        run: python -m pytest -v Code/DevSecOps/src/test
+
+  security-scan:
+    name: Security scans (collection mode)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create reports directory
+        run: mkdir -p reports
+
+      # 1. SAST - Semgrep
+      - name: Set up Python for Semgrep
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Semgrep
+        run: python -m pip install semgrep
+
+      - name: Run Semgrep SAST
+        id: semgrep
+        continue-on-error: true
+        run: |
+          semgrep scan \
+            --config auto \
+            --json \
+            --output reports/semgrep.json \
+            Code/DevSecOps
+
+      # 2. Secret scanning - Gitleaks
+      - name: Install Gitleaks
+        uses: j178/prek-action@v1
+        if: false
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.24.x"
+
+      - name: Install Gitleaks CLI
+        run: go install github.com/zricethezav/gitleaks/v8@v8.30.1
+
+      - name: Run Gitleaks secret scan
+        id: gitleaks
+        continue-on-error: true
+        run: |
+          gitleaks git \
+            --report-format json \
+            --report-path reports/gitleaks.json \
+            --exit-code 0
+
+      # 3. SCA - Trivy
+      - name: Run Trivy dependency scan
+        id: trivy
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          scan-type: fs
+          scan-ref: Code/DevSecOps
+          scanners: vuln
+          format: json
+          output: reports/trivy.json
+          exit-code: "0"
+          ignore-unfixed: true
+
+      # Always upload whatever reports were generated
+      - name: Upload security scan reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-scan-reports
+          path: reports/
+          if-no-files-found: warn
+          retention-days: 14
