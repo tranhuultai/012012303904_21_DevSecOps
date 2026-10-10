@@ -31,11 +31,12 @@ def run_command_unsafe(user_input: str) -> str:
     )
 
 
-# VUL-03: Read secret from environment
-# This is NOT inherently a vulnerability.
-# Environment variables are commonly used to provide secrets.
+# VUL-03: Environment-based secret configuration
+# Informational example: reading an environment variable is not
+# inherently a security vulnerability.
 def get_api_key() -> str | None:
-    return os.getenv("API_KEY")
+    """Read API key supplied by the runtime environment."""
+    return os.environ.get("API_KEY")
 
 
 # VUL-04: Unsafe dynamic evaluation
