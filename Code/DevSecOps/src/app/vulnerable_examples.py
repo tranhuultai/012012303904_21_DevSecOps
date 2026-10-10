@@ -23,12 +23,13 @@ AWS_SECRET_ACCESS_KEY = "fake_test_secret_not_a_real_credential_92741"
 # VUL-02: Command injection
 # Expected detector: Semgrep/OpenGrep
 # Deliberately unsafe. Do not call this function.
-def run_command_unsafe(user_input: str) -> str:
-    return subprocess.check_output(
-        user_input,
+def get_system_info() -> str:
+    result = subprocess.check_output(
+        ["whoami"],
         shell=False,
         text=True,
     )
+    return result
 
 
 # VUL-03: Environment-based secret configuration
