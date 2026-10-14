@@ -1,0 +1,7 @@
+.git/
+ground_truth/
+tests/
+lab/
+.env
+__pycache__/
+*.pyc

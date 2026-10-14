@@ -1,0 +1,10 @@
+# Chặn mặc định: không cho ingress/egress nào khi chưa có luật mở tường minh.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+    - Egress
