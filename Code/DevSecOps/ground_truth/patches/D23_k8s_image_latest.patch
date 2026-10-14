@@ -1,0 +1,13 @@
+diff --git a/Code/DevSecOps/deploy/deployment.yaml b/Code/DevSecOps/deploy/deployment.yaml
+index 5ceda10..665ec6d 100644
+--- a/Code/DevSecOps/deploy/deployment.yaml
++++ b/Code/DevSecOps/deploy/deployment.yaml
+@@ -26,7 +26,7 @@ spec:
+       containers:
+         - name: app
+           # Digest thật điền ở P19 (release); baseline giữ dạng ghim digest.
+-          image: ghcr.io/tranhuultai/devsecops@sha256:0000000000000000000000000000000000000000000000000000000000000000
++          image: ghcr.io/tranhuultai/devsecops:latest
+           ports:
+             - containerPort: 8000
+           env:

@@ -1,0 +1,13 @@
+diff --git a/Code/DevSecOps/deploy/deployment.yaml b/Code/DevSecOps/deploy/deployment.yaml
+index 5ceda10..05234c2 100644
+--- a/Code/DevSecOps/deploy/deployment.yaml
++++ b/Code/DevSecOps/deploy/deployment.yaml
+@@ -38,7 +38,7 @@ spec:
+                   key: password
+           securityContext:
+             allowPrivilegeEscalation: false
+-            privileged: false
++            privileged: true
+             readOnlyRootFilesystem: true
+             capabilities:
+               drop: ["ALL"]

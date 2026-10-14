@@ -1,0 +1,14 @@
+diff --git a/Code/DevSecOps/deploy/deployment.yaml b/Code/DevSecOps/deploy/deployment.yaml
+index 5ceda10..faf5bae 100644
+--- a/Code/DevSecOps/deploy/deployment.yaml
++++ b/Code/DevSecOps/deploy/deployment.yaml
+@@ -46,9 +46,6 @@ spec:
+             requests:
+               cpu: 50m
+               memory: 64Mi
+-            limits:
+-              cpu: 250m
+-              memory: 128Mi
+           livenessProbe:
+             httpGet:
+               path: /health

@@ -1,0 +1,15 @@
+diff --git a/Code/DevSecOps/infra/rds.tf b/Code/DevSecOps/infra/rds.tf
+index 832ae90..35465b7 100644
+--- a/Code/DevSecOps/infra/rds.tf
++++ b/Code/DevSecOps/infra/rds.tf
+@@ -38,8 +38,8 @@ resource "aws_db_instance" "main" {
+   password               = var.db_password
+   db_subnet_group_name   = aws_db_subnet_group.main.name
+   vpc_security_group_ids = [aws_security_group.db.id]
+-  publicly_accessible    = false
+-  storage_encrypted      = true
++  publicly_accessible    = true
++  storage_encrypted      = false
+   skip_final_snapshot    = true
+   deletion_protection    = false
+ }

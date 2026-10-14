@@ -1,0 +1,13 @@
+diff --git a/Code/DevSecOps/Dockerfile b/Code/DevSecOps/Dockerfile
+index 580c3fb..da389ab 100644
+--- a/Code/DevSecOps/Dockerfile
++++ b/Code/DevSecOps/Dockerfile
+@@ -17,8 +17,6 @@ WORKDIR /app
+ COPY --from=builder /opt/venv /opt/venv
+ COPY src/app ./app
+ 
+-# Chạy bằng UID số, không phải root (N06: bind 0.0.0.0 bên trong container)
+-USER 10001
+ EXPOSE 8000
+ 
+ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \

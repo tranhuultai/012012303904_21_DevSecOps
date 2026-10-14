@@ -1,0 +1,20 @@
+diff --git a/Code/DevSecOps/Dockerfile b/Code/DevSecOps/Dockerfile
+index 580c3fb..8fcbe51 100644
+--- a/Code/DevSecOps/Dockerfile
++++ b/Code/DevSecOps/Dockerfile
+@@ -1,5 +1,5 @@
+ # Build context: Code/DevSecOps. Base ghim theo digest, cập nhật bằng digest thật.
+-FROM python@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1 AS builder
++FROM python@sha256:42dc0ee40d7707e2f2ee506a1cbe52e09ab11c207c5b429342638f83177601fe AS builder
+ 
+ WORKDIR /build
+ COPY src/requirements.txt .
+@@ -7,7 +7,7 @@ RUN python -m venv /opt/venv \
+     && /opt/venv/bin/pip install --no-cache-dir --upgrade pip \
+     && /opt/venv/bin/pip install --no-cache-dir -r requirements.txt
+ 
+-FROM python@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1 AS runtime
++FROM python@sha256:42dc0ee40d7707e2f2ee506a1cbe52e09ab11c207c5b429342638f83177601fe AS runtime
+ 
+ ENV PYTHONDONTWRITEBYTECODE=1 \
+     PYTHONUNBUFFERED=1 \

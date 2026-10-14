@@ -1,0 +1,21 @@
+diff --git a/Code/DevSecOps/deploy/serviceaccount.yaml b/Code/DevSecOps/deploy/serviceaccount.yaml
+index c105f04..ab9dade 100644
+--- a/Code/DevSecOps/deploy/serviceaccount.yaml
++++ b/Code/DevSecOps/deploy/serviceaccount.yaml
+@@ -3,3 +3,16 @@ kind: ServiceAccount
+ metadata:
+   name: devsecops-app
+ automountServiceAccountToken: false
++---
++apiVersion: rbac.authorization.k8s.io/v1
++kind: ClusterRoleBinding
++metadata:
++  name: devsecops-app-admin
++roleRef:
++  apiGroup: rbac.authorization.k8s.io
++  kind: ClusterRole
++  name: cluster-admin
++subjects:
++  - kind: ServiceAccount
++    name: devsecops-app
++    namespace: default
