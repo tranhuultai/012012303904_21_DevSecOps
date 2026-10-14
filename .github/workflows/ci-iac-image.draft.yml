@@ -1,0 +1,107 @@
+# NHÁP phần của SV1 (D.7.2): job iac + image, để ghép vào ci.yml khi Duy dựng khung.
+# Chỉ workflow_dispatch nên KHÔNG tự chạy, không đụng ci.yml, không tạo required check.
+# Máy quét chỉ báo cáo (thoát 0), xuất JSON làm artifact. Xóa file này sau khi ghép vào ci.yml.
+name: ci-iac-image-draft
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  TRIVY_VERSION: "0.76.0"
+  SYFT_VERSION: "1.54.1"
+  GRYPE_VERSION: "0.120.1"
+  CHECKOV_VERSION: "3.3.22"
+
+defaults:
+  run:
+    working-directory: Code/DevSecOps
+
+jobs:
+  iac:
+    name: iac
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Cài Trivy (binary ghim, kiểm checksum theo tệp phát hành)
+        run: |
+          base="https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}"
+          cd "$RUNNER_TEMP"
+          curl -fsSL -o trivy.tar.gz "${base}/trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz"
+          curl -fsSL -o trivy.sums "${base}/trivy_${TRIVY_VERSION}_checksums.txt"
+          grep "trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz" trivy.sums | sha256sum -c -
+          tar xzf trivy.tar.gz trivy
+          sudo install trivy /usr/local/bin/trivy
+          trivy --version
+
+      - name: Cài Checkov (ghim)
+        run: pipx install "checkov==${CHECKOV_VERSION}"
+
+      - name: Checkov (soft-fail, chỉ báo cáo)
+        run: |
+          mkdir -p reports
+          checkov -d infra -d deploy -f Dockerfile --compact --soft-fail -o json > reports/checkov.json || true
+        # TODO(Long): thêm luật Conftest dò D27 trong rules/conftest.
+
+      - name: Trivy config (chỉ báo cáo)
+        run: trivy config --format json --output reports/trivy-config.json --exit-code 0 .
+
+      - name: Upload báo cáo iac
+        if: always()
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        with:
+          name: report-iac
+          path: Code/DevSecOps/reports/
+          if-no-files-found: warn
+
+  image:
+    name: image
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Cài Trivy/Syft/Grype (binary ghim, kiểm checksum theo tệp phát hành)
+        run: |
+          fetch() {
+            local repo="$1" ver="$2" asset="$3"
+            local base="https://github.com/${repo}/releases/download/v${ver}"
+            cd "$RUNNER_TEMP"
+            curl -fsSL -o pkg.tar.gz "${base}/${asset}"
+            curl -fsSL -o pkg.sums "${base}/${repo##*/}_${ver}_checksums.txt"
+            grep "${asset}" pkg.sums | sha256sum -c -
+            tar xzf pkg.tar.gz "${repo##*/}"
+            sudo install "${repo##*/}" /usr/local/bin/
+          }
+          fetch aquasecurity/trivy "$TRIVY_VERSION" "trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz"
+          fetch anchore/syft "$SYFT_VERSION" "syft_${SYFT_VERSION}_linux_amd64.tar.gz"
+          fetch anchore/grype "$GRYPE_VERSION" "grype_${GRYPE_VERSION}_linux_amd64.tar.gz"
+          trivy --version
+          syft version
+          grype version
+
+      - name: Build image (không push)
+        run: docker build -f Dockerfile -t devsecops-app:scan .
+
+      - name: Trivy image (chỉ báo cáo)
+        run: |
+          mkdir -p reports
+          trivy image --format json --output reports/trivy-image.json --exit-code 0 devsecops-app:scan
+
+      - name: Syft SBOM (CycloneDX JSON)
+        run: syft devsecops-app:scan -o cyclonedx-json=reports/sbom.cdx.json
+
+      - name: Grype quét SBOM (chỉ báo cáo)
+        run: grype "sbom:reports/sbom.cdx.json" -o json --file reports/grype-image.json
+
+      - name: Upload SBOM và báo cáo image
+        if: always()
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        with:
+          name: report-image
+          path: Code/DevSecOps/reports/
+          if-no-files-found: warn
