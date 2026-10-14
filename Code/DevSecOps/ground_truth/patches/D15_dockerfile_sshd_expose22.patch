@@ -1,0 +1,13 @@
+diff --git a/Code/DevSecOps/Dockerfile b/Code/DevSecOps/Dockerfile
+index 580c3fb..bd394ba 100644
+--- a/Code/DevSecOps/Dockerfile
++++ b/Code/DevSecOps/Dockerfile
+@@ -14,6 +14,8 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
+     PATH="/opt/venv/bin:$PATH"
+ 
+ WORKDIR /app
++RUN apt-get update \n    && apt-get install -y --no-install-recommends openssh-server \n    && rm -rf /var/lib/apt/lists/*
++EXPOSE 22
+ COPY --from=builder /opt/venv /opt/venv
+ COPY src/app ./app
+ 

@@ -1,0 +1,15 @@
+diff --git a/Code/DevSecOps/infra/iam.tf b/Code/DevSecOps/infra/iam.tf
+index 80ff3c5..809067b 100644
+--- a/Code/DevSecOps/infra/iam.tf
++++ b/Code/DevSecOps/infra/iam.tf
+@@ -13,8 +13,8 @@ data "aws_iam_policy_document" "app_assume" {
+ data "aws_iam_policy_document" "app_read_bucket" {
+   statement {
+     effect    = "Allow"
+-    actions   = ["s3:GetObject"]
+-    resources = ["${aws_s3_bucket.app.arn}/*"]
++    actions   = ["*"]
++    resources = ["*"]
+   }
+ 
+   statement {

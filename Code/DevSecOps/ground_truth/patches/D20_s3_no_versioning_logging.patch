@@ -1,0 +1,20 @@
+diff --git a/Code/DevSecOps/infra/s3.tf b/Code/DevSecOps/infra/s3.tf
+index 6b376d6..25d37f0 100644
+--- a/Code/DevSecOps/infra/s3.tf
++++ b/Code/DevSecOps/infra/s3.tf
+@@ -23,15 +23,3 @@ resource "aws_s3_bucket_public_access_block" "app" {
+   restrict_public_buckets = true
+ }
+ 
+-resource "aws_s3_bucket_versioning" "app" {
+-  bucket = aws_s3_bucket.app.id
+-  versioning_configuration {
+-    status = "Enabled"
+-  }
+-}
+-
+-resource "aws_s3_bucket_logging" "app" {
+-  bucket        = aws_s3_bucket.app.id
+-  target_bucket = aws_s3_bucket.logs.id
+-  target_prefix = "app/"
+-}

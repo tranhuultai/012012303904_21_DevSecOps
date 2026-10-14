@@ -1,0 +1,12 @@
+diff --git a/Code/DevSecOps/Dockerfile b/Code/DevSecOps/Dockerfile
+index 580c3fb..57053a4 100644
+--- a/Code/DevSecOps/Dockerfile
++++ b/Code/DevSecOps/Dockerfile
+@@ -16,6 +16,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
+ WORKDIR /app
+ COPY --from=builder /opt/venv /opt/venv
+ COPY src/app ./app
++ADD https://github.com/krallin/tini/releases/download/v0.19.0/tini /usr/local/bin/tini
+ 
+ # Chạy bằng UID số, không phải root (N06: bind 0.0.0.0 bên trong container)
+ USER 10001

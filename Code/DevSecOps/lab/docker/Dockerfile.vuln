@@ -1,0 +1,23 @@
+# CHỈ dùng cho E4 (so sánh image trước/sau khắc phục). KHÔNG triển khai.
+# Cố ý không an toàn: base đầy đủ (D12), chạy root (D13), ADD từ URL (D14), sshd + cổng 22 (D15).
+FROM python@sha256:42dc0ee40d7707e2f2ee506a1cbe52e09ab11c207c5b429342638f83177601fe
+
+# D15: cài sshd và mở cổng 22
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends openssh-server \
+    && rm -rf /var/lib/apt/lists/*
+EXPOSE 22
+
+WORKDIR /app
+COPY src/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# D14: ADD tải tệp từ URL ngoài, không kiểm checksum
+ADD https://github.com/krallin/tini/releases/download/v0.19.0/tini /usr/local/bin/tini
+RUN chmod +x /usr/local/bin/tini
+
+COPY src/app ./app
+
+# D13: không có USER nên container chạy bằng root
+EXPOSE 8000
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
