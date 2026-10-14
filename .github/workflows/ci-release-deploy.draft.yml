@@ -1,0 +1,129 @@
+# NHÁP phần của SV1 (D.7.2): job release + deploy-smoke. Dispatch-only, CHƯA chạy thật trên CI.
+# Trong ci.yml thật: release chỉ chạy khi push main và gate thành công; cosign chỉ chạy trong CI.
+# Xóa file này sau khi ghép vào ci.yml. Tên image để chữ thường cố định (repo có chữ hoa).
+name: ci-release-deploy-draft
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  IMAGE: ghcr.io/tranhuultai/devsecops
+  COSIGN_VERSION: "3.1.3"
+  SYFT_VERSION: "1.54.1"
+  KIND_VERSION: "0.33.0"
+
+defaults:
+  run:
+    working-directory: Code/DevSecOps
+
+jobs:
+  release:
+    name: release
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    outputs:
+      ref: ${{ steps.push.outputs.ref }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Cài syft + cosign (binary ghim, kiểm checksum)
+        run: |
+          cd "$RUNNER_TEMP"
+          sbase="https://github.com/anchore/syft/releases/download/v${SYFT_VERSION}"
+          curl -fsSL -o syft.tgz "${sbase}/syft_${SYFT_VERSION}_linux_amd64.tar.gz"
+          curl -fsSL -o syft.sums "${sbase}/syft_${SYFT_VERSION}_checksums.txt"
+          grep "syft_${SYFT_VERSION}_linux_amd64.tar.gz" syft.sums | sha256sum -c -
+          tar xzf syft.tgz syft && sudo install syft /usr/local/bin/
+          cbase="https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}"
+          curl -fsSL -o cosign "${cbase}/cosign-linux-amd64"
+          curl -fsSL -o cosign.sums "${cbase}/cosign_checksums.txt"
+          grep "cosign-linux-amd64" cosign.sums | sed 's#cosign-linux-amd64#cosign#' | sha256sum -c -
+          sudo install cosign /usr/local/bin/
+          syft version && cosign version
+
+      - name: Đăng nhập GHCR
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GHCR_USER: ${{ github.actor }}
+        run: echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
+
+      - name: Build và push theo digest
+        id: push
+        env:
+          SHA: ${{ github.sha }}
+        run: |
+          docker build -f Dockerfile -t "${IMAGE}:${SHA}" .
+          docker push "${IMAGE}:${SHA}"
+          ref="$(docker inspect --format '{{index .RepoDigests 0}}' "${IMAGE}:${SHA}")"
+          echo "ref=${ref}" >> "$GITHUB_OUTPUT"
+          echo "Pushed ${ref}"
+
+      - name: SBOM (CycloneDX)
+        run: syft "${{ steps.push.outputs.ref }}" -o cyclonedx-json=sbom.cdx.json
+
+      - name: Ký và attest (cosign keyless)
+        run: |
+          cosign sign --yes "${{ steps.push.outputs.ref }}"
+          cosign attest --yes --predicate sbom.cdx.json --type cyclonedx "${{ steps.push.outputs.ref }}"
+
+      - name: Upload SBOM
+        if: always()
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        with:
+          name: sbom
+          path: Code/DevSecOps/sbom.cdx.json
+          if-no-files-found: warn
+
+  deploy-smoke:
+    name: deploy-smoke
+    needs: release
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: read
+    env:
+      REF: ${{ needs.release.outputs.ref }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Cài cosign + kind (binary ghim)
+        run: |
+          cd "$RUNNER_TEMP"
+          cbase="https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}"
+          curl -fsSL -o cosign "${cbase}/cosign-linux-amd64"
+          curl -fsSL -o cosign.sums "${cbase}/cosign_checksums.txt"
+          grep "cosign-linux-amd64" cosign.sums | sed 's#cosign-linux-amd64#cosign#' | sha256sum -c -
+          sudo install cosign /usr/local/bin/
+          # kind không phát hành tệp checksums gộp; ghim theo tag + TLS.
+          curl -fsSL -o kind "https://github.com/kubernetes-sigs/kind/releases/download/v${KIND_VERSION}/kind-linux-amd64"
+          sudo install kind /usr/local/bin/
+          cosign version && kind version
+
+      - name: Xác minh chữ ký (ràng buộc danh tính workflow)
+        run: |
+          cosign verify \
+            --certificate-identity-regexp "^https://github.com/tranhuultai/012012303904_21_DevSecOps/.github/workflows/.+" \
+            --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
+            "${REF}"
+
+      - name: Tạo cluster kind
+        run: kind create cluster --name smoke --wait 60s
+
+      - name: Triển khai và gọi /health
+        run: |
+          kubectl create secret generic devsecops-app-db \
+            --from-literal=password="$(openssl rand -hex 16)"
+          kubectl apply -f deploy/serviceaccount.yaml -f deploy/service.yaml -f deploy/deployment.yaml
+          kubectl set image deployment/devsecops-app app="${REF}"
+          kubectl rollout status deployment/devsecops-app --timeout=120s
+          kubectl port-forward service/devsecops-app 8080:80 &
+          sleep 5
+          curl -fsS http://127.0.0.1:8080/health
