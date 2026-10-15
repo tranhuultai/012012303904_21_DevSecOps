@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DevSecOps Normalized Finding",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "finding_id",
+    "tool",
+    "rule_id",
+    "category",
+    "severity",
+    "title",
+    "message",
+    "file",
+    "line_start",
+    "line_end",
+    "cve",
+    "fingerprint",
+    "status",
+    "references"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0"
+    },
+    "finding_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tool": {
+      "type": "string",
+      "enum": ["semgrep", "gitleaks", "trivy"]
+    },
+    "rule_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "category": {
+      "type": "string",
+      "enum": ["sast", "secret", "sca"]
+    },
+    "severity": {
+      "type": "string",
+      "enum": ["CRITICAL", "HIGH", "MEDIUM", "LOW", "INFO"]
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "message": {
+      "type": "string"
+    },
+    "file": {
+      "type": ["string", "null"]
+    },
+    "line_start": {
+      "type": ["integer", "null"],
+      "minimum": 1
+    },
+    "line_end": {
+      "type": ["integer", "null"],
+      "minimum": 1
+    },
+    "cve": {
+      "type": ["string", "null"],
+      "pattern": "^CVE-[0-9]{4}-[0-9]+$"
+    },
+    "fingerprint": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "fixed",
+        "accepted",
+        "false_positive"
+      ]
+    },
+    "references": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uri"
+      },
+      "uniqueItems": true
+    }
+  }
+}
