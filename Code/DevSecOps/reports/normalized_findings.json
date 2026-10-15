@@ -1,0 +1,69 @@
+[
+  {
+    "schema_version": "1.0",
+    "finding_id": "semgrep:a7eb3c3198ebce01",
+    "tool": "semgrep",
+    "rule_id": "terraform.aws.security.aws-db-instance-no-logging.aws-db-instance-no-logging",
+    "category": "sast",
+    "severity": "MEDIUM",
+    "title": "terraform.aws.security.aws-db-instance-no-logging.aws-db-instance-no-logging",
+    "message": "Database instance has no logging. Missing logs can cause missing important event information.",
+    "file": "Code/DevSecOps/infra/rds.tf",
+    "line_start": 30,
+    "line_end": 45,
+    "cve": null,
+    "fingerprint": "a7eb3c3198ebce012922bef659fe22bfc53a9e9c8258c02f7543a67ae52ac9a6",
+    "status": "open",
+    "references": [
+      "https://owasp.org/Top10/A04_2021-Insecure_Design"
+    ]
+  },
+  {
+    "schema_version": "1.0",
+    "finding_id": "semgrep:3e9ab840300ae18a",
+    "tool": "semgrep",
+    "rule_id": "python.lang.security.audit.eval-detected.eval-detected",
+    "category": "sast",
+    "severity": "MEDIUM",
+    "title": "python.lang.security.audit.eval-detected.eval-detected",
+    "message": "Detected the use of eval(). eval() can be dangerous if used to evaluate dynamic content. If this content can be input from outside the program, this may be a code injection vulnerability. Ensure evaluated content is not definable by external sources.",
+    "file": "Code/DevSecOps/src/app/vulnerable_examples.py",
+    "line_start": 47,
+    "line_end": 47,
+    "cve": null,
+    "fingerprint": "3e9ab840300ae18a418317fbbd07ee97c324b5d08dea340cf9eed329c0f5821c",
+    "status": "open",
+    "references": [
+      "https://owasp.org/Top10/A03_2021-Injection"
+    ]
+  },
+  {
+    "schema_version": "1.0",
+    "finding_id": "trivy:d3c1749797a2c9f2",
+    "tool": "trivy",
+    "rule_id": "CVE-2025-71176",
+    "category": "sca",
+    "severity": "MEDIUM",
+    "title": "pytest: pytest: Denial of Service or Privilege Escalation via insecure temporary directory handling",
+    "message": "Package: pytest; Installed version: 8.3.4; Fixed version: 9.0.3; pytest through 9.0.2 on UNIX relies on directories with the /tmp/pytest-of-{user} name pattern, which allows local users to cause a denial of service or possibly gain privileges.",
+    "file": "src/requirements.txt",
+    "line_start": null,
+    "line_end": null,
+    "cve": "CVE-2025-71176",
+    "fingerprint": "d3c1749797a2c9f2cccf1f6802215d4a7e61d12b4ec1cca1f11d03fcf25aa9d0",
+    "status": "open",
+    "references": [
+      "https://access.redhat.com/security/cve/CVE-2025-71176",
+      "https://advisory.echohq.com/cve/CVE-2025-71176",
+      "https://avd.aquasec.com/nvd/cve-2025-71176",
+      "https://github.com/pytest-dev/pytes",
+      "https://github.com/pytest-dev/pytest/commit/95d8423bd24992deea5b9df32555fa1741679e2c",
+      "https://github.com/pytest-dev/pytest/issues/13669",
+      "https://github.com/pytest-dev/pytest/pull/14343",
+      "https://github.com/pytest-dev/pytest/releases/tag/9.0.3",
+      "https://nvd.nist.gov/vuln/detail/CVE-2025-71176",
+      "https://www.cve.org/CVERecord?id=CVE-2025-71176",
+      "https://www.openwall.com/lists/oss-security/2026/01/21/5"
+    ]
+  }
+]
