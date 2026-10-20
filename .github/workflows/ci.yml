@@ -13,7 +13,7 @@ permissions:
 jobs:
   test:
     name: Run Python tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout repository
@@ -45,14 +45,14 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Create reports directory
         run: mkdir -p reports
 
       # 1. SAST - Semgrep
       - name: Set up Python for Semgrep
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: "3.12"
 
@@ -75,9 +75,10 @@ jobs:
         if: false
 
       - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: "1.24.x"
+        uses: actions/setup-go@v7
+        with: 
+          go-version: "1.24"
+          cache: false
 
       - name: Install Gitleaks CLI
         run: go install github.com/zricethezav/gitleaks/v8@v8.30.1
@@ -107,7 +108,7 @@ jobs:
       # Always upload whatever reports were generated
       - name: Upload security scan reports
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: security-scan-reports
           path: reports/
