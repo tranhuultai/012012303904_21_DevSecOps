@@ -1,0 +1,24 @@
+{
+  "policy_version": "1.0",
+  "profile": "g1",
+  "description": "Standard release policy: block critical and high findings; warn on medium findings.",
+  "blocking_severities": [
+    "CRITICAL",
+    "HIGH"
+  ],
+  "warning_severities": [
+    "MEDIUM"
+  ],
+  "informational_severities": [
+    "LOW",
+    "INFO"
+  ],
+  "fail_on_invalid_policy": true,
+  "exception_policy": {
+    "enabled": true,
+    "require_reason": true,
+    "require_expiry": true,
+    "max_validity_days": 30,
+    "expired_exception_action": "block"
+  }
+}
