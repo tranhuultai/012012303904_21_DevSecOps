@@ -2,6 +2,7 @@ import json
 import sys
 
 import jsonschema
+from jsonschema import ValidationError
 
 
 def main() -> int:
@@ -12,7 +13,12 @@ def main() -> int:
         schema = json.load(fh)
     with open(sys.argv[2], encoding="utf-8") as fh:
         data = json.load(fh)
-    jsonschema.validate(data, schema)
+    try:
+        jsonschema.validate(data, schema)
+    except ValidationError as exc:
+        where = "/".join(str(p) for p in exc.absolute_path) or "(gốc)"
+        print(f"schema FAIL: {sys.argv[2]} tại {where}: {exc.message}", file=sys.stderr)
+        return 1
     print(f"schema OK: {sys.argv[2]}")
     return 0
 

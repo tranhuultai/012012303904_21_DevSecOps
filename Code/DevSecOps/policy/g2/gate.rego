@@ -51,19 +51,24 @@ date_span(d_from, d_to) := n if {
 valid_exception(e) if {
 	e.owner
 	e.approved_by
-	e.reason
+	trim_space(e.reason) != ""
 	e.match.rule_id
 	e.match.resource
 	e.owner != e.approved_by
-	e.expires >= input.context.today
+	e.created <= input.context.today # đã bắt đầu, không phải ngày tương lai
+	e.created <= e.expires # span không âm
+	e.expires >= input.context.today # chưa quá hạn
 	date_span(e.created, e.expires) <= object.get(severity_cap_days, e.severity, 0)
 }
 
+# Ngoại lệ chỉ miễn trừ finding cùng rule_id, resource VÀ cùng mức độ
+# (tránh khai mức thấp để lấy trần dài cho finding mức cao).
 excused(f) if {
 	some e in input.exceptions
 	valid_exception(e)
 	e.match.rule_id == f.rule_id
 	e.match.resource == object.get(f.location, "resource", "")
+	e.severity == f.severity
 }
 
 # ---- Secret luôn chặn, không ngoại lệ ----

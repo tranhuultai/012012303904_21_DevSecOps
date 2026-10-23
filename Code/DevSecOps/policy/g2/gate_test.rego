@@ -85,3 +85,21 @@ test_g2_secret_not_excusable if {
 test_g2_failclosed_missing_today if {
 	count(deny) > 0 with input as {"context": {"policy": "g2"}, "findings": [], "exceptions": []}
 }
+
+test_g2_future_created_not_excuse if {
+	excs := [{"id": "EXC-006", "match": {"rule_id": "CKV_AWS_24", "resource": "r"}, "severity": "HIGH", "reason": "r", "owner": "@a", "approved_by": "@b", "created": "2026-12-01", "expires": "2026-12-20"}]
+	finds := [{"category": "iac", "rule_id": "CKV_AWS_24", "severity": "HIGH", "location": {"resource": "r"}}]
+	count(deny) > 0 with input as with_exc(finds, excs)
+}
+
+test_g2_whitespace_reason_not_excuse if {
+	excs := [{"id": "EXC-007", "match": {"rule_id": "CKV_AWS_24", "resource": "r"}, "severity": "HIGH", "reason": "   ", "owner": "@a", "approved_by": "@b", "created": "2026-10-20", "expires": "2026-11-01"}]
+	finds := [{"category": "iac", "rule_id": "CKV_AWS_24", "severity": "HIGH", "location": {"resource": "r"}}]
+	count(deny) > 0 with input as with_exc(finds, excs)
+}
+
+test_g2_severity_mismatch_not_excuse if {
+	excs := [{"id": "EXC-008", "match": {"rule_id": "CKV_AWS_24", "resource": "r"}, "severity": "LOW", "reason": "r", "owner": "@a", "approved_by": "@b", "created": "2026-10-20", "expires": "2026-11-01"}]
+	finds := [{"category": "iac", "rule_id": "CKV_AWS_24", "severity": "HIGH", "location": {"resource": "r"}}]
+	count(deny) > 0 with input as with_exc(finds, excs)
+}
