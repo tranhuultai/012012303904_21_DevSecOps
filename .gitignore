@@ -40,3 +40,6 @@ Thumbs.db
 *.tfstate
 *.tfstate.*
 *.tfplan
+
+# Báo cáo quét là artifact CI, không commit
+reports/
