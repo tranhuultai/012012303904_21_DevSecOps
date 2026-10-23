@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "gate_input",
+  "type": "object",
+  "required": ["findings", "exceptions", "context"],
+  "properties": {
+    "context": {
+      "type": "object",
+      "required": ["today", "policy"],
+      "properties": {
+        "today": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
+        "policy": {"enum": ["g0", "g1", "g2"]}
+      }
+    },
+    "exceptions": {"type": "array"},
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["category", "rule_id", "severity"],
+        "properties": {
+          "category": {"type": "string"},
+          "rule_id": {"type": "string"},
+          "severity": {"enum": ["CRITICAL", "HIGH", "MEDIUM", "LOW", "INFO"]},
+          "kev": {"type": "boolean"},
+          "fix_available": {"type": "boolean"},
+          "match_confidence": {"enum": ["high", "low"]},
+          "location": {"type": "object"}
+        }
+      }
+    }
+  }
+}
