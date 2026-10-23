@@ -1,8 +1,0 @@
-﻿[
-  {
-    "finding_id": "trivy:d3c1749797a2c9f2",
-    "reason": "Temporary exception for the university DevSecOps lab while dependency remediation is being evaluated.",
-    "expires_on": "2026-10-19",
-    "ticket": "DEVSECOPS-EX-001"
-  }
-]
