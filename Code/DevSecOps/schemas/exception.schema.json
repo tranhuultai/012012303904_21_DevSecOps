@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "exceptions",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["id", "match", "severity", "reason", "owner", "approved_by", "created", "expires"],
+    "additionalProperties": true,
+    "properties": {
+      "id": {"type": "string"},
+      "match": {
+        "type": "object",
+        "required": ["rule_id", "resource"],
+        "properties": {
+          "rule_id": {"type": "string"},
+          "resource": {"type": "string"}
+        }
+      },
+      "severity": {"enum": ["CRITICAL", "HIGH", "MEDIUM", "LOW", "INFO"]},
+      "reason": {"type": "string", "minLength": 1},
+      "compensating_control": {"type": "string"},
+      "owner": {"type": "string", "minLength": 1},
+      "approved_by": {"type": "string", "minLength": 1},
+      "created": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
+      "expires": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
+      "ticket": {"type": "string"}
+    }
+  }
+}
