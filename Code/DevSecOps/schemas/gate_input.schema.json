@@ -23,6 +23,7 @@
           "rule_id": {"type": "string"},
           "severity": {"enum": ["CRITICAL", "HIGH", "MEDIUM", "LOW", "INFO"]},
           "kev": {"type": "boolean"},
+          "epss": {"type": "number", "minimum": 0.0, "maximum": 1.0},
           "fix_available": {"type": "boolean"},
           "match_confidence": {"enum": ["high", "low"]},
           "location": {"type": "object"}

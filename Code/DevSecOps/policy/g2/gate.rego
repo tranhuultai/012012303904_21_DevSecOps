@@ -81,6 +81,14 @@ deny contains msg if {
 	msg := sprintf("G2 BLOCK KEV: %s", [f.rule_id])
 }
 
+# ---- CVE có xác suất bị khai thác cao theo EPSS (>= 0.10, tức >= 10%) ----
+deny contains msg if {
+	some f in input.findings
+	f.epss >= 0.10
+	not excused(f)
+	msg := sprintf("G2 BLOCK EPSS cao (%.2f): %s", [f.epss, f.rule_id])
+}
+
 # ---- SCA/image CRITICAL|HIGH có bản vá, khớp tin cậy cao ----
 deny contains msg if {
 	some f in input.findings
@@ -143,6 +151,14 @@ warn contains msg if {
 	f.severity == "MEDIUM"
 	f.fix_available == true
 	msg := sprintf("WARN MEDIUM có bản vá: %s", [f.rule_id])
+}
+
+warn contains msg if {
+	some f in input.findings
+	f.epss >= 0.01
+	f.epss < 0.10
+	not excused(f)
+	msg := sprintf("WARN EPSS trung bình (%.2f): %s", [f.epss, f.rule_id])
 }
 
 warn contains msg if {
