@@ -1,0 +1,40 @@
+{
+  "experiment": "E3",
+  "description": "Pipeline execution duration analysis",
+  "threshold_seconds": 600.0,
+  "overall": {
+    "N": 38,
+    "mean": 147.03,
+    "median_p50": 147.5,
+    "p90": 162.3,
+    "p95": 164.15,
+    "min": 126.0,
+    "max": 166.0,
+    "std": 11.88,
+    "paralysis_exceeded": false
+  },
+  "groups": {
+    "clean": {
+      "N": 10,
+      "mean": 130.5,
+      "median_p50": 130.5,
+      "p90": 134.1,
+      "p95": 134.55,
+      "min": 126.0,
+      "max": 135.0,
+      "std": 2.87,
+      "paralysis_exceeded": false
+    },
+    "defect": {
+      "N": 28,
+      "mean": 152.93,
+      "median_p50": 152.5,
+      "p90": 163.3,
+      "p95": 164.65,
+      "min": 142.0,
+      "max": 166.0,
+      "std": 7.49,
+      "paralysis_exceeded": false
+    }
+  }
+}
