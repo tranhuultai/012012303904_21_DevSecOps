@@ -1,0 +1,13 @@
+diff --git a/Code/DevSecOps/src/requirements.txt b/Code/DevSecOps/src/requirements.txt
+--- a/Code/DevSecOps/src/requirements.txt
++++ b/Code/DevSecOps/src/requirements.txt
+@@ -1,6 +1,6 @@
+-fastapi==0.115.6
++fastapi==0.115.7
+ uvicorn[standard]==0.34.0
+-pydantic==2.10.5
++pydantic==2.11.0
+ pytest==8.3.4
+ httpx==0.28.1
+ email-validator
+

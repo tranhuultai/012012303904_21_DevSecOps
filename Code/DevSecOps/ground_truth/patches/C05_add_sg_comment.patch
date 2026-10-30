@@ -1,0 +1,10 @@
+diff --git a/Code/DevSecOps/infra/security_groups.tf b/Code/DevSecOps/infra/security_groups.tf
+--- a/Code/DevSecOps/infra/security_groups.tf
++++ b/Code/DevSecOps/infra/security_groups.tf
+@@ -1,4 +1,5 @@
+ # ALB công khai: chỉ nhận 443 từ Internet (N03), egress mặc định (N04).
++# Reviewed by Long 2026-10-28: confirmed no SSH rules.
+ resource "aws_security_group" "alb" {
+   name        = "${var.name_prefix}-alb"
+   description = "ALB cong khai, chi mo 443"
+

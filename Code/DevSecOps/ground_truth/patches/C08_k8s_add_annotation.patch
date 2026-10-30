@@ -1,0 +1,11 @@
+diff --git a/Code/DevSecOps/deploy/deployment.yaml b/Code/DevSecOps/deploy/deployment.yaml
+--- a/Code/DevSecOps/deploy/deployment.yaml
++++ b/Code/DevSecOps/deploy/deployment.yaml
+@@ -1,4 +1,5 @@
+ apiVersion: apps/v1
+ kind: Deployment
+ metadata:
+   name: devsecops-app
++  annotations: { reviewed-by: "Long", reviewed-date: "2026-10-28" }
+   labels:
+

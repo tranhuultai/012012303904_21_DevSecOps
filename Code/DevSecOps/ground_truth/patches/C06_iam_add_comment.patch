@@ -1,0 +1,10 @@
+diff --git a/Code/DevSecOps/infra/iam.tf b/Code/DevSecOps/infra/iam.tf
+--- a/Code/DevSecOps/infra/iam.tf
++++ b/Code/DevSecOps/infra/iam.tf
+@@ -1,4 +1,5 @@
+ data "aws_iam_policy_document" "app_assume" {
++  # Least-privilege: only ec2 service can assume this role.
+   statement {
+     effect  = "Allow"
+     actions = ["sts:AssumeRole"]
+

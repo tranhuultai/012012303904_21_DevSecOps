@@ -1,0 +1,17 @@
+diff --git a/Code/DevSecOps/src/app/main.py b/Code/DevSecOps/src/app/main.py
+--- a/Code/DevSecOps/src/app/main.py
++++ b/Code/DevSecOps/src/app/main.py
+@@ -1,6 +1,7 @@
+ from fastapi import FastAPI, HTTPException
+ from pydantic import BaseModel, EmailStr
++from typing import Optional
+
+ app = FastAPI(
+     title="DevSecOps Security Demo API",
+@@ -13,6 +14,7 @@ app = FastAPI(
+
+ class UserRequest(BaseModel):
+     name: str
++    display_name: Optional[str] = None
+     email: EmailStr
+
