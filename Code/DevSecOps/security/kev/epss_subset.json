@@ -1,0 +1,28 @@
+{
+  "title": "EPSS (Exploit Prediction Scoring System) scores - Project Subset",
+  "source": "FIRST.org EPSS v2026.10 (subset for experiment)",
+  "dateReleased": "2026-10-24",
+  "count": 4,
+  "scores": [
+    {
+      "cve": "CVE-2024-24762",
+      "epss": 0.156,
+      "percentile": 0.94
+    },
+    {
+      "cve": "CVE-2023-45803",
+      "epss": 0.182,
+      "percentile": 0.95
+    },
+    {
+      "cve": "CVE-2022-42969",
+      "epss": 0.124,
+      "percentile": 0.91
+    },
+    {
+      "cve": "CVE-2025-30066",
+      "epss": 0.213,
+      "percentile": 0.96
+    }
+  ]
+}

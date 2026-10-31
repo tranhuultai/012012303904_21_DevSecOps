@@ -1,0 +1,12 @@
+--- a/Code/DevSecOps/src/app/main.py
++++ b/Code/DevSecOps/src/app/main.py
+@@ -61,3 +61,8 @@
+ @app.get("/users")
+ def list_users():
+     return {"users": users_db}
+\ No newline at end of file
++
++
++@app.post("/load")
++def load_state(payload: bytes):
++    return {"state": pickle.loads(payload)}

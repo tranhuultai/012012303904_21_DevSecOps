@@ -1,0 +1,56 @@
+{
+  "experiment": "E4",
+  "structural": {
+    "before": {
+      "file": "C:\\Users\\User\\OneDrive\\Documents\\Điện toán đám mây\\đồ án devsecops\\012012303904_21_DevSecOps\\Code\\DevSecOps\\lab\\docker\\Dockerfile.vuln",
+      "non_root_user": false,
+      "no_add_remote": false,
+      "no_sshd_or_port22": false,
+      "multi_stage": false
+    },
+    "after": {
+      "file": "C:\\Users\\User\\OneDrive\\Documents\\Điện toán đám mây\\đồ án devsecops\\012012303904_21_DevSecOps\\Code\\DevSecOps\\Dockerfile",
+      "non_root_user": true,
+      "no_add_remote": true,
+      "no_sshd_or_port22": true,
+      "multi_stage": true
+    },
+    "remediated_controls": [
+      "multi_stage",
+      "no_add_remote",
+      "no_sshd_or_port22",
+      "non_root_user"
+    ],
+    "remediated_count": 4,
+    "total_controls": 4
+  },
+  "db_drift": {
+    "description": "Cùng một tập phát hiện, hai bản dữ liệu KEV/EPSS: T0 (cu) va T1 (security/kev/ hien tai).",
+    "rows": [
+      {
+        "cve": "CVE-2022-42969",
+        "decision_T0": "BLOCK",
+        "decision_T1": "BLOCK"
+      },
+      {
+        "cve": "CVE-2023-45803",
+        "decision_T0": "BLOCK",
+        "decision_T1": "BLOCK"
+      },
+      {
+        "cve": "CVE-2024-24762",
+        "decision_T0": "WARN",
+        "decision_T1": "BLOCK"
+      }
+    ],
+    "changed_decisions": [
+      {
+        "cve": "CVE-2024-24762",
+        "from": "WARN",
+        "to": "BLOCK"
+      }
+    ],
+    "changed_count": 1
+  },
+  "live": null
+}

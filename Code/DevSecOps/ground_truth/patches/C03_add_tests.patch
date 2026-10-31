@@ -1,20 +1,14 @@
-diff --git a/Code/DevSecOps/src/test/test_main.py b/Code/DevSecOps/src/test/test_main.py
 --- a/Code/DevSecOps/src/test/test_main.py
 +++ b/Code/DevSecOps/src/test/test_main.py
-@@ -72,3 +72,14 @@ def test_create_user_invalid_email():
+@@ -70,3 +70,10 @@
+         },
      )
      assert response.status_code == 422
+\ No newline at end of file
 +
-+def test_duplicate_email():
-+    """Creating two users with the same email returns 409."""
-+    payload = {"name": "Test User", "email": "dup@example.com"}
-+    r1 = client.post("/users", json=payload)
-+    assert r1.status_code == 201
-+    r2 = client.post("/users", json=payload)
-+    assert r2.status_code == 409
 +
-+def test_list_users_returns_list():
++def test_list_users_empty():
 +    response = client.get("/users")
++
 +    assert response.status_code == 200
-+    assert "users" in response.json()
-
++    assert response.json() == {"users": []}

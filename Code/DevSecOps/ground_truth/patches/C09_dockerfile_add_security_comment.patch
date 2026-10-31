@@ -1,8 +1,12 @@
-diff --git a/Code/DevSecOps/Dockerfile b/Code/DevSecOps/Dockerfile
 --- a/Code/DevSecOps/Dockerfile
 +++ b/Code/DevSecOps/Dockerfile
-@@ -1,5 +1,6 @@
- # Build context: Code/DevSecOps. Base ghim theo digest, cập nhật bằng digest thật.
-+# SECURITY: base image pinned to SHA256 digest, non-root user enforced.
- FROM python@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1 AS builder
-
+@@ -13,6 +13,9 @@
+     PYTHONUNBUFFERED=1 \
+     PATH="/opt/venv/bin:$PATH"
+ 
++LABEL maintainer="gialong611" \
++      org.opencontainers.image.source="https://github.com/tranhuultai/012012303904_21_DevSecOps"
++
+ WORKDIR /app
+ COPY --from=builder /opt/venv /opt/venv
+ COPY src/app ./app

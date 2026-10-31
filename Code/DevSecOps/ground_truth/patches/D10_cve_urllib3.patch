@@ -1,0 +1,9 @@
+--- a/Code/DevSecOps/src/requirements.txt
++++ b/Code/DevSecOps/src/requirements.txt
+@@ -4,3 +4,5 @@
+ pytest==8.3.4
+ httpx==0.28.1
+ email-validator
+\ No newline at end of file
++
++urllib3==2.0.6  # D10: CVE-2023-45803
