@@ -79,6 +79,51 @@ def test_parse_checkov_categories_and_severity():
     assert by_rule["CKV_AWS_24"]["line_end"] == 20
 
 
+def test_parse_checkov_cli_list_format_only_failed():
+    """Dạng CLI: danh sách khung, mỗi khung có results.failed_checks/passed_checks."""
+    cli_report = [
+        {
+            "check_type": "terraform",
+            "results": {
+                "failed_checks": [
+                    {"check_id": "CKV_AWS_17", "check_name": "RDS public",
+                     "check_result": {"result": "FAILED"},
+                     "file_path": "infra/rds.tf"}
+                ],
+                "passed_checks": [
+                    {"check_id": "CKV_AWS_20", "check_name": "S3 ACL",
+                     "check_result": {"result": "PASSED"},
+                     "file_path": "infra/s3.tf"}
+                ],
+            },
+        },
+        {
+            "check_type": "dockerfile",
+            "results": {
+                "failed_checks": [
+                    {"check_id": "CKV_DOCKER_3", "check_name": "root user",
+                     "check_result": {"result": "FAILED"},
+                     "file_path": "Dockerfile"}
+                ]
+            },
+        },
+    ]
+    findings = nf.parse_checkov(cli_report)
+    rules = {f["rule_id"] for f in findings}
+    assert rules == {"CKV_AWS_17", "CKV_DOCKER_3"}
+
+
+def test_parse_checkov_plain_list_only_failed():
+    plain = [
+        {"check_id": "CKV_K8S_16", "check_result": {"result": "FAILED"},
+         "file_path": "deploy/deployment.yaml"},
+        {"check_id": "CKV_K8S_11", "check_result": {"result": "PASSED"},
+         "file_path": "deploy/deployment.yaml"},
+    ]
+    findings = nf.parse_checkov(plain)
+    assert [f["rule_id"] for f in findings] == ["CKV_K8S_16"]
+
+
 def test_parse_checkov_none_and_bad():
     assert nf.parse_checkov(None) == []
     with pytest.raises(ValueError):

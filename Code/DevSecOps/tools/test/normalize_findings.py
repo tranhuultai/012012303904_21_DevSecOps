@@ -441,7 +441,17 @@ def parse_checkov(data):
             checks = []
     else:
         require_list(data, "Checkov report")
-        checks = data
+        checks = []
+        for item in data:
+            if not isinstance(item, dict):
+                continue
+            results = item.get("results")
+            if isinstance(results, dict):
+                # Dạng CLI: danh sách khung (terraform, kubernetes, dockerfile...).
+                checks.extend(results.get("failed_checks") or [])
+            elif (item.get("check_result") or {}).get("result") == "FAILED":
+                # Dạng mảng check trần: chỉ giữ mục FAILED.
+                checks.append(item)
 
     require_list(checks, "Checkov failed_checks")
 
