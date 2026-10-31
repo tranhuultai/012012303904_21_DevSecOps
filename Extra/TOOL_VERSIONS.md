@@ -22,7 +22,7 @@ Khi nâng phiên bản: cập nhật bảng này + env trong `ci.yml` trong cùn
 
 | Công cụ | Phiên bản | Nguồn phát hành | Cách kiểm chứng |
 |---|---|---|---|
-| Trivy | 0.76.0 | github.com/aquasecurity/trivy | sha256 theo `trivy_*_checksums.txt` |
+| Trivy | 0.76.1 | github.com/aquasecurity/trivy | sha256 theo `trivy_*_checksums.txt` |
 | Syft | 1.54.1 | github.com/anchore/syft | sha256 theo `syft_*_checksums.txt` |
 | Grype | 0.120.1 | github.com/anchore/grype | sha256 theo `grype_*_checksums.txt` |
 | Checkov | 3.3.22 | PyPI (pipx) | ghim `==3.3.22` |

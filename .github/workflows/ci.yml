@@ -12,7 +12,7 @@ permissions:
   contents: read
 
 env:
-  TRIVY_VERSION: "0.76.0"
+  TRIVY_VERSION: "0.76.1"
   SYFT_VERSION: "1.54.1"
   GRYPE_VERSION: "0.120.1"
   CHECKOV_VERSION: "3.3.22"
@@ -50,13 +50,13 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r Code/DevSecOps/src/requirements.txt
+          pip install -r src/requirements.txt
 
       - name: Check Python syntax
-        run: python -m compileall -q Code/DevSecOps/src
+        run: python -m compileall -q src
 
       - name: Run tests
-        run: python -m pytest -v Code/DevSecOps/src/test
+        run: python -m pytest -v src/test
 
   # ─────────────────────────────────────────────────────────────
   # 2) SAST + Secret + SCA (chế độ thu thập: thoát 0, chỉ báo cáo)
@@ -98,12 +98,13 @@ jobs:
       # 2.2 Secret scanning - Gitleaks (binary ghim, kiểm checksum)
       - name: Install Gitleaks CLI
         run: |
+          asset="gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
           cd "$RUNNER_TEMP"
           base="https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}"
-          curl -fsSL -o gitleaks.tar.gz "${base}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
+          curl -fsSL -o "${asset}" "${base}/${asset}"
           curl -fsSL -o gitleaks.sums "${base}/gitleaks_${GITLEAKS_VERSION}_checksums.txt"
-          grep "gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" gitleaks.sums | sha256sum -c -
-          tar xzf gitleaks.tar.gz gitleaks
+          grep "${asset}" gitleaks.sums | sha256sum -c -
+          tar xzf "${asset}" gitleaks
           sudo install gitleaks /usr/local/bin/gitleaks
           gitleaks version
 
@@ -112,6 +113,7 @@ jobs:
         continue-on-error: true
         run: |
           gitleaks git \
+            --config "${GITHUB_WORKSPACE}/.gitleaks.toml" \
             --report-format json \
             --report-path reports/gitleaks.json \
             --exit-code 0
@@ -152,12 +154,13 @@ jobs:
 
       - name: Cài Trivy (binary ghim, kiểm checksum theo tệp phát hành)
         run: |
+          asset="trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz"
           base="https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}"
           cd "$RUNNER_TEMP"
-          curl -fsSL -o trivy.tar.gz "${base}/trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz"
+          curl -fsSL -o "${asset}" "${base}/${asset}"
           curl -fsSL -o trivy.sums "${base}/trivy_${TRIVY_VERSION}_checksums.txt"
-          grep "trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz" trivy.sums | sha256sum -c -
-          tar xzf trivy.tar.gz trivy
+          grep "${asset}" trivy.sums | sha256sum -c -
+          tar xzf "${asset}" trivy
           sudo install trivy /usr/local/bin/trivy
           trivy --version
 
@@ -167,10 +170,13 @@ jobs:
       - name: Checkov (soft-fail, chỉ báo cáo)
         run: |
           mkdir -p reports
-          checkov -d infra -d deploy -f Dockerfile --compact --soft-fail -o json > reports/checkov.json || true
+          # Loại lab/ (mẫu gieo lỗi cố ý D12-D15, D26-D28) khỏi quét baseline.
+          checkov -d infra -d deploy -f Dockerfile \
+            --skip-path lab \
+            --compact --soft-fail -o json > reports/checkov.json || true
 
       - name: Trivy config (chỉ báo cáo)
-        run: trivy config --format json --output reports/trivy-config.json --exit-code 0 .
+        run: trivy config --format json --output reports/trivy-config.json --exit-code 0 --skip-dirs lab .
 
       - name: Upload báo cáo iac
         if: always()
@@ -198,10 +204,11 @@ jobs:
             local repo="$1" ver="$2" asset="$3"
             local base="https://github.com/${repo}/releases/download/v${ver}"
             cd "$RUNNER_TEMP"
-            curl -fsSL -o pkg.tar.gz "${base}/${asset}"
+            # Tải giữ nguyên tên asset: sha256sum -c đối chiếu theo tên trong sums.
+            curl -fsSL -o "${asset}" "${base}/${asset}"
             curl -fsSL -o pkg.sums "${base}/${repo##*/}_${ver}_checksums.txt"
             grep "${asset}" pkg.sums | sha256sum -c -
-            tar xzf pkg.tar.gz "${repo##*/}"
+            tar xzf "${asset}" "${repo##*/}"
             sudo install "${repo##*/}" /usr/local/bin/
           }
           fetch aquasecurity/trivy "$TRIVY_VERSION" "trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz"
