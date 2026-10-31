@@ -118,18 +118,30 @@ jobs:
             --report-path reports/gitleaks.json \
             --exit-code 0
 
-      # 2.3 SCA - Trivy (filesystem)
+      # 2.3 SCA - Trivy (filesystem, CLI ghim phiên bản như các job khác)
+      - name: Cài Trivy (binary ghim, kiểm checksum)
+        run: |
+          asset="trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz"
+          base="https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}"
+          cd "$RUNNER_TEMP"
+          curl -fsSL -o "${asset}" "${base}/${asset}"
+          curl -fsSL -o trivy.sums "${base}/trivy_${TRIVY_VERSION}_checksums.txt"
+          grep "${asset}" trivy.sums | sha256sum -c -
+          tar xzf "${asset}" trivy
+          sudo install trivy /usr/local/bin/trivy
+          trivy --version
+
       - name: Run Trivy dependency scan
         id: trivy
-        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
-        with:
-          scan-type: fs
-          scan-ref: Code/DevSecOps
-          scanners: vuln
-          format: json
-          output: reports/trivy.json
-          exit-code: "0"
-          ignore-unfixed: true
+        continue-on-error: true
+        run: |
+          trivy fs \
+            --scanners vuln \
+            --format json \
+            --output reports/trivy.json \
+            --exit-code 0 \
+            --ignore-unfixed \
+            .
 
       - name: Upload security scan reports
         if: always()
