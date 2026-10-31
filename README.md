@@ -65,7 +65,28 @@ Các thực nghiệm:
 
 ## Tài liệu
 
-- Báo cáo: `DOCX/`
-- Slide: `PPTX/`
-- Tài liệu bổ sung và phiên bản công cụ: `Extra/`
-- Dữ liệu và mã phục vụ thực nghiệm: `Code/DevSecOps/tests/`
+- Báo cáo: `DOCX/bao_cao_do_an_DevSecOps.docx` (sinh lại bằng `python Extra/build_report_docs.py`)
+- Slide: `PPTX/slide_thuyet_trinh_DevSecOps.pptx` (cùng script trên)
+- Phiên bản công cụ và SHA action: `Extra/TOOL_VERSIONS.md`
+- Tài liệu chính sách gate: `Code/DevSecOps/policy/README.md`
+- Tài liệu bộ đáp án và ánh xạ CWE/CVE: `Code/DevSecOps/ground_truth/README.md`
+- Phân tích số liệu: `Code/DevSecOps/tests/analysis.ipynb`
+
+## Kiểm nghiệm
+
+```powershell
+# Luật gate Rego (G0, G1, G2) và luật phát hiện workflow
+powershell -ExecutionPolicy Bypass -File Code/DevSecOps/tests/run_policy_tests.ps1
+conftest verify -p Code/DevSecOps/rules/conftest
+
+# Unit test ứng dụng và thí nghiệm (50 test)
+pytest Code/DevSecOps -v
+
+# Thí nghiệm E1, E2, E3, E4
+python Code/DevSecOps/tests/e1_detection_effectiveness.py --policy g0
+python Code/DevSecOps/tests/e1_detection_effectiveness.py --policy g1
+python Code/DevSecOps/tests/e1_detection_effectiveness.py --policy g2
+python Code/DevSecOps/tests/e2_policy_comparison.py
+python Code/DevSecOps/tests/e3_pipeline_duration.py
+python Code/DevSecOps/tests/e4_image_remediation.py
+```

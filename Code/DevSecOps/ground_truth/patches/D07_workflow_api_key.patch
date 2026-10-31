@@ -1,0 +1,13 @@
+--- a/.github/workflows/ci.yml
++++ b/.github/workflows/ci.yml
+@@ -9,6 +9,9 @@
+ 
+ permissions:
+   contents: read
++
++env:
++  API_KEY: "x7K9mQ2pL4vN8rT1wZ3cF6hJ0dY5bA9eS2uI4oP7"
+ 
+ jobs:
+   test:
+\ No newline at end of file

@@ -1,0 +1,13 @@
+--- a/.github/workflows/ci.yml
++++ b/.github/workflows/ci.yml
+@@ -92,6 +92,9 @@
+             --report-path reports/gitleaks.json \
+             --exit-code 0
+ 
++      - name: Echo PR title
++        run: echo "PR ${{ github.event.pull_request.title }}"
++
+       # 3. SCA - Trivy
+       - name: Run Trivy dependency scan
+         id: trivy
+\ No newline at end of file

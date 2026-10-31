@@ -1,0 +1,105 @@
+# Luật SAST tùy chỉnh cho thực nghiệm (D01-D06) và mẫu đối chứng (N01-N03).
+# Severity Semgrep: ERROR -> HIGH, WARNING -> MEDIUM sau chuẩn hóa (SEVERITY_MAP).
+rules:
+  - id: python.sqli.concatenation
+    languages: [python]
+    severity: ERROR
+    message: >-
+      Truy vấn SQL ghép chuỗi/tham số trực tiếp từ biến: nguy cơ SQL injection
+      (CWE-89). Dùng tham số hóa: cursor.execute(sql, (param,)).
+    metadata:
+      cwe: ["CWE-89"]
+      ground_truth: ["D01"]
+      control: ["N01"]
+    patterns:
+      - pattern-either:
+          - pattern: $CURSOR.execute($SQL + ..., ...)
+          - pattern: $CURSOR.execute(f"...{...}...", ...)
+          - pattern: $CURSOR.execute("..." % ..., ...)
+          - pattern: $CURSOR.execute("...".format(...), ...)
+
+  - id: python.secrets.hardcoded
+    languages: [python]
+    severity: ERROR
+    message: >-
+      Giá trị bí mật gán cứng trong mã nguồn (CWE-798). Đọc từ biến môi trường
+      hoặc secret manager thay vì literal.
+    metadata:
+      cwe: ["CWE-798"]
+      ground_truth: ["D02"]
+      control: ["N02", "N03"]
+    patterns:
+      - pattern: $NAME = "..."
+      - metavariable-regex:
+          metavariable: $NAME
+          regex: (?i).*(password|passwd|pwd|secret|api_key|apikey|access_token|auth_token).*
+    paths:
+      exclude:
+        - "*test*"
+        - "*fixture*"
+
+  - id: python.exec.command-injection
+    languages: [python]
+    severity: ERROR
+    message: >-
+      Thực thi lệnh shell với đầu vào không cố định (CWE-78): nguy cơ command
+      injection. Tránh shell=True và os.system với chuỗi ghép.
+    metadata:
+      cwe: ["CWE-78"]
+      ground_truth: ["D03"]
+    patterns:
+      - pattern-either:
+          - pattern: os.system($CMD)
+          - pattern: subprocess.call($CMD, ..., shell=True, ...)
+          - pattern: subprocess.run($CMD, ..., shell=True, ...)
+          - pattern: subprocess.Popen($CMD, ..., shell=True, ...)
+      - pattern-not: os.system("...")
+      - pattern-not: subprocess.call("...", ...)
+      - pattern-not: subprocess.run("...", ...)
+      - pattern-not: subprocess.Popen("...", ...)
+
+  - id: python.file.path-traversal
+    languages: [python]
+    severity: WARNING
+    message: >-
+      Mở tệp với đường dẫn ghép từ đầu vào người dùng (CWE-22): nguy cơ path
+      traversal. Chuẩn hóa và kiểm tra whitelist trước khi mở.
+    metadata:
+      cwe: ["CWE-22"]
+      ground_truth: ["D04"]
+    patterns:
+      - pattern-either:
+          - pattern: open($BASE + $USER, ...)
+          - pattern: open(f"...{...}...", ...)
+          - pattern: open(os.path.join($BASE, $USER), ...)
+      - pattern-not: open("...", ...)
+
+  - id: python.pickle.insecure-deserialization
+    languages: [python]
+    severity: ERROR
+    message: >-
+      Giải tuần tự hóa pickle với dữ liệu không tin cậy (CWE-502): có thể dẫn
+      tới thực thi mã tùy ý. Dùng định dạng dữ liệu an toàn (JSON).
+    metadata:
+      cwe: ["CWE-502"]
+      ground_truth: ["D05"]
+    patterns:
+      - pattern-either:
+          - pattern: pickle.loads(...)
+          - pattern: pickle.load(...)
+          - pattern: cPickle.loads(...)
+          - pattern: cPickle.load(...)
+
+  - id: python.crypto.weak-hash-md5
+    languages: [python]
+    severity: WARNING
+    message: >-
+      Hàm băm yếu (MD5/SHA1) cho dữ liệu nhạy cảm (CWE-328). Dùng SHA-256 trở
+      lên hoặc hàm băm mật khẩu chuyên dụng (bcrypt, argon2).
+    metadata:
+      cwe: ["CWE-328"]
+      ground_truth: ["D06"]
+    patterns:
+      - pattern-either:
+          - pattern: hashlib.md5(...)
+          - pattern: hashlib.sha1(...)
