@@ -354,7 +354,7 @@ jobs:
       packages: write
       id-token: write
     env:
-      IMAGE: ghcr.io/tranhuultai/devsecops
+      IMAGE: ghcr.io/${{ github.repository_owner }}/devsecops
       COSIGN_VERSION: "3.1.3"
     outputs:
       ref: ${{ steps.push.outputs.ref }}
@@ -445,7 +445,7 @@ jobs:
       - name: Xác minh chữ ký (ràng buộc danh tính workflow)
         run: |
           cosign verify \
-            --certificate-identity-regexp "^https://github.com/tranhuultai/012012303904_21_DevSecOps/.github/workflows/.+" \
+            --certificate-identity-regexp "^https://github.com/${{ github.repository }}/.github/workflows/.+" \
             --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
             "${REF}"
 
