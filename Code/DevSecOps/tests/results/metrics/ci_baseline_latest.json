@@ -1,0 +1,70 @@
+{
+  "evidence_status": "workflow_success_gate_warn_budget_exceeded_artifacts_pending_analysis",
+  "recorded_at": "2026-11-01",
+  "run": {
+    "run_id": 41283884525,
+    "run_number": 11,
+    "event": "push",
+    "branch": "main",
+    "head_sha": "00e4f40f7488c6407e99c0076f03c0c0ba344d3c",
+    "created_at": "2026-11-01T07:12:58Z",
+    "conclusion": "success",
+    "url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/41283884525"
+  },
+  "jobs": [
+    {"name": "Run Python tests", "conclusion": "success"},
+    {"name": "Security scans (collection mode)", "conclusion": "success"},
+    {"name": "iac", "conclusion": "success"},
+    {"name": "image", "conclusion": "success"},
+    {"name": "gate (Conftest Rego)", "conclusion": "success"},
+    {"name": "release", "conclusion": "success"},
+    {"name": "deploy-smoke", "conclusion": "success"}
+  ],
+  "gate_result_from_job_log": {
+    "decision": "WARN",
+    "normalized_findings": 275,
+    "blockers": 0,
+    "warnings": 30,
+    "warning_budget": 20,
+    "warning_budget_exceeded": true,
+    "warning_budget_scope": "The 20-warning paralysis threshold is defined for a PR; this is a push baseline and is a noise signal, not a direct PR-paralysis measurement.",
+    "warning_severity_counts": {"HIGH": 15, "MEDIUM": 15},
+    "conftest_policy_cases": {"total": 31, "passed": 1, "warnings": 30, "failures": 0, "exceptions": 0}
+  },
+  "e4_log_summary": {
+    "trivy_vulnerability_record_delta_after_minus_before": -4533,
+    "syft_sbom_component_delta_after_minus_before": -20061,
+    "absolute_before_after_counts_extracted": false,
+    "image_digests_extracted": false,
+    "severity_breakdown_extracted": false
+  },
+  "e3_timing_from_job_logs": {
+    "evidence_status": "traceable_single_run",
+    "run_attempt_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/41283884525/attempts/1",
+    "fixture_id": "baseline",
+    "job_durations_seconds": {
+      "security-scan": 23,
+      "iac": 32,
+      "image": 148
+    },
+    "parallel_scan_stage_critical_path_seconds": 148,
+    "serial_sum_estimate_seconds": 203,
+    "median_job_seconds": 32,
+    "repeated_runs_available": false,
+    "cache_modes_compared": false
+  },
+  "artifacts": [
+    {"name": "report-scan", "artifact_id": 13074636710},
+    {"name": "report-image", "artifact_id": 13074458024},
+    {"name": "sbom", "artifact_id": 13074298747},
+    {"name": "report-iac", "artifact_id": 13074293494},
+    {"name": "report-gate", "artifact_id": 13074037971}
+  ],
+  "analysis": {
+    "download_status": "connector_file_refs_available_for_report-gate_and_report-image; other_artifacts_not_downloaded_to_workspace",
+    "artifact_contents_analyzed": false,
+    "finding_counts_extracted": false,
+    "e4_before_after_metrics_extracted": false,
+    "note": "Run, gate summary, and E4 deltas were read from GitHub Actions logs. Raw artifacts remain to be inspected for finding details, absolute E4 counts, severity breakdown, and image digests."
+  }
+}

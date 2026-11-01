@@ -1,8 +1,28 @@
 {
   "experiment": "E3",
   "description": "Pipeline execution duration analysis",
-  "evidence_status": "unverified",
-  "evidence_note": "Chưa truy vết được: runs.csv không có liên kết GitHub Actions cho từng phép đo; các giá trị chỉ nên xem là dữ liệu thăm dò.",
+  "evidence_status": "partial",
+  "evidence_note": "Bảng tổng hợp N=38 vẫn là số liệu thăm dò không có run URL. Có thêm một lần đo baseline truy vết được ở run #11: critical path 148s trong ba job scan chạy song song. Chưa đủ lặp và chưa so sánh cache/song song.",
+  "exploratory_aggregate_evidence_status": "unverified",
+  "live_observation": {
+    "evidence_status": "traceable_single_run",
+    "run_id": 41283884525,
+    "run_attempt": 1,
+    "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/41283884525/attempts/1",
+    "commit": "00e4f40f7488c6407e99c0076f03c0c0ba344d3c",
+    "fixture_id": "baseline",
+    "job_durations_seconds": {
+      "security-scan": 23,
+      "iac": 32,
+      "image": 148
+    },
+    "parallel_scan_stage_critical_path_seconds": 148,
+    "serial_sum_estimate_seconds": 203,
+    "median_job_seconds": 32,
+    "repeated_runs_available": false,
+    "cache_modes_compared": false,
+    "interpretation": "Critical path is the maximum among the three parallel scan jobs, not total workflow duration. Serial sum is an estimate, not a measured serial run."
+  },
   "threshold_seconds": 600.0,
   "overall": {
     "N": 38,

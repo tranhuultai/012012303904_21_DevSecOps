@@ -45,20 +45,59 @@ Các thực nghiệm:
 - **E3:** Đánh giá thời gian pipeline
 - **E4:** Đánh giá ảnh hưởng của việc khắc phục đến image và SBOM
 
-**Lưu ý trạng thái bằng chứng:** Các CSV/biểu đồ đang commit là dữ liệu thiết kế
-fixture, chưa phải kết quả scanner chạy trên CI. Workflow thủ công nhận một
-`fixture_id` (`baseline`, `D01`–`D28`, `C01`–`C10`, `N01`–`N08`), áp patch độc lập,
-chạy scan và lưu `reports/experiment/observation.json` cùng báo cáo thô, gate,
-thời gian, commit và phiên bản công cụ. Chưa có bộ artifact CI đầy đủ để kết luận
-recall/false-positive hay so sánh cache/song song. E4 chỉ được coi là kết quả live
-khi artifact có đủ SBOM và báo cáo Trivy trước/sau. Quy trình thu thập và tổng hợp:
-`Code/DevSecOps/tests/README.md`.
+**Trạng thái bằng chứng:** Run baseline #11 trên commit
+`00e4f40f7488c6407e99c0076f03c0c0ba344d3c` đã thành công và lưu artifact
+`report-scan`, `report-iac`, `report-image`, `report-gate` và `sbom` ([GitHub Actions run](https://github.com/gialong611/DevSecOps_Project/actions/runs/41283884525)).
+Gate trả `WARN` với 275 findings, 0 blockers và 30 warnings (15 HIGH, 15 MEDIUM).
+Ngưỡng hơn 20 warnings được đặt cho một PR; run này là `push`, nên chưa đo trực
+tiếp độ nhiễu PR nhưng cho thấy baseline vượt ngân sách cảnh báo. Cần phân tích
+raw reports và xử lý findings có căn cứ.
+Job E4 báo delta sau remediation là -4,533 bản ghi lỗ hổng Trivy và -20,061
+thành phần SBOM; số tuyệt đối, severity và image digest chưa được trích từ raw
+artifact. Run này xác nhận pipeline chạy xuyên suốt; chưa đủ để kết luận recall,
+false-positive rate hoặc thời gian đại diện vì chưa có toàn bộ fixture D/C/N và
+các lượt lặp E3. Một observation truy vết được ghi thời gian ba job scan là
+23s (security-scan), 32s (IaC) và 148s (image); 148s là đường găng của giai đoạn
+scan song song trong một run, không phải tổng thời gian workflow. Các CSV/biểu
+đồ đang commit vẫn là dữ liệu thiết kế/thăm dò,
+không thay cho quan sát scanner thô theo fixture. E4 đã chạy trong workflow;
+cần kiểm tra artifact trước/sau trước khi đưa delta vào metrics chuẩn. Quy trình
+thu thập và tổng hợp: `Code/DevSecOps/tests/README.md`.
+Xem bảng tự đánh giá và việc còn thiếu tại `PROJECT_COMPLETION.md`.
+
+## Kiến trúc pipeline
+
+```mermaid
+flowchart LR
+    A[Push / Pull Request / workflow_dispatch] --> T[Python tests]
+    A --> S[SAST: Semgrep<br/>Secret: Gitleaks<br/>SCA: Trivy]
+    A --> I[IaC: Checkov + Trivy]
+    A --> C[Container: Trivy + Syft + Grype<br/>E4 before/after]
+    S --> R[Raw JSON reports]
+    I --> R
+    C --> R
+    R --> N[Normalize findings<br/>validate schema]
+    N --> E[Enrich KEV / EPSS<br/>fix availability / confidence]
+    E --> G[Build gate input<br/>apply timed exceptions]
+    G --> P[Conftest / Rego<br/>G0, G1, G2]
+    P --> O[Gate report + PR summary<br/>traceable observation]
+    T --> Q[Release]
+    P --> Q
+    Q --> B[Build and push by digest<br/>SBOM + provenance + Cosign signature]
+    B --> D[Verify signature<br/>kind deploy smoke + /health]
+```
+
+Job quét chạy song song; gate tổng hợp báo cáo scan, IaC và image. `BLOCK` làm
+job gate thất bại; `WARN` vẫn cho job tiếp tục và được ghi vào báo cáo. Release
+chạy sau khi unit test và gate job thành công; deploy smoke xác minh chữ ký
+trước khi triển khai thử trên `kind`. Workflow và quyền từng job được khai báo
+tại `.github/workflows/ci.yml`.
 
 ## Cấu trúc repository
 
 ```text
-012012303904_21_DevSecOps/
-├── .github/            CODEOWNERS, pull_request_template.md; workflows/ khi có pipeline
+DevSecOps_Project/
+├── .github/            CODEOWNERS, pull_request_template.md, workflows/ci.yml
 ├── Code/DevSecOps/     (+ pytest.ini, Dockerfile, .dockerignore khi có)
 │   ├── src/            app FastAPI: app/, test/, requirements.txt
 │   ├── infra/  deploy/ Terraform (chỉ quét); manifest Kubernetes
@@ -89,8 +128,8 @@ khi artifact có đủ SBOM và báo cáo Trivy trước/sau. Quy trình thu th�
 powershell -ExecutionPolicy Bypass -File Code/DevSecOps/tests/run_policy_tests.ps1
 conftest verify -p Code/DevSecOps/rules/conftest
 
-# Unit test ứng dụng và thí nghiệm (50 test)
-pytest Code/DevSecOps -v
+# Unit test ứng dụng (chạy cùng lệnh trong CI)
+python -m pytest -v Code/DevSecOps/src/test
 
 # Thí nghiệm E1, E2, E3, E4
 python Code/DevSecOps/tests/e1_detection_effectiveness.py --policy g0

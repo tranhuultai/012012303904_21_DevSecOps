@@ -5,6 +5,23 @@ RQ3 (E2): Chính sách nào chặn đủ lỗi nghiêm trọng mà ít chặn nh
 RQ4 (E3): Việc thay đổi cấu hình kiểm tra ảnh hưởng thế nào đến thời gian chạy và số cảnh báo trên mỗi PR?
 RQ5 (E4): Quyết định gate thay đổi thế nào khi tín hiệu KEV/EPSS khác nhau, và việc vá image đổi SBOM/lỗ hổng ra sao?
 
+## Thiết kế đo và cách diễn giải
+
+| Thí nghiệm | Đơn vị đo và biến | Chỉ số đầu ra | Cách kết luận |
+|---|---|---|---|
+| E1 | Một fixture D/C/N trên cùng commit baseline; tool versions và metadata Trivy DB phải khớp | Finding mới khớp tool/rule/file; phát hiện đúng hoặc bỏ sót theo D; finding mới trên C/N | Tính recall trên D; báo scanner false positive trên N riêng với finding trên C |
+| E2 | Cùng một observation được đánh giá bằng G0, G1, G2 | TP/FN trên D; FP/TN trên C; số N bị chặn | So recall và false-block rate; báo N controls riêng, không gộp false positive scanner với false block gate |
+| E3 | Baseline giống nhau; cấu hình cache và mức song song là biến độc lập; tối thiểu 5 lần cho mỗi cấu hình | Thời gian mỗi job và thời gian tường của workflow | Báo median và min–max (hoặc IQR); phân biệt tổng runner-minutes với đường găng của job song song |
+| E4 | Cùng source/architecture và snapshot cơ sở dữ liệu; image trước/sau là biến | Image digest, package count, CVE theo severity, SBOM trước/sau | Chỉ quy thay đổi cho remediation khi tool version và Trivy DB snapshot giống nhau; nếu DB khác, báo riêng và không quy toàn bộ chênh lệch cho bản vá |
+
+Baseline dùng fixture `baseline` trên commit gốc. Patch D/C/N được áp độc lập
+trong runner; không chạy nhiều patch cùng một observation. Mỗi lượt phải lưu run
+URL, commit, tool versions, metadata database, cấu hình cache/song song, artifact
+thô và timing. Nếu Trivy DB đổi giữa các lượt thì thu lại nhóm với baseline mới
+hoặc phân tích thành nhóm snapshot tách biệt. Báo cáo số liệu từ fixture chỉ có
+ý nghĩa trong phạm vi các mẫu gieo cài này; không suy rộng thành tỷ lệ lỗ hổng
+ngoài thực tế.
+
 ## Mục 2. Định nghĩa "Tê liệt" pipeline bằng con số
 Pipeline được coi là bị tê liệt khi dính 1 trong các dấu hiệu sau:
 1 thay đổi sạch bị chặn (False block).
@@ -13,6 +30,17 @@ Pipeline chạy quá 10 phút.
 
 ## Mục 3. Trạng thái nguồn dữ liệu đang commit
 
+- Baseline CI thành công trên commit `00e4f40f7488c6407e99c0076f03c0c0ba344d3c`:
+  [run #11](https://github.com/gialong611/DevSecOps_Project/actions/runs/41283884525).
+  Metadata run và ID artifact được ghi tại
+  `results/metrics/ci_baseline_latest.json`. Gate có 275 findings, 0 blockers,
+  30 warnings và quyết định `WARN`; run này là `push`, còn ngưỡng 20 warnings
+  áp dụng cho PR nên đây là tín hiệu nền, chưa phải phép đo PR bị tê liệt. E4
+  job log báo delta -4,533 bản ghi lỗ hổng Trivy và
+  -20,061 thành phần SBOM sau remediation. E3 có một timing observation truy
+  vết được cho ba job scan: 23s / 32s / 148s; đường găng scan là 148s, không
+  phải toàn workflow. Raw reports chưa được mở để xác nhận số tuyệt đối,
+  severity, package hay digest; một run chưa đủ phân tích cache/song song.
 - `findings.csv` là bộ finding dự kiến gắn với lỗi gieo cài, không phải bản xuất
   thô của Semgrep/Gitleaks/Trivy/Checkov.
 - `decisions.csv` ghi các quyết định fixture theo policy. E1/E2 dùng các quyết
@@ -28,10 +56,11 @@ Pipeline chạy quá 10 phút.
   so sánh image/SBOM hoàn tất khi output live chứa cả hai
   báo cáo Trivy và hai SBOM Syft. Workflow image chạy script này và lưu output
   trong artifact `report-image`.
-- `report-gate` có thêm `reports/experiment/observation.json`: bản ghi baseline
-  của một workflow run, gồm run URL, commit, phiên bản tool đã ghim, quyết định
-  gate, metadata thời điểm cập nhật vulnerability DB của Trivy, thống kê finding
-  và SHA-256 của các báo cáo thô. `evidence_status` là
+- `report-gate` có `reports/experiment/observation.json`: bản ghi cho đúng một
+  workflow run, có thể là baseline hoặc một patch fixture. Bản ghi gồm run URL,
+  commit, phiên bản tool đã ghim, quyết định gate, metadata thời điểm cập nhật
+  vulnerability DB của Trivy, thống kê finding và SHA-256 của các báo cáo thô.
+  `evidence_status` là
   `partial` nếu thiếu báo cáo/timing/gate hoặc không có run URL. Bản ghi này
   giúp truy vết một lần chạy, nhưng chưa thay cho phép thử từng patch D/N/C hay
   các lần lặp E3. Cấu trúc được mô tả tại
@@ -44,6 +73,10 @@ Pipeline chạy quá 10 phút.
   commit/tool versions/Trivy DB snapshot và chỉ tính finding mới trên file mục tiêu. Báo cáo tách
   scanner false positive trên N controls khỏi gate false block trên C changes.
   Trạng thái chỉ là complete sau khi đủ tất cả D/C/N và một baseline cùng commit.
+  Bộ tổng hợp yêu cầu các run có cùng phiên bản công cụ và cùng Trivy database
+  snapshot. Nếu metadata DB khác baseline, không gộp các run đó; chạy lại cả
+  nhóm với một baseline mới để tránh so findings từ hai tập dữ liệu lỗ hổng khác
+  nhau.
 
 Khi thu thập lại, lưu artifact scanner không chuẩn hóa, kết quả gate của G0/G1/G2,
 URL run, hash commit, phiên bản tool, thời gian bắt đầu/kết thúc và cấu hình
