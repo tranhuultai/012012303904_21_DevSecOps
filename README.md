@@ -51,7 +51,11 @@ Các thực nghiệm:
 Gate trả `WARN` với 275 findings, 0 blockers và 30 warnings (15 HIGH, 15 MEDIUM).
 Ngưỡng hơn 20 warnings được đặt cho một PR; run này là `push`, nên chưa đo trực
 tiếp độ nhiễu PR nhưng cho thấy baseline vượt ngân sách cảnh báo. Cần phân tích
-raw reports và xử lý findings có căn cứ.
+raw reports và xử lý findings có căn cứ. Gate report/PR summary đã được cải tiến
+để nối cảnh báo CVE/GHSA về finding nguồn, package, phiên bản đang cài, phiên bản
+vá và vị trí; severity hiển thị theo policy thay vì gán mọi cảnh báo thành MEDIUM.
+Thay đổi này làm cảnh báo có thể triage được nhưng chưa làm giảm số cảnh báo và
+cần một CI run mới để ghi nhận tỷ lệ liên kết thực tế.
 Job E4 báo delta sau remediation là -4,533 bản ghi lỗ hổng Trivy và -20,061
 thành phần SBOM; số tuyệt đối, severity và image digest chưa được trích từ raw
 artifact. Run này xác nhận pipeline chạy xuyên suốt; chưa đủ để kết luận recall,

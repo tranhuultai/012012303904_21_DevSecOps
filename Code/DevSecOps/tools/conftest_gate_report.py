@@ -22,6 +22,7 @@ Dùng:
 
 import argparse
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -45,6 +46,83 @@ def collect_results(conftest_data):
 
 
 RESULT_KEY_BY_QUERY = {"deny": "failures", "warn": "warnings"}
+ADVISORY_PATTERN = re.compile(
+    r"\b(?:CVE-\d{4}-\d+|GHSA-[0-9A-Z]{4}-[0-9A-Z]{4}-[0-9A-Z]{4})\b",
+    re.IGNORECASE,
+)
+SEVERITY_PATTERN = re.compile(r"\bWARN\s+(CRITICAL|HIGH|MEDIUM|LOW|INFO)\b", re.I)
+MESSAGE_FIELD_PATTERN = re.compile(
+    r"(?:^|;\s*)(Package|Installed version|Fixed version):\s*([^;]+)", re.I
+)
+
+
+def advisory_ids(value):
+    """Return CVE/GHSA identifiers found in a string, normalized to uppercase."""
+    return {match.upper() for match in ADVISORY_PATTERN.findall(str(value or ""))}
+
+
+def finding_advisories(finding):
+    """Read advisory identifiers from normalized finding fields."""
+    values = (finding.get("rule_id"), finding.get("cve"), finding.get("title"), finding.get("message"))
+    return set().union(*(advisory_ids(value) for value in values))
+
+
+def message_fields(message):
+    """Extract package and version labels emitted by the normalizer."""
+    fields = {}
+    for label, value in MESSAGE_FIELD_PATTERN.findall(str(message or "")):
+        fields[label.lower().replace(" ", "_")] = value.strip()
+    return fields
+
+
+def correlate_warning(item, findings):
+    """Attach source finding context without changing policy decisions/counts."""
+    item["policy_input_file"] = item.get("file")
+    ids = advisory_ids(item.get("message"))
+    affected = []
+    if ids:
+        for finding in findings:
+            if not isinstance(finding, dict) or not (finding_advisories(finding) & ids):
+                continue
+            details = {
+                key: finding.get(key)
+                for key in ("finding_id", "tool", "category", "severity", "title", "file", "line_start", "resource")
+                if finding.get(key) is not None
+            }
+            details.update(message_fields(finding.get("message")))
+            affected.append(details)
+
+    item["advisory_ids"] = sorted(ids)
+    item["affected_findings"] = affected
+    item["policy_engine"] = "conftest-rego"
+    item.setdefault("tool", "conftest-rego")
+
+    # Rego warning text is authoritative for severity. This fixes the previous
+    # behavior that labeled every warning MEDIUM, including HIGH advisories.
+    severity_match = SEVERITY_PATTERN.search(str(item.get("message", "")))
+    if severity_match:
+        item["severity"] = severity_match.group(1).upper()
+    elif affected:
+        item["severity"] = affected[0].get("severity", item["severity"])
+
+    tools = sorted({entry.get("tool") for entry in affected if entry.get("tool")})
+    if tools:
+        item["tool"] = ", ".join(tools)
+
+    locations = []
+    for entry in affected:
+        file_path = entry.get("file") or entry.get("resource")
+        if not file_path:
+            continue
+        line = entry.get("line_start")
+        location = f"{file_path}:{line}" if line is not None else str(file_path)
+        if location not in locations:
+            locations.append(location)
+    if locations:
+        item["file"] = "; ".join(locations)
+        item["source_locations"] = locations
+
+    return item
 
 
 def extract_items(results, query):
@@ -82,6 +160,9 @@ def extract_items(results, query):
 def build_report(results, findings, policy):
     deny_items = extract_items(results, "deny")
     warn_items = extract_items(results, "warn")
+    source_findings = findings if isinstance(findings, list) else []
+    warn_items = [correlate_warning(item, source_findings) for item in warn_items]
+    matched_warnings = sum(bool(item["affected_findings"]) for item in warn_items)
 
     # Fail-closed: trường failures tồn tại nhưng không phải danh sách (định dạng
     # đổi) => không đọc được mục nào; coi như chặn để không bỏ lọt.
@@ -125,6 +206,11 @@ def build_report(results, findings, policy):
             "informational": 0,
             "excepted": 0,
             "expired_exceptions": 0,
+        },
+        "warning_correlation": {
+            "matched_policy_warnings": matched_warnings,
+            "unmatched_policy_warnings": len(warn_items) - matched_warnings,
+            "matched_source_findings": sum(len(item["affected_findings"]) for item in warn_items),
         },
         "blockers": deny_items,
         "warnings": warn_items,

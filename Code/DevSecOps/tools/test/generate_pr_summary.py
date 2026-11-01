@@ -79,6 +79,10 @@ def markdown_escape(value):
 
 def format_location(finding):
     """Format a finding's file and optional line number."""
+    source_locations = finding.get("source_locations")
+    if isinstance(source_locations, list) and source_locations:
+        return "; ".join(str(location) for location in source_locations)
+
     file_path = finding.get("file") or "Unknown location"
     line = finding.get("line_start")
 
@@ -86,6 +90,53 @@ def format_location(finding):
         return f"{file_path}:{line}"
 
     return str(file_path)
+
+
+def format_affected_assets(finding):
+    """Summarize correlated packages/resources attached to a policy finding."""
+    affected = finding.get("affected_findings")
+    if not isinstance(affected, list) or not affected:
+        return "—"
+
+    assets = []
+    for item in affected:
+        if not isinstance(item, dict):
+            continue
+        name = item.get("package") or item.get("resource") or item.get("title")
+        if not name:
+            continue
+        installed = item.get("installed_version")
+        fixed = item.get("fixed_version")
+        detail = str(name)
+        if installed:
+            detail += f" {installed}"
+        if fixed:
+            detail += f" → {fixed}"
+        if detail not in assets:
+            assets.append(detail)
+
+    visible = assets[:5]
+    if len(assets) > len(visible):
+        visible.append(f"+{len(assets) - len(visible)} more")
+    return "<br>".join(markdown_escape(asset) for asset in visible) or "—"
+
+
+def format_source_ids(finding):
+    """Show source finding IDs when the gate item is correlated."""
+    affected = finding.get("affected_findings")
+    if not isinstance(affected, list):
+        affected = []
+    source_ids = list(dict.fromkeys(
+        item.get("finding_id")
+        for item in affected
+        if isinstance(item, dict) and item.get("finding_id")
+    ))
+    policy_id = finding.get("finding_id")
+    visible_sources = source_ids[:5]
+    if len(source_ids) > len(visible_sources):
+        visible_sources.append(f"+{len(source_ids) - len(visible_sources)} more source findings")
+    values = ([policy_id] if policy_id else []) + visible_sources
+    return "<br>".join(f"`{markdown_escape(value)}`" for value in values) or "—"
 
 
 def summarize_counts(findings):
@@ -137,20 +188,21 @@ def render_finding_table(findings, empty_message):
         return empty_message
 
     lines = [
-        "| Severity | Tool | Finding | Location | ID |",
-        "|---|---|---|---|---|",
+        "| Severity | Tool | Finding | Package / resource | Location | Policy / source IDs |",
+        "|---|---|---|---|---|---|",
     ]
 
     for finding in findings:
         severity = markdown_escape(finding.get("severity"))
         tool = markdown_escape(finding.get("tool"))
         title = markdown_escape(finding.get("title"))
+        assets = format_affected_assets(finding)
         location = markdown_escape(format_location(finding))
-        finding_id = markdown_escape(finding.get("finding_id"))
+        finding_ids = format_source_ids(finding)
 
         lines.append(
-            f"| {severity} | {tool} | {title} | "
-            f"`{location}` | `{finding_id}` |"
+            f"| {severity} | {tool} | {title} | {assets} | "
+            f"`{location}` | {finding_ids} |"
         )
 
     return "\n".join(lines)
@@ -162,10 +214,14 @@ def build_summary(findings, gate_report, title="DevSecOps Security Summary"):
     by_severity, by_tool = summarize_counts(findings)
 
     gate_summary = {}
+    warning_correlation = {}
     if gate_report is not None:
         gate_summary = gate_report.get("summary", {})
         if not isinstance(gate_summary, dict):
             raise ValueError("Gate report summary must be a JSON object.")
+        warning_correlation = gate_report.get("warning_correlation", {})
+        if not isinstance(warning_correlation, dict):
+            warning_correlation = {}
 
     blockers = (
         gate_report.get("blockers", [])
@@ -222,6 +278,8 @@ def build_summary(findings, gate_report, title="DevSecOps Security Summary"):
         f"| Total findings | {len(findings)} |",
         f"| Blockers | {gate_summary.get('blockers', len(blockers))} |",
         f"| Warnings | {gate_summary.get('warnings', len(warnings))} |",
+        f"| Warnings linked to source findings | "
+        f"{warning_correlation.get('matched_policy_warnings', '—')} |",
         f"| Active exceptions used | "
         f"{gate_summary.get('active_exceptions_used', 0)} |",
         f"| Expired exceptions | "
