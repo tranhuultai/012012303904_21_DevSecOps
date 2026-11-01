@@ -380,10 +380,11 @@ jobs:
         run: |
           cd "$RUNNER_TEMP"
           sbase="https://github.com/anchore/syft/releases/download/v${SYFT_VERSION}"
-          curl -fsSL -o syft.tgz "${sbase}/syft_${SYFT_VERSION}_linux_amd64.tar.gz"
+          syft_asset="syft_${SYFT_VERSION}_linux_amd64.tar.gz"
+          curl -fsSL -o "${syft_asset}" "${sbase}/${syft_asset}"
           curl -fsSL -o syft.sums "${sbase}/syft_${SYFT_VERSION}_checksums.txt"
-          grep "  syft_${SYFT_VERSION}_linux_amd64.tar.gz$" syft.sums | sha256sum -c -
-          tar xzf syft.tgz syft && sudo install syft /usr/local/bin/
+          grep "  ${syft_asset}$" syft.sums | sha256sum -c -
+          tar xzf "${syft_asset}" syft && sudo install syft /usr/local/bin/
           cbase="https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}"
           curl -fsSL -o cosign "${cbase}/cosign-linux-amd64"
           curl -fsSL -o cosign.sums "${cbase}/cosign_checksums.txt"
