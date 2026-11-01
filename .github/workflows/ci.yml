@@ -68,6 +68,7 @@ jobs:
       contents: read
     steps:
       - name: Mark job start
+        working-directory: ${{ github.workspace }}
         run: echo "JOB_START_EPOCH=$(date +%s)" >> "$GITHUB_ENV"
 
       - name: Checkout repository
@@ -169,6 +170,7 @@ jobs:
       contents: read
     steps:
       - name: Mark job start
+        working-directory: ${{ github.workspace }}
         run: echo "JOB_START_EPOCH=$(date +%s)" >> "$GITHUB_ENV"
 
       - name: Checkout
@@ -222,6 +224,7 @@ jobs:
       contents: read
     steps:
       - name: Mark job start
+        working-directory: ${{ github.workspace }}
         run: echo "JOB_START_EPOCH=$(date +%s)" >> "$GITHUB_ENV"
 
       - name: Checkout
