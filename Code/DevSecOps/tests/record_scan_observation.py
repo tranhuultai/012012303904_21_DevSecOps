@@ -19,8 +19,13 @@ RAW_REPORTS = (
     "gitleaks.json",
     "trivy.json",
     "checkov.json",
+    "checkov.stream.json",
     "trivy-config.json",
     "grype-image.json",
+    "raw/e4/trivy-image-before.json",
+    "raw/e4/trivy-image-after.json",
+    "raw/e4/sbom-before.cdx.json",
+    "raw/e4/sbom-after.cdx.json",
 )
 
 TOOL_VERSION_ENV = {

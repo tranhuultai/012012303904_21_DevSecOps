@@ -19,17 +19,18 @@
 - **Phân vị 90 (p90):** 162.3 giây (~2.71 phút) trong tập dữ liệu hiện có; không ngoại suy thành 90% PR nếu dữ liệu chưa truy vết.
 - **Kiểm tra ngưỡng tê liệt trên dữ liệu hiện có:** Max ghi trong tệp là 166.0s so với ngưỡng 600 giây. Không dùng kết quả này để khẳng định độ ổn định nếu dữ liệu chưa truy vết được về GitHub Actions.
 
-## 3. Một lần đo CI truy vết được
+## 3. Lần đo CI mới nhất truy vết được
 
-Nguồn: [GitHub Actions run #11, attempt 1](https://github.com/gialong611/DevSecOps_Project/actions/runs/41283884525/attempts/1), commit `00e4f40f7488c6407e99c0076f03c0c0ba344d3c`, fixture `baseline`.
+Nguồn: [GitHub Actions run #13, attempt 1](https://github.com/gialong611/DevSecOps_Project/actions/runs/41288998886/attempts/1), commit `cbcef8e32d5b007229be5e424409e8ee00fe278e`, fixture `baseline`.
 
 | Job chạy song song | Thời gian |
 |---|---:|
-| `security-scan` | 23 giây |
-| `iac` | 32 giây |
-| `image` | 148 giây |
+| `security-scan` | 28 giây |
+| `iac` | 37 giây |
+| `image` | 171 giây |
 
-- Đường găng ước tính của ba job scan song song: **148 giây** (job dài nhất).
-- Tổng công việc tuần tự ước tính: **203 giây**; đây không phải một lần chạy tuần tự đã đo.
-- Trung vị ba job trong run đơn này là 32 giây; không đại diện cho phân phối thời gian pipeline.
+- Đường găng ước tính của ba job scan song song: **171 giây** (job dài nhất).
+- Tổng công việc tuần tự ước tính: **236 giây**; đây không phải một lần chạy tuần tự đã đo.
+- Trung vị ba job trong run đơn này là 37 giây; không đại diện cho phân phối thời gian pipeline.
 - Chưa có lặp để so sánh cache bật/tắt hoặc chạy tuần tự/song song; chưa kết luận thời gian toàn workflow.
+- Run #11 có critical path 148 giây trên commit khác; không gộp hai commit thành các lần lặp cùng điều kiện.

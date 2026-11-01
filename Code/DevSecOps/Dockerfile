@@ -1,13 +1,17 @@
 # Build context: Code/DevSecOps. Base ghim theo digest, cập nhật bằng digest thật.
-FROM python:3.12.16-slim-trixie@sha256:8523d6abeb48ceae0b7240d30c5808fc26cb79c1a635bacdf19cf3baecfbec07 AS builder
+FROM python:3.13.18-slim-trixie@sha256:76baad6037690d6e8c4397fbcaef17bca6f19eecef822b708fe8fa3417d30bb5 AS builder
 
 WORKDIR /build
 COPY src/requirements.txt .
 RUN python -m venv /opt/venv \
-    && /opt/venv/bin/pip install --no-cache-dir --upgrade pip \
+    && /opt/venv/bin/pip install --no-cache-dir --upgrade "pip==26.2.2" \
     && /opt/venv/bin/pip install --no-cache-dir -r requirements.txt
 
-FROM python:3.12.16-slim-trixie@sha256:8523d6abeb48ceae0b7240d30c5808fc26cb79c1a635bacdf19cf3baecfbec07 AS runtime
+FROM python:3.13.18-slim-trixie@sha256:76baad6037690d6e8c4397fbcaef17bca6f19eecef822b708fe8fa3417d30bb5 AS runtime
+
+# Pip thuộc base image nằm ngoài virtualenv; cập nhật vì ứng dụng không dùng bản pip cũ.
+RUN python -m pip install --no-cache-dir --upgrade "pip==26.2.2" \
+    && rm -rf /root/.cache/pip
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \

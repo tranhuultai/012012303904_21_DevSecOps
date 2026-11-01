@@ -50,13 +50,13 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
-          python-version: "3.12"
+          python-version: "3.13.18"
           cache: pip
           cache-dependency-path: Code/DevSecOps/src/requirements.txt
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
+          python -m pip install --upgrade "pip==26.2.2"
           pip install -r src/requirements.txt
 
       - name: Check Python syntax
@@ -94,7 +94,7 @@ jobs:
       - name: Set up Python for Semgrep
         uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
-          python-version: "3.12"
+          python-version: "3.13.18"
 
       - name: Install Semgrep
         run: python -m pip install "semgrep==${SEMGREP_VERSION}"
@@ -226,7 +226,10 @@ jobs:
           # Workflow nằm tại repo root, ngoài working-directory Code/DevSecOps.
           checkov -d infra -d deploy -d ../../.github/workflows -f Dockerfile \
             --skip-path lab \
-            --compact --soft-fail -o json > reports/checkov.json || true
+            --compact --soft-fail -o json > reports/checkov.stream.json || true
+          test -s reports/checkov.stream.json
+          jq -s 'map(if type == "array" then .[] else . end)' \
+            reports/checkov.stream.json > reports/checkov.json
 
       - name: Trivy config (chỉ báo cáo)
         run: trivy config --format json --output reports/trivy-config.json --exit-code 0 --skip-dirs lab .
@@ -321,9 +324,15 @@ jobs:
             > reports/experiment/skipped-scans.json
           printf '{"matches":[]}\n' > reports/grype-image.json
 
+      - name: Record Trivy runtime metadata
+        if: always()
+        run: python tests/record_trivy_runtime.py --out reports/experiment/trivy-runtime-image.json
+
       - name: E4 image remediation (before/after SBOM and vulnerabilities)
         if: env.FIXTURE_ID == 'baseline'
-        run: python tests/e4_image_remediation.py --live --out-dir reports/e4
+        run: >-
+          python tests/e4_image_remediation.py --live --out-dir reports/e4
+          --trivy-runtime-meta reports/experiment/trivy-runtime-image.json
 
       - name: Mark E4 omitted from patch fixture run
         if: env.FIXTURE_ID != 'baseline' && !contains(fromJSON('["D12","D13","D14","D15"]'), env.FIXTURE_ID)
@@ -335,10 +344,6 @@ jobs:
       - name: Record CI timing
         if: always()
         run: python tests/record_ci_timing.py --job image --started-at-epoch "$JOB_START_EPOCH" --out reports/timing/image.json
-
-      - name: Record Trivy runtime metadata
-        if: always()
-        run: python tests/record_trivy_runtime.py --out reports/experiment/trivy-runtime-image.json
 
       - name: Upload SBOM và báo cáo image
         if: always()
@@ -372,7 +377,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
-          python-version: "3.12"
+          python-version: "3.13.18"
 
       - name: Summarize timings for this workflow run
         run: python tests/summarize_ci_timings.py --input-dir reports/timing --out reports/e3-ci-run-timing.json

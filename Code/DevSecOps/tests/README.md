@@ -30,17 +30,34 @@ Pipeline chạy quá 10 phút.
 
 ## Mục 3. Trạng thái nguồn dữ liệu đang commit
 
-- Baseline CI thành công trên commit `00e4f40f7488c6407e99c0076f03c0c0ba344d3c`:
-  [run #11](https://github.com/gialong611/DevSecOps_Project/actions/runs/41283884525).
-  Metadata run và ID artifact được ghi tại
-  `results/metrics/ci_baseline_latest.json`. Gate có 275 findings, 0 blockers,
-  30 warnings và quyết định `WARN`; run này là `push`, còn ngưỡng 20 warnings
-  áp dụng cho PR nên đây là tín hiệu nền, chưa phải phép đo PR bị tê liệt. E4
-  job log báo delta -4,533 bản ghi lỗ hổng Trivy và
-  -20,061 thành phần SBOM sau remediation. E3 có một timing observation truy
-  vết được cho ba job scan: 23s / 32s / 148s; đường găng scan là 148s, không
-  phải toàn workflow. Raw reports chưa được mở để xác nhận số tuyệt đối,
-  severity, package hay digest; một run chưa đủ phân tích cache/song song.
+- Baseline CI mới nhất đã phân tích là commit
+  `cbcef8e32d5b007229be5e424409e8ee00fe278e`:
+  [run #13](https://github.com/gialong611/DevSecOps_Project/actions/runs/41288998886).
+  Metadata và ID artifact nằm ở `results/metrics/ci_baseline_latest.json`.
+  Gate có 275 findings, 0 blockers, 30 warnings và quyết định `WARN`; đây là
+  run `push`, còn ngưỡng 20 warnings áp dụng cho PR nên chưa đo trực tiếp PR bị
+  tê liệt.
+- Raw artifact E4 đã được đọc: Trivy giảm 4.721→188 record (-4.533), gồm
+  CRITICAL 21→0, HIGH 531→52, MEDIUM 2.037→71, LOW 2.030→64, UNKNOWN 102→1;
+  SBOM giảm 22.921→2.860 package (-20.061). Cả hai image dùng Trivy 0.76.1,
+  cùng snapshot DB `2026-11-01 07:08:40 UTC`, Debian 13.7 và amd64; Python
+  khác phiên bản 3.12.15→3.12.16. Vì vậy không quy delta cho từng kiểm soát
+  riêng lẻ. Hai image chỉ có local image ID, không có `RepoDigests`.
+- E3 run #13 có 28s (security-scan), 37s (IaC), 171s (image); critical path
+  của ba job scan song song là 171s. Tổng 236s là phép cộng tuần tự ước tính,
+  không phải workflow tuần tự đã đo. Run #11 có 148s trên commit khác, không
+  gộp với #13 thành lần lặp. Chưa so sánh cache bật/tắt hoặc mức song song.
+- Checkov artifact `checkov.json` là stream gồm 3 JSON document liên tiếp.
+  Loader của dự án có thể đọc stream, còn `json.load` tiêu chuẩn báo `Extra
+  data` ở dòng 6354. Workflow local hiện lưu nguyên bản vào
+  `checkov.stream.json` rồi dùng `jq -s` tạo `checkov.json` dạng JSON array;
+  cần CI run tiếp theo để xác nhận output mới.
+- 15 cảnh báo MEDIUM đã được phân nhóm: 5 Python, 5 pip, 2 pytest và 3
+  Starlette. Các cập nhật Python 3.13.18, pip 26.2.2 và pytest 9.0.3 trong
+  working tree nhắm tới 12 cảnh báo; 3 cảnh báo Starlette được hoãn để đánh
+  giá tương thích. 18 warning là dự báo nếu cả 12 advisory biến mất và không
+  có cảnh báo mới, không phải kết quả đo. Xem
+  `results/metrics/ci_warning_triage_run13.md`.
 - `findings.csv` là bộ finding dự kiến gắn với lỗi gieo cài, không phải bản xuất
   thô của Semgrep/Gitleaks/Trivy/Checkov.
 - `decisions.csv` ghi các quyết định fixture theo policy. E1/E2 dùng các quyết

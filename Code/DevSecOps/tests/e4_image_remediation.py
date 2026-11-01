@@ -19,6 +19,7 @@ Ba lớp phân tích:
 
 import argparse
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -154,7 +155,8 @@ def run(cmd, **kwargs):
 
 
 def live_comparison(before_dockerfile: Path, after_dockerfile: Path,
-                    context: Path, out_dir: Path) -> dict | None:
+                    context: Path, out_dir: Path,
+                    trivy_runtime_meta: Path | None = None) -> dict | None:
     if not all(shutil.which(t) for t in ("docker", "trivy", "syft")):
         return None
 
@@ -178,8 +180,27 @@ def live_comparison(before_dockerfile: Path, after_dockerfile: Path,
 
         vulns = {"CRITICAL": 0, "HIGH": 0, "MEDIUM": 0, "LOW": 0, "UNKNOWN": 0}
         packages = 0
+        image_metadata = {}
+        sbom_metadata = {}
         if trivy_json.is_file():
             data = json.loads(trivy_json.read_text(encoding="utf-8"))
+            metadata = data.get("Metadata") or {}
+            image_config = metadata.get("ImageConfig") or {}
+            docker_config = image_config.get("config") or {}
+            environment = docker_config.get("Env") or []
+            python_version = next(
+                (entry.split("=", 1)[1] for entry in environment
+                 if isinstance(entry, str) and entry.startswith("PYTHON_VERSION=")),
+                None,
+            )
+            image_metadata = {
+                "image_id": metadata.get("ImageID"),
+                "repo_tags": metadata.get("RepoTags") or [],
+                "repo_digests": metadata.get("RepoDigests") or [],
+                "os": metadata.get("OS") or {},
+                "architecture": image_config.get("architecture"),
+                "python_version": python_version,
+            }
             for res in data.get("Results", []):
                 for v in res.get("Vulnerabilities", []) or []:
                     sev = str(v.get("Severity", "UNKNOWN")).upper()
@@ -187,8 +208,18 @@ def live_comparison(before_dockerfile: Path, after_dockerfile: Path,
         if sbom_json.is_file():
             data = json.loads(sbom_json.read_text(encoding="utf-8"))
             packages = len(data.get("components", []))
+            sbom_metadata = {
+                "serial_number": data.get("serialNumber"),
+                "timestamp": (data.get("metadata") or {}).get("timestamp"),
+                "component": (data.get("metadata") or {}).get("component"),
+            }
 
-        result[tag] = {"vulnerabilities": vulns, "sbom_packages": packages}
+        result[tag] = {
+            "vulnerabilities": vulns,
+            "sbom_packages": packages,
+            "image": image_metadata,
+            "sbom": sbom_metadata,
+        }
 
     if "before" in result and "after" in result:
         b, a = result["before"], result["after"]
@@ -197,6 +228,62 @@ def live_comparison(before_dockerfile: Path, after_dockerfile: Path,
                 sum(a["vulnerabilities"].values()) - sum(b["vulnerabilities"].values())
             ),
             "sbom_packages": a["sbom_packages"] - b["sbom_packages"],
+            "vulnerabilities_by_severity": {
+                severity: a["vulnerabilities"].get(severity, 0)
+                - b["vulnerabilities"].get(severity, 0)
+                for severity in sorted(
+                    set(b["vulnerabilities"]) | set(a["vulnerabilities"])
+                )
+            },
+        }
+
+        confounds = []
+        for label, before_value, after_value in (
+            ("Python version", b["image"].get("python_version"), a["image"].get("python_version")),
+            ("OS release", b["image"].get("os"), a["image"].get("os")),
+            ("architecture", b["image"].get("architecture"), a["image"].get("architecture")),
+        ):
+            if before_value != after_value:
+                confounds.append({"dimension": label, "before": before_value, "after": after_value})
+
+        try:
+            runtime = (
+                json.loads(trivy_runtime_meta.read_text(encoding="utf-8-sig"))
+                if trivy_runtime_meta and trivy_runtime_meta.is_file()
+                else {}
+            )
+        except (OSError, json.JSONDecodeError) as error:
+            runtime = {"error": str(error)}
+
+        result["provenance"] = {
+            "ci_run_id": os.environ.get("GITHUB_RUN_ID"),
+            "ci_run_attempt": os.environ.get("GITHUB_RUN_ATTEMPT"),
+            "ci_run_url": (
+                f"{os.environ.get('GITHUB_SERVER_URL', 'https://github.com').rstrip('/')}"
+                f"/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{os.environ['GITHUB_RUN_ID']}"
+                if os.environ.get("GITHUB_REPOSITORY") and os.environ.get("GITHUB_RUN_ID")
+                else ""
+            ),
+            "commit": os.environ.get("GITHUB_SHA"),
+            "fixture_id": os.environ.get("FIXTURE_ID", "baseline"),
+            "tool_versions": {
+                "trivy": os.environ.get("TRIVY_VERSION"),
+                "syft": os.environ.get("SYFT_VERSION"),
+            },
+            "trivy_vulnerability_database": (runtime.get("databases") or {}).get("Vulnerability DB"),
+        }
+        result["comparability"] = {
+            "same_application_build_context": True,
+            "same_python_version": b["image"].get("python_version") == a["image"].get("python_version"),
+            "same_os_release": b["image"].get("os") == a["image"].get("os"),
+            "same_architecture": b["image"].get("architecture") == a["image"].get("architecture"),
+            "shared_trivy_database_snapshot": bool(result["provenance"]["trivy_vulnerability_database"]),
+            "confounds": confounds,
+            "interpretation": (
+                "The before and after builds use the same source context and one Trivy DB snapshot. "
+                "Attribute the aggregate delta to the Dockerfile/image change as a whole; do not "
+                "attribute it to an individual control when comparison dimensions differ."
+            ),
         }
     return result
 
@@ -273,12 +360,45 @@ def build_markdown(metrics: dict) -> str:
             f"| Gói trong SBOM | {b['sbom_packages']} | {a['sbom_packages']} "
             f"| {live['delta']['sbom_packages']:+d} |"
         )
-        for sev in ("CRITICAL", "HIGH", "MEDIUM", "LOW"):
+        for sev in ("CRITICAL", "HIGH", "MEDIUM", "LOW", "UNKNOWN"):
             lines.append(
                 f"| Lỗ hổng {sev} | {b['vulnerabilities'][sev]} "
                 f"| {a['vulnerabilities'][sev]} "
                 f"| {a['vulnerabilities'][sev] - b['vulnerabilities'][sev]:+d} |"
             )
+        lines.append(
+            f"| Tổng lỗ hổng | {sum(b['vulnerabilities'].values())} "
+            f"| {sum(a['vulnerabilities'].values())} "
+            f"| {live['delta']['vulnerabilities_total']:+d} |"
+        )
+        lines.extend(["", "### Nhận dạng image và tính so sánh", ""])
+        for tag in ("before", "after"):
+            image = live[tag].get("image", {})
+            lines.append(
+                f"- {tag}: image ID `{image.get('image_id') or 'không có'}`, "
+                f"Python `{image.get('python_version') or 'không rõ'}`, "
+                f"OS `{image.get('os') or 'không rõ'}`, "
+                f"architecture `{image.get('architecture') or 'không rõ'}`."
+            )
+        comparable = live.get("comparability", {})
+        if comparable:
+            lines.append(
+                f"- Cùng phiên bản Python: **{comparable.get('same_python_version')}**; "
+                f"cùng OS: **{comparable.get('same_os_release')}**; "
+                f"cùng architecture: **{comparable.get('same_architecture')}**; "
+                f"cùng Trivy DB snapshot: **{comparable.get('shared_trivy_database_snapshot')}**."
+            )
+            for confound in comparable.get("confounds", []):
+                lines.append(
+                    f"- Yếu tố khác nhau cần ghi nhận: {confound['dimension']} "
+                    f"`{confound.get('before')}` → `{confound.get('after')}`."
+                )
+        provenance = live.get("provenance", {})
+        db = provenance.get("trivy_vulnerability_database") or {}
+        if provenance.get("ci_run_id"):
+            lines.append(f"- CI run: `{provenance['ci_run_id']}`.")
+        if db.get("updated_at"):
+            lines.append(f"- Trivy vulnerability DB cập nhật: `{db['updated_at']}`.")
     elif live and "error" in live:
         lines.append(f"Chế độ live lỗi: `{live['error']}`")
     else:
@@ -299,6 +419,12 @@ def main():
     parser.add_argument("--kev", default=str(PROJECT_DIR / "security" / "kev" / "cisa_kev_subset.json"))
     parser.add_argument("--epss", default=str(PROJECT_DIR / "security" / "kev" / "epss_subset.json"))
     parser.add_argument("--out-dir", default=str(PROJECT_DIR / "tests" / "results" / "metrics"))
+    parser.add_argument(
+        "--trivy-runtime-meta",
+        type=Path,
+        default=None,
+        help="Optional JSON from record_trivy_runtime.py for the DB snapshot used by both scans.",
+    )
     parser.add_argument("--live", action="store_true",
                         help="Buật thử build/scan live kể cả khi tự phát hiện thất bại")
     args = parser.parse_args()
@@ -316,7 +442,8 @@ def main():
         "structural": structural_comparison(before, after),
         "db_drift": db_drift_analysis(kev_ids, epss_map),
         "live": live_comparison(before, after, Path(args.context),
-                                Path(args.out_dir).parent / "raw" / "e4")
+                                Path(args.out_dir).parent / "raw" / "e4",
+                                args.trivy_runtime_meta)
         if args.live or all(shutil.which(t) for t in ("docker", "trivy", "syft"))
         else None,
     }

@@ -2,26 +2,32 @@
   "experiment": "E3",
   "description": "Pipeline execution duration analysis",
   "evidence_status": "partial",
-  "evidence_note": "Bảng tổng hợp N=38 vẫn là số liệu thăm dò không có run URL. Có thêm một lần đo baseline truy vết được ở run #11: critical path 148s trong ba job scan chạy song song. Chưa đủ lặp và chưa so sánh cache/song song.",
+  "evidence_note": "Bảng tổng hợp N=38 vẫn là số liệu thăm dò không có run URL. Run #13 có một lần đo baseline truy vết được: critical path 171s. Run #11 trước đó đo 148s trên commit khác nên không gộp thành phép lặp có kiểm soát. Chưa có so sánh cache/song song.",
   "exploratory_aggregate_evidence_status": "unverified",
   "live_observation": {
     "evidence_status": "traceable_single_run",
-    "run_id": 41283884525,
+    "run_id": 41288998886,
     "run_attempt": 1,
-    "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/41283884525/attempts/1",
-    "commit": "00e4f40f7488c6407e99c0076f03c0c0ba344d3c",
+    "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/41288998886/attempts/1",
+    "commit": "cbcef8e32d5b007229be5e424409e8ee00fe278e",
     "fixture_id": "baseline",
     "job_durations_seconds": {
-      "security-scan": 23,
-      "iac": 32,
-      "image": 148
+      "security-scan": 28,
+      "iac": 37,
+      "image": 171
     },
-    "parallel_scan_stage_critical_path_seconds": 148,
-    "serial_sum_estimate_seconds": 203,
-    "median_job_seconds": 32,
+    "parallel_scan_stage_critical_path_seconds": 171,
+    "serial_sum_estimate_seconds": 236,
+    "median_job_seconds": 37,
     "repeated_runs_available": false,
     "cache_modes_compared": false,
-    "interpretation": "Critical path is the maximum among the three parallel scan jobs, not total workflow duration. Serial sum is an estimate, not a measured serial run."
+    "interpretation": "Critical path is the maximum among the three parallel scan jobs, not total workflow duration. Serial sum is an estimate, not a measured serial run.",
+    "previous_traceable_run_not_pooled": {
+      "run_id": 41283884525,
+      "commit": "00e4f40f7488c6407e99c0076f03c0c0ba344d3c",
+      "critical_path_seconds": 148,
+      "reason": "Different commit; not a controlled repeated-run estimate."
+    }
   },
   "threshold_seconds": 600.0,
   "overall": {
