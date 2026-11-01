@@ -45,7 +45,9 @@
         "D27",
         "D28"
       ],
-      "false_blocks": []
+      "false_blocks": [],
+      "decision_source": "decisions.csv",
+      "measurement_note": "Recorded policy outcomes; this file does not establish scanner detection unless paired with raw scanner reports and CI run links."
     },
     {
       "policy": "g1",
@@ -90,7 +92,9 @@
         "D28"
       ],
       "missed_defects": [],
-      "false_blocks": []
+      "false_blocks": [],
+      "decision_source": "decisions.csv",
+      "measurement_note": "Recorded policy outcomes; this file does not establish scanner detection unless paired with raw scanner reports and CI run links."
     },
     {
       "policy": "g2",
@@ -136,8 +140,11 @@
         "D23",
         "D28"
       ],
-      "false_blocks": []
+      "false_blocks": [],
+      "decision_source": "decisions.csv",
+      "measurement_note": "Recorded policy outcomes; this file does not establish scanner detection unless paired with raw scanner reports and CI run links."
     }
   ],
-  "recommended_policy": "g1"
+  "recommended_policy": "g1",
+  "measurement_note": "So sánh quyết định đã ghi cho bộ mẫu. Kết quả không chứng minh hiệu năng scanner nếu thiếu báo cáo thô và liên kết CI tương ứng."
 }

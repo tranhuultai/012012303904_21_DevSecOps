@@ -27,5 +27,5 @@ Số quyết định thay đổi khi cập nhật dữ liệu: **1**
 
 ## 3. So sánh image/SBOM (chế độ live)
 
-Máy này không có đủ docker/trivy/syft nên bỏ qua phần live; số liệu live được thu trên CI (job `image`).
+Chưa có số liệu live. Chạy `python tests/e4_image_remediation.py --live --out-dir reports/e4` trên runner có Docker, Trivy và Syft để tạo báo cáo trước/sau cùng hai SBOM.
 

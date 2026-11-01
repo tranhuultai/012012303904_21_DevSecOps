@@ -29,11 +29,17 @@ Ngoại lệ hợp lệ phải thỏa mãn:
 1. Có đầy đủ `owner`, `approved_by`, `reason`, `match.rule_id`, `match.resource`.
 2. `owner != approved_by` (nghiêm cấm tự duyệt ngoại lệ).
 3. Ngày hết hạn (`expires`) phải sau ngày hiện tại (`today`).
+   Ngày tạo không được nằm trong tương lai; mức severity của finding không
+   được cao hơn mức ngoại lệ đã phê duyệt.
 4. Thời hạn không vượt trần quy định theo mức độ:
    - `CRITICAL`: tối đa 7 ngày
    - `HIGH`: tối đa 30 ngày
    - `MEDIUM` / `LOW`: tối đa 90 ngày
 5. Bí mật (Secret) **không được phép** tạo ngoại lệ.
+
+`gate_input.py` kiểm tra cấu trúc ngoại lệ bằng `schemas/exception.schema.json`;
+G2 tiếp tục chặn ngoại lệ sai hạn, tự duyệt, thiếu thông tin hoặc vượt trần thời
+hạn. Ngoại lệ phải khớp đồng thời rule ID và resource.
 
 ---
 

@@ -1,6 +1,8 @@
 {
   "experiment": "E3",
   "description": "Pipeline execution duration analysis",
+  "evidence_status": "unverified",
+  "evidence_note": "Chưa truy vết được: runs.csv không có liên kết GitHub Actions cho từng phép đo; các giá trị chỉ nên xem là dữ liệu thăm dò.",
   "threshold_seconds": 600.0,
   "overall": {
     "N": 38,

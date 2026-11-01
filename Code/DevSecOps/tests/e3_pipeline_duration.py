@@ -123,22 +123,30 @@ def build_markdown_report(stats: dict) -> str:
     ]
 
     for group_name, s in stats["groups"].items():
-        status = "BỊ TÊ LIỆT" if s["paralysis_exceeded"] else "An toàn (PASS)"
+        if stats["evidence_status"] != "traceable":
+            status = "Chưa xác thực"
+        else:
+            status = "Vượt ngưỡng" if s["paralysis_exceeded"] else "Dưới ngưỡng (đã truy vết)"
         lines.append(
             f"| **{group_name.capitalize()}** | {s['N']} | {s['median_p50']}s | {s['p90']}s | {s['p95']}s | {s['mean']}s | {s['min']}s | {s['max']}s | {status} |"
         )
 
     overall = stats["overall"]
-    overall_status = "BỊ TÊ LIỆT" if overall["paralysis_exceeded"] else "An toàn (PASS)"
+    if stats["evidence_status"] != "traceable":
+        overall_status = "Chưa xác thực"
+    else:
+        overall_status = "Vượt ngưỡng" if overall["paralysis_exceeded"] else "Dưới ngưỡng (đã truy vết)"
     lines.extend([
         f"| **Tổng thể** | {overall['N']} | {overall['median_p50']}s | {overall['p90']}s | {overall['p95']}s | {overall['mean']}s | {overall['min']}s | {overall['max']}s | {overall_status} |",
         "",
         "## 2. Nhận xét và kết luận",
         "",
-        f"- **Số lần đo (N):** Tổng cộng {overall['N']} lần đo độc lập ({stats['groups'].get('defect', {}).get('N', 0)} lần với nhánh lỗi và {stats['groups'].get('clean', {}).get('N', 0)} lần với nhánh sạch).",
+        f"> **Chất lượng dữ liệu:** {stats['evidence_note']}",
+        "",
+        f"- **Số dòng trong tệp (N):** {overall['N']} ({stats['groups'].get('defect', {}).get('N', 0)} mẫu lỗi và {stats['groups'].get('clean', {}).get('N', 0)} mẫu sạch).",
         f"- **Trung vị (p50):** {overall['median_p50']} giây (~{overall['median_p50']/60:.2f} phút), phản ánh chính xác thời gian thông thường của một PR mà không bị bóp méo bởi các ngoại lai.",
-        f"- **Phân vị 90 (p90):** {overall['p90']} giây (~{overall['p90']/60:.2f} phút), cho thấy 90% các PR hoàn thành kiểm tra trong khoảng thời gian này.",
-        "- **Kiểm tra ngưỡng tê liệt:** Thời gian tối đa ghi nhận là {max_s}s, hoàn toàn thấp hơn nhiều so với ngưỡng 600 giây (10 phút). Pipeline đảm bảo tính ổn định và tính sẵn sàng cao.".format(max_s=overall['max']),
+        f"- **Phân vị 90 (p90):** {overall['p90']} giây (~{overall['p90']/60:.2f} phút) trong tập dữ liệu hiện có; không ngoại suy thành 90% PR nếu dữ liệu chưa truy vết.",
+        "- **Kiểm tra ngưỡng tê liệt trên dữ liệu hiện có:** Max ghi trong tệp là {max_s}s so với ngưỡng 600 giây. Không dùng kết quả này để khẳng định độ ổn định nếu dữ liệu chưa truy vết được về GitHub Actions.".format(max_s=overall['max']),
     ])
     return "\n".join(lines)
 
@@ -165,9 +173,33 @@ def main():
 
     overall_durations, by_type = load_runs_data(runs_path)
 
+    with runs_path.open(encoding="utf-8") as fh:
+        run_rows = list(csv.DictReader(fh))
+    has_run_links = bool(run_rows) and all(
+        row.get("github_run_url", "").strip() for row in run_rows
+    )
+    repeated_cases = len({row.get("change_id", "") for row in run_rows}) < len(run_rows)
+    if not has_run_links:
+        evidence_note = (
+            "Chưa truy vết được: runs.csv không có liên kết GitHub Actions cho "
+            "từng phép đo; các giá trị chỉ nên xem là dữ liệu thăm dò."
+        )
+    elif not repeated_cases:
+        evidence_note = (
+            "Có liên kết CI nhưng mỗi ca chỉ xuất hiện một lần; chưa có phép đo lặp "
+            "hoặc so sánh cache/chạy song song."
+        )
+    else:
+        evidence_note = (
+            "Có liên kết CI và có mẫu lặp; vẫn cần phân nhóm điều kiện cache và "
+            "chạy song song để so sánh ảnh hưởng của chúng."
+        )
+
     stats = {
         "experiment": "E3",
         "description": "Pipeline execution duration analysis",
+        "evidence_status": "traceable" if has_run_links else "unverified",
+        "evidence_note": evidence_note,
         "threshold_seconds": PIPELINE_PARALYSIS_THRESHOLD_SECONDS,
         "overall": compute_duration_stats(overall_durations),
         "groups": {t: compute_duration_stats(durs) for t, durs in sorted(by_type.items())},
@@ -183,7 +215,11 @@ def main():
     print(f"Trung bình (Mean):         {stats['overall']['mean']}s (Std: {stats['overall']['std']}s)")
     print(f"Min / Max:                 {stats['overall']['min']}s / {stats['overall']['max']}s")
     print(f"Ngưỡng tê liệt (10p):      {PIPELINE_PARALYSIS_THRESHOLD_SECONDS}s")
-    print(f"Trạng thái kiểm tra:       {'BỊ TÊ LIỆT' if stats['overall']['paralysis_exceeded'] else 'AN TOÀN (PASS)'}")
+    if stats["evidence_status"] != "traceable":
+        status = "CHƯA XÁC THỰC"
+    else:
+        status = "VƯỢT NGƯỠNG" if stats["overall"]["paralysis_exceeded"] else "DƯỚI NGƯỠNG (ĐÃ TRUY VẾT)"
+    print(f"Trạng thái kiểm tra:       {status}")
     print("=" * 65)
 
     out_dir = Path(args.out_dir)

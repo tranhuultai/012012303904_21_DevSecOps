@@ -30,7 +30,9 @@ if sys.platform == "win32":
 
 # Reuse E1 functions
 sys.path.insert(0, str(Path(__file__).parent))
-from e1_detection_effectiveness import load_ground_truth, load_findings, compute_metrics
+from e1_detection_effectiveness import (
+    load_ground_truth, load_findings, load_decisions, compute_metrics,
+)
 
 
 POLICIES = ["g0", "g1", "g2"]
@@ -87,6 +89,11 @@ def main():
         help="Path to pipeline findings CSV",
     )
     parser.add_argument(
+        "--decisions",
+        default=str(project_dir / "tests" / "results" / "raw" / "decisions.csv"),
+        help="Path to recorded per-policy gate decisions CSV",
+    )
+    parser.add_argument(
         "--out-dir",
         default=str(project_dir / "tests" / "results" / "metrics"),
         help="Directory to write comparison JSON and Markdown",
@@ -100,10 +107,13 @@ def main():
 
     defects, cleans = load_ground_truth(gt_path)
     findings_by_change = load_findings(Path(args.findings))
+    decisions_by_policy = load_decisions(Path(args.decisions))
 
     all_metrics = []
     for policy in POLICIES:
-        m = compute_metrics(defects, cleans, findings_by_change, policy)
+        m = compute_metrics(
+            defects, cleans, findings_by_change, policy, decisions_by_policy
+        )
         all_metrics.append(m)
 
     # Print comparison table
@@ -138,6 +148,10 @@ def main():
         "question": "RQ3",
         "policies": all_metrics,
         "recommended_policy": best,
+        "measurement_note": (
+            "So sánh quyết định đã ghi cho bộ mẫu. Kết quả không chứng minh "
+            "hiệu năng scanner nếu thiếu báo cáo thô và liên kết CI tương ứng."
+        ),
     }
     json_out = out_dir / "e2_policy_comparison.json"
     json_out.write_text(json.dumps(comparison, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
@@ -147,6 +161,9 @@ def main():
         "# E2 – So sánh chính sách G0 / G1 / G2",
         "",
         "> **RQ3**: Chính sách nào chặn đủ lỗi nghiêm trọng mà ít chặn nhầm mã sạch nhất?",
+        "",
+        "> **Giới hạn bằng chứng:** bảng này so sánh quyết định đã ghi trong fixture; "
+        "chưa thay thế việc chạy từng mẫu qua scanner và gate thật.",
         "",
         "## Bảng so sánh",
         "",

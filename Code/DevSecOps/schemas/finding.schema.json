@@ -55,6 +55,9 @@
     "file": {
       "type": ["string", "null"]
     },
+    "resource": {
+      "type": ["string", "null"]
+    },
     "line_start": {
       "type": ["integer", "null"],
       "minimum": 1

@@ -13,7 +13,8 @@ Metric:
 
 Đầu vào:
     --ground-truth   ground_truth/ground_truth.csv  (cột: id, type, category, file, rule_or_cve, ...)
-    --findings       results/raw/findings.csv        (cột: id_change, tool, rule_id, severity, decision)
+    --findings       results/raw/findings.csv        (cột: change_id, tool, rule_id, severity)
+    --decisions      results/raw/decisions.csv       (kết quả policy đã ghi)
     --policy         g0 | g1 | g2
     --out-dir        results/metrics/
 """
@@ -83,6 +84,26 @@ def load_findings(path: Path) -> dict:
     return findings_by_change
 
 
+def load_decisions(path: Path) -> dict:
+    """Load recorded gate decisions as {policy: {change_id: decision}}."""
+    if not path.exists():
+        raise FileNotFoundError(f"Gate decisions not found: {path}")
+    decisions = defaultdict(dict)
+    with path.open(encoding="utf-8") as f:
+        for row in csv.DictReader(f):
+            policy = row.get("policy", "").strip().lower()
+            change_id = row.get("change_id", "").strip()
+            decision = row.get("decision", "").strip().upper()
+            if policy not in {"g0", "g1", "g2"} or not change_id:
+                raise ValueError(f"Invalid decision row: {row}")
+            if decision not in {"PASS", "WARN", "BLOCK"}:
+                raise ValueError(f"Invalid decision value in row: {row}")
+            if change_id in decisions[policy]:
+                raise ValueError(f"Duplicate decision for {policy}/{change_id}")
+            decisions[policy][change_id] = decision
+    return decisions
+
+
 def simulate_gate_decision(findings: list, policy: str) -> str:
     """Simulate gate decision based on policy and findings severity."""
     block_severities = POLICY_BLOCK_SEVERITY.get(policy, set())
@@ -94,7 +115,13 @@ def simulate_gate_decision(findings: list, policy: str) -> str:
     return "PASS"
 
 
-def compute_metrics(defects: dict, cleans: set, findings_by_change: dict, policy: str) -> dict:
+def compute_metrics(
+    defects: dict,
+    cleans: set,
+    findings_by_change: dict,
+    policy: str,
+    decisions_by_policy: dict | None = None,
+) -> dict:
     """Compute recall, precision, false block rate."""
     tp = 0  # defect found (BLOCK)
     fn = 0  # defect missed (PASS/WARN)
@@ -105,9 +132,21 @@ def compute_metrics(defects: dict, cleans: set, findings_by_change: dict, policy
     missed_defects = []
     false_blocks = []
 
+    recorded = (decisions_by_policy or {}).get(policy)
+
+    def decision_for(change_id):
+        if recorded is not None:
+            if change_id not in recorded:
+                raise ValueError(
+                    f"Missing recorded decision for {policy}/{change_id}"
+                )
+            return recorded[change_id]
+        return simulate_gate_decision(
+            findings_by_change.get(change_id, []), policy
+        )
+
     for change_id, row in defects.items():
-        findings = findings_by_change.get(change_id, [])
-        decision = simulate_gate_decision(findings, policy)
+        decision = decision_for(change_id)
         if decision == "BLOCK":
             tp += 1
             blocked_defects.append(change_id)
@@ -116,8 +155,7 @@ def compute_metrics(defects: dict, cleans: set, findings_by_change: dict, policy
             missed_defects.append(change_id)
 
     for change_id in cleans:
-        findings = findings_by_change.get(change_id, [])
-        decision = simulate_gate_decision(findings, policy)
+        decision = decision_for(change_id)
         if decision == "BLOCK":
             fp += 1
             false_blocks.append(change_id)
@@ -147,13 +185,20 @@ def compute_metrics(defects: dict, cleans: set, findings_by_change: dict, policy
         "blocked_defects": blocked_defects,
         "missed_defects": missed_defects,
         "false_blocks": false_blocks,
+        "decision_source": "decisions.csv" if recorded is not None else "severity simulation",
+        "measurement_note": (
+            "Recorded policy outcomes; this file does not establish scanner detection "
+            "unless paired with raw scanner reports and CI run links."
+            if recorded is not None else "Simulated from finding severities."
+        ),
     }
 
 
 def print_report(metrics: dict):
     """Print formatted E1 report to stdout."""
     print("=" * 60)
-    print(f"E1 – Phát hiện lỗi (Policy: {metrics['policy'].upper()})")
+    print(f"E1 – Kết quả policy (Policy: {metrics['policy'].upper()})")
+    print(f"Nguồn quyết định: {metrics['decision_source']}")
     print("=" * 60)
     print(f"Tổng lỗi gieo:      {metrics['total_defects']}")
     print(f"Tổng thay đổi sạch: {metrics['total_cleans']}")
@@ -163,7 +208,7 @@ def print_report(metrics: dict):
     print(f"FP (chặn nhầm):    {metrics['FP']}")
     print(f"TN (sạch qua đúng):{metrics['TN']}")
     print()
-    print(f"Recall:             {metrics['recall']:.2%}")
+    print(f"Recall trên bộ mẫu: {metrics['recall']:.2%}")
     print(f"Precision:          {metrics['precision']:.2%}")
     print(f"F1:                 {metrics['f1']:.4f}")
     print(f"Tỷ lệ chặn nhầm:   {metrics['false_block_rate']:.2%}")
@@ -188,6 +233,11 @@ def main():
         help="Path to pipeline findings CSV",
     )
     parser.add_argument(
+        "--decisions",
+        default=str(project_dir / "tests" / "results" / "raw" / "decisions.csv"),
+        help="Path to recorded per-policy gate decisions CSV",
+    )
+    parser.add_argument(
         "--policy",
         choices=["g0", "g1", "g2"],
         default="g1",
@@ -206,9 +256,19 @@ def main():
         return 1
 
     defects, cleans = load_ground_truth(gt_path)
+    _, _, controls = load_ground_truth_all(gt_path)
     findings_by_change = load_findings(Path(args.findings))
+    decisions_by_policy = load_decisions(Path(args.decisions))
 
-    metrics = compute_metrics(defects, cleans, findings_by_change, args.policy)
+    metrics = compute_metrics(
+        defects, cleans, findings_by_change, args.policy, decisions_by_policy
+    )
+    metrics["negative_controls_total"] = len(controls)
+    metrics["negative_controls_measured"] = 0
+    metrics["measurement_note"] += (
+        " Negative controls are not included: no scanner outcomes are recorded "
+        "for N01-N08. False-block rate covers only the 10 clean changes in this fixture."
+    )
     print_report(metrics)
 
     out_dir = Path(args.out_dir)

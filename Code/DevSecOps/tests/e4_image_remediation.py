@@ -80,8 +80,8 @@ def structural_comparison(before: Path, after: Path) -> dict:
         if checks_before[key] is False and checks_after[key] is True
     ]
     return {
-        "before": {"file": str(before), **checks_before},
-        "after": {"file": str(after), **checks_after},
+        "before": {"file": before.name, **checks_before},
+        "after": {"file": after.name, **checks_after},
         "remediated_controls": sorted(remediated),
         "remediated_count": len(remediated),
         "total_controls": len(checks_before),
@@ -133,8 +133,8 @@ def db_drift_analysis(kev_t1: set, epss_t1: dict) -> dict:
             changed.append({"cve": cve, "from": d0, "to": d1})
     return {
         "description": (
-            "Cùng một tập phát hiện, hai bản dữ liệu KEV/EPSS: "
-            "T0 (cu) va T1 (security/kev/ hien tai)."
+            "Mô phỏng độ nhạy với snapshot T0 cố định trong script và tập dữ liệu "
+            "dự án hiện tại; không phải phép đo lịch sử CISA/EPSS."
         ),
         "rows": rows,
         "changed_decisions": changed,
@@ -164,10 +164,14 @@ def live_comparison(before_dockerfile: Path, after_dockerfile: Path,
             return {"error": f"docker build {tag} failed: {build.stderr[-500:]}"}
 
         trivy_json = out_dir / f"trivy-image-{tag}.json"
-        run(["trivy", "image", "--format", "json", "--output", str(trivy_json),
-             "--exit-code", "0", image])
+        scan = run(["trivy", "image", "--format", "json", "--output", str(trivy_json),
+                    "--exit-code", "0", image])
+        if scan.returncode != 0 or not trivy_json.is_file():
+            return {"error": f"Trivy scan {tag} failed: {scan.stderr[-500:]}"}
         sbom_json = out_dir / f"sbom-{tag}.cdx.json"
-        run(["syft", image, "-o", f"cyclonedx-json={sbom_json}"])
+        sbom = run(["syft", image, "-o", f"cyclonedx-json={sbom_json}"])
+        if sbom.returncode != 0 or not sbom_json.is_file():
+            return {"error": f"Syft SBOM {tag} failed: {sbom.stderr[-500:]}"}
 
         vulns = {"CRITICAL": 0, "HIGH": 0, "MEDIUM": 0, "LOW": 0, "UNKNOWN": 0}
         packages = 0
@@ -269,8 +273,9 @@ def build_markdown(metrics: dict) -> str:
         lines.append(f"Chế độ live lỗi: `{live['error']}`")
     else:
         lines.append(
-            "Máy này không có đủ docker/trivy/syft nên bỏ qua phần live; "
-            "số liệu live được thu trên CI (job `image`)."
+            "Chưa có số liệu live. Chạy `python tests/e4_image_remediation.py "
+            "--live --out-dir reports/e4` trên runner có Docker, Trivy và Syft "
+            "để tạo báo cáo trước/sau cùng hai SBOM."
         )
     lines.append("")
     return "\n".join(lines)
@@ -305,6 +310,9 @@ def main():
         if args.live or all(shutil.which(t) for t in ("docker", "trivy", "syft"))
         else None,
     }
+    live_failed = args.live and (
+        metrics["live"] is None or "error" in metrics["live"]
+    )
 
     print("=" * 65)
     print("E4 – KHẮC PHỤC IMAGE / SBOM")
@@ -335,7 +343,7 @@ def main():
     md_out.write_text(build_markdown(metrics) + "\n", encoding="utf-8")
     print(f"\nKết quả lưu tại: {json_out}")
     print(f"Báo cáo Markdown: {md_out}")
-    return 0
+    return 1 if live_failed else 0
 
 
 if __name__ == "__main__":

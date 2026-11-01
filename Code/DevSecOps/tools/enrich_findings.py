@@ -31,7 +31,8 @@ IAC_BLOCK_CONTROLS = {
     "CKV_AWS_1", "CKV_AWS_49", "CKV_AWS_62", "CKV_AWS_63",
     "CKV_AWS_53", "CKV_AWS_54", "CKV_AWS_55", "CKV_AWS_56",
     "CKV_AWS_17", "CKV_AWS_16",
-    "CKV_K8S_16", "CKV_K8S_14", "CKV_K8S_43",
+    "CKV_DOCKER_1", "CKV_DOCKER_3", "CKV_DOCKER_4", "CKV_DOCKER_7",
+    "CKV_K8S_16", "CKV_K8S_14",
     "KSV-0111", "KSV-0109",
     "CKV2_GHA_1", "CKV_GHA_2",
 }
@@ -123,7 +124,7 @@ def enrich(finding, kev_ids, epss_map):
     file_path = out.get("file")
     location = {
         "file": file_path if isinstance(file_path, str) else "",
-        "resource": str(out.get("resource", "")),
+        "resource": str(out.get("resource") or ""),
     }
     out["location"] = location
     return out

@@ -45,6 +45,12 @@ Các thực nghiệm:
 - **E3:** Đánh giá thời gian pipeline
 - **E4:** Đánh giá ảnh hưởng của việc khắc phục đến image và SBOM
 
+**Lưu ý trạng thái bằng chứng:** E1/E2 hiện tổng hợp quyết định fixture, chưa có
+liên kết tới báo cáo scanner thô cho từng patch. `runs.csv` chưa truy vết được về
+GitHub Actions và chưa so sánh cache/song song. E4 sinh báo cáo Trivy/Syft live
+trong workflow; chỉ kết luận so sánh image khi artifact có đủ kết quả trước/sau.
+Chi tiết: `Code/DevSecOps/tests/README.md`.
+
 ## Cấu trúc repository
 
 ```text
@@ -70,6 +76,7 @@ Các thực nghiệm:
 - Phiên bản công cụ và SHA action: `Extra/TOOL_VERSIONS.md`
 - Tài liệu chính sách gate: `Code/DevSecOps/policy/README.md`
 - Tài liệu bộ đáp án và ánh xạ CWE/CVE: `Code/DevSecOps/ground_truth/README.md`
+- Tài liệu tham khảo và phạm vi CSA CCM/CIS/SLSA: `Code/DevSecOps/REFERENCES.md`
 - Phân tích số liệu: `Code/DevSecOps/tests/analysis.ipynb`
 
 ## Kiểm nghiệm

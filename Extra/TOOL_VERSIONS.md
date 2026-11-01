@@ -16,6 +16,7 @@ Khi nâng phiên bản: cập nhật bảng này + env trong `ci.yml` trong cùn
 | actions/setup-go | v7 | `b7ad1dad31e06c5925ef5d2fc7ad053ef454303e` | (dự phòng, chưa dùng) |
 | actions/upload-artifact | v7.0.0 | `cf430e030ddbb5b0abf93d22962f4752f3646cd9` | scan, iac, image, gate, release |
 | actions/download-artifact | v7.0.0 | `37930b1c2abaa49bbe596cd826c3c89aef350131` | gate |
+| actions/attest | v4.2.2 | `1e69f48acb82d1966a394da916b4c1698aa569d6` | release provenance |
 
 Ghi chú: Trivy được gọi trực tiếp bằng CLI ghim phiên bản (không dùng trivy-action)
 để toàn bộ công cụ quét đi qua một cơ chế kiểm checksum duy nhất.
