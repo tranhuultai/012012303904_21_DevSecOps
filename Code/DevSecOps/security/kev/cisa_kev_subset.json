@@ -1,44 +1,18 @@
 {
-  "title": "CISA Known Exploited Vulnerabilities Catalog (Project Subset)",
-  "catalogVersion": "2026.10",
-  "dateReleased": "2026-10-24",
-  "count": 4,
+  "title": "CISA Known Exploited Vulnerabilities Catalog (reviewed subset)",
+  "source": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+  "catalogVersion": "2025-03-18",
+  "dateReleased": "2025-03-18",
+  "count": 1,
   "vulnerabilities": [
-    {
-      "cveID": "CVE-2024-24762",
-      "vendorProject": "tiangolo",
-      "product": "fastapi",
-      "vulnerabilityName": "FastAPI multipart form data boundary parser denial of service",
-      "dateAdded": "2026-03-15",
-      "shortDescription": "Multipart form parsing in python multipart / fastapi allows remote exploitation.",
-      "requiredAction": "Upgrade to fixed version or apply mitigating proxy headers."
-    },
-    {
-      "cveID": "CVE-2023-45803",
-      "vendorProject": "urllib3",
-      "product": "urllib3",
-      "vulnerabilityName": "urllib3 Request body not stripped on cross-origin redirects",
-      "dateAdded": "2024-01-10",
-      "shortDescription": "urllib3 does not remove request body on 303 redirect leading to sensitive data exposure.",
-      "requiredAction": "Upgrade to urllib3 2.0.7 or later."
-    },
-    {
-      "cveID": "CVE-2022-42969",
-      "vendorProject": "pytest-dev",
-      "product": "py",
-      "vulnerabilityName": "py ReDoS vulnerability in svn log parser",
-      "dateAdded": "2023-08-20",
-      "shortDescription": "Regular expression denial of service in svnwc subpackage.",
-      "requiredAction": "Remove dependency on deprecated py library."
-    },
     {
       "cveID": "CVE-2025-30066",
       "vendorProject": "tj-actions",
       "product": "changed-files",
-      "vulnerabilityName": "GitHub Actions command injection in changed-files",
-      "dateAdded": "2025-06-01",
-      "shortDescription": "Command injection vulnerability when processing pull request branch names.",
-      "requiredAction": "Pin action to immutable full commit SHA."
+      "vulnerabilityName": "Supply-chain compromise of tj-actions/changed-files",
+      "dateAdded": "2025-03-18",
+      "shortDescription": "Compromised release tags exposed secrets in affected GitHub Actions workflows.",
+      "requiredAction": "Use a reviewed fixed release or immutable SHA and rotate potentially exposed secrets."
     }
   ]
 }

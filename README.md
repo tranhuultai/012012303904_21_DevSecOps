@@ -45,11 +45,14 @@ Các thực nghiệm:
 - **E3:** Đánh giá thời gian pipeline
 - **E4:** Đánh giá ảnh hưởng của việc khắc phục đến image và SBOM
 
-**Lưu ý trạng thái bằng chứng:** E1/E2 hiện tổng hợp quyết định fixture, chưa có
-liên kết tới báo cáo scanner thô cho từng patch. `runs.csv` chưa truy vết được về
-GitHub Actions và chưa so sánh cache/song song. E4 sinh báo cáo Trivy/Syft live
-trong workflow; chỉ kết luận so sánh image khi artifact có đủ kết quả trước/sau.
-Chi tiết: `Code/DevSecOps/tests/README.md`.
+**Lưu ý trạng thái bằng chứng:** Các CSV/biểu đồ đang commit là dữ liệu thiết kế
+fixture, chưa phải kết quả scanner chạy trên CI. Workflow thủ công nhận một
+`fixture_id` (`baseline`, `D01`–`D28`, `C01`–`C10`, `N01`–`N08`), áp patch độc lập,
+chạy scan và lưu `reports/experiment/observation.json` cùng báo cáo thô, gate,
+thời gian, commit và phiên bản công cụ. Chưa có bộ artifact CI đầy đủ để kết luận
+recall/false-positive hay so sánh cache/song song. E4 chỉ được coi là kết quả live
+khi artifact có đủ SBOM và báo cáo Trivy trước/sau. Quy trình thu thập và tổng hợp:
+`Code/DevSecOps/tests/README.md`.
 
 ## Cấu trúc repository
 

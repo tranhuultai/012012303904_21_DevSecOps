@@ -1,10 +1,9 @@
-diff --git a/.github/workflows/ci.yml b/.github/workflows/ci.yml
 --- a/.github/workflows/ci.yml
 +++ b/.github/workflows/ci.yml
-@@ -1,4 +1,5 @@
- name: DevSecOps CI
-+# Workflow reviewed: no write permissions granted, all actions pinned.
-
- on:
-   push:
-
+@@ -51,2 +51,6 @@ jobs:
+       - name: Run tests
+         run: python -m pytest -v src/test
++
++      - name: Add clean completion summary
++        if: always()
++        run: echo "CI job completed" >> "$GITHUB_STEP_SUMMARY"

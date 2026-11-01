@@ -7,9 +7,9 @@ D05,semgrep,python.pickle.insecure-deserialization,HIGH
 D06,semgrep,python.crypto.weak-hash-md5,MEDIUM
 D07,gitleaks,generic-api-key,HIGH
 D08,gitleaks,generic-secret,HIGH
-D09,trivy,CVE-2022-42969,HIGH
-D10,trivy,CVE-2023-45803,HIGH
-D11,trivy,CVE-2024-24762,CRITICAL
+D09,trivy,CVE-2024-35195,MEDIUM
+D10,trivy,CVE-2023-45803,MEDIUM
+D11,trivy,CVE-2024-24762,HIGH
 D12,checkov,CKV_DOCKER_1,HIGH
 D13,checkov,CKV_DOCKER_3,HIGH
 D14,checkov,CKV_DOCKER_4,HIGH

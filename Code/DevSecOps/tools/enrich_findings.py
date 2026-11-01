@@ -108,6 +108,10 @@ def match_confidence(finding, kev_ids, epss_map):
         return "high"
     if rule_id in IAC_BLOCK_CONTROLS:
         return "high"
+    if category in {"sca", "image"} and cve and detect_fix_available(finding):
+        # Exact CVE/package match plus a vendor fix version is sufficient
+        # scanner evidence; KEV/EPSS enrichment must not be a prerequisite.
+        return "high"
     if cve and (cve in kev_ids or cve in epss_map):
         return "high"
     return "low"

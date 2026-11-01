@@ -42,6 +42,7 @@ def main() -> int:
         "commit": os.environ.get("GITHUB_SHA", ""),
         "ref": os.environ.get("GITHUB_REF", ""),
         "event": os.environ.get("GITHUB_EVENT_NAME", ""),
+        "fixture_id": os.environ.get("FIXTURE_ID", "baseline"),
         "started_at": utc_iso(args.started_at_epoch),
         "ended_at": utc_iso(ended),
         "duration_seconds": ended - args.started_at_epoch,

@@ -7,9 +7,10 @@ Ba lớp phân tích:
      so sánh lab/docker/Dockerfile.vuln (trước khắc phục) với Dockerfile
      (sau khắc phục) theo 4 chiều kiểm soát: USER không root, không ADD từ
      URL, không sshd/cổng 22, multi-stage thay cho base đầy đủ.
-  2. Trôi dữ liệu lỗ hổng theo thời gian (RQ5): với cùng một tập phát hiện,
-     quyết định của G2 thay đổi thế nào khi danh mục KEV/EPSS được cập nhật
-     (bản T0 cũ so với bản T1 hiện tại trong security/kev/).
+  2. Độ nhạy chính sách (RQ5): với cùng một tập phát hiện, quyết định của G2
+     thay đổi thế nào khi tín hiệu KEV/EPSS thay đổi. T0 là dữ liệu mô phỏng,
+     T1 lấy từ tập dữ liệu đã kiểm chứng trong security/kev/; đây không phải
+     phép đo lịch sử hay bằng chứng về trạng thái thật của CVE tại T0.
   3. Chế độ live (tự bật khi có docker + trivy + syft): build hai image,
      quét Trivy và xuất SBOM Syft, so sánh số gói và số lỗ hổng theo mức.
 
@@ -89,7 +90,7 @@ def structural_comparison(before: Path, after: Path) -> dict:
 
 
 # ─────────────────────────────────────────────────────────────
-# 2) Trôi dữ liệu lỗ hổng theo thời gian (RQ5)
+# 2) Độ nhạy chính sách với KEV/EPSS (RQ5)
 # ─────────────────────────────────────────────────────────────
 
 # Bản sao đơn giản vế BLOCK của G2 cho phát hiện SCA (xem policy/g2/gate.rego).
@@ -103,15 +104,17 @@ def g2_sca_decision(severity, kev, epss, fix_available, confidence):
     return "WARN"
 
 
-# Danh mục cũ T0 (đầu năm): CVE-2024-24762 chưa vào KEV, EPSS thấp hơn.
-KEV_T0 = {"CVE-2022-42969", "CVE-2023-45803"}
-EPSS_T0 = {"CVE-2022-42969": 0.124, "CVE-2023-45803": 0.05, "CVE-2024-24762": 0.0}
+# T0 is a deliberately synthetic scenario used only to demonstrate policy
+# sensitivity. It is not a historical CISA/FIRST snapshot and must not be
+# described as evidence about these CVEs' actual KEV/EPSS status.
+SIMULATED_KEV_T0 = {"CVE-2024-35195"}
+SIMULATED_EPSS_T0 = {"CVE-2023-45803": 0.124, "CVE-2024-35195": 0.05}
 
 DRIFT_FINDINGS = [
-    # severity MEDIUM để tách riêng tác động của KEV/EPSS khỏi vế fixable-HIGH.
-    {"cve": "CVE-2022-42969", "severity": "MEDIUM", "fix_available": True},
+    # severity MEDIUM isolates the simulated KEV/EPSS contribution.
+    {"cve": "CVE-2024-35195", "severity": "MEDIUM", "fix_available": True},
     {"cve": "CVE-2023-45803", "severity": "MEDIUM", "fix_available": True},
-    {"cve": "CVE-2024-24762", "severity": "MEDIUM", "fix_available": True},
+    {"cve": "CVE-2024-24762", "severity": "HIGH", "fix_available": True},
 ]
 
 
@@ -121,7 +124,7 @@ def db_drift_analysis(kev_t1: set, epss_t1: dict) -> dict:
     for f in DRIFT_FINDINGS:
         cve = f["cve"]
         d0 = g2_sca_decision(
-            f["severity"], cve in KEV_T0, EPSS_T0.get(cve, 0.0),
+            f["severity"], cve in SIMULATED_KEV_T0, SIMULATED_EPSS_T0.get(cve, 0.0),
             f["fix_available"], "high",
         )
         d1 = g2_sca_decision(
@@ -133,8 +136,8 @@ def db_drift_analysis(kev_t1: set, epss_t1: dict) -> dict:
             changed.append({"cve": cve, "from": d0, "to": d1})
     return {
         "description": (
-            "Mô phỏng độ nhạy với snapshot T0 cố định trong script và tập dữ liệu "
-            "dự án hiện tại; không phải phép đo lịch sử CISA/EPSS."
+            "Mô phỏng chính sách với tín hiệu KEV/EPSS T0 được tạo có chủ đích; "
+            "không phải snapshot lịch sử CISA/FIRST và không mô tả trạng thái thật của CVE."
         ),
         "rows": rows,
         "changed_decisions": changed,
@@ -218,7 +221,8 @@ def build_markdown(metrics: dict) -> str:
         "# E4 – Ảnh hưởng của khắc phục lên image và SBOM",
         "",
         "> **RQ5 / phân công Tài**: so sánh image trước và sau khi sửa;",
-        "> đo tác động của việc cập nhật cơ sở dữ liệu lỗ hổng theo thời gian.",
+        "> đo độ nhạy quyết định khi tín hiệu KEV/EPSS thay đổi. T0 là mô phỏng,",
+        "> không phải snapshot lịch sử có nguồn dẫn.",
         "",
         "## 1. Khắc phục cấu trúc Dockerfile",
         "",
@@ -239,7 +243,13 @@ def build_markdown(metrics: dict) -> str:
     lines.append(
         f"Số chiều được khắc phục: **{s['remediated_count']}/{s['total_controls']}**"
     )
-    lines.extend(["", "## 2. Trôi dữ liệu lỗ hổng (KEV/EPSS T0 → T1)", ""])
+    lines.extend([
+        "",
+        "## 2. Độ nhạy chính sách với tín hiệu KEV/EPSS",
+        "",
+        metrics["db_drift"]["description"],
+        "",
+    ])
     lines.append("| CVE | Quyết định G2 tại T0 | Quyết định G2 tại T1 |")
     lines.append("|---|---|---|")
     for row in metrics["db_drift"]["rows"]:
@@ -248,7 +258,7 @@ def build_markdown(metrics: dict) -> str:
         )
     lines.append("")
     lines.append(
-        f"Số quyết định thay đổi khi cập nhật dữ liệu: "
+        f"Số quyết định thay đổi giữa tín hiệu T0 mô phỏng và tập T1 đã ghim: "
         f"**{metrics['db_drift']['changed_count']}**"
     )
     for ch in metrics["db_drift"]["changed_decisions"]:
@@ -321,7 +331,7 @@ def main():
     print(f"Chiều khắc phục: {s['remediated_count']}/{s['total_controls']} "
           f"({', '.join(s['remediated_controls']) or 'không có'})")
     d = metrics["db_drift"]
-    print(f"Quyết định đổi khi cập nhật KEV/EPSS: {d['changed_count']}")
+    print(f"Quyết định đổi giữa T0 mô phỏng và T1 đã ghim: {d['changed_count']}")
     for ch in d["changed_decisions"]:
         print(f"  - {ch['cve']}: {ch['from']} -> {ch['to']}")
     if metrics["live"]:

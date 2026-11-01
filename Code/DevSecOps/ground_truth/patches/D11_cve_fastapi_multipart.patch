@@ -1,9 +1,5 @@
 --- a/Code/DevSecOps/src/requirements.txt
 +++ b/Code/DevSecOps/src/requirements.txt
-@@ -4,3 +4,5 @@
- pytest==8.3.4
- httpx==0.28.1
- email-validator
-\ No newline at end of file
-+
-+python-multipart==0.0.12  # D11: CVE-2024-24762
+@@ -1,4 +1,4 @@
+-fastapi==0.115.6
++fastapi==0.109.0  # D11: CVE-2024-24762, fixed in 0.109.1

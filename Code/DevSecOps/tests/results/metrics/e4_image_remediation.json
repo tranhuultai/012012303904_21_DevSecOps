@@ -25,32 +25,37 @@
     "total_controls": 4
   },
   "db_drift": {
-    "description": "Mô phỏng độ nhạy với snapshot T0 cố định trong script và tập dữ liệu dự án hiện tại; không phải phép đo lịch sử CISA/EPSS.",
+    "description": "Mô phỏng chính sách với tín hiệu KEV/EPSS T0 được tạo có chủ đích; không phải snapshot lịch sử CISA/FIRST và không mô tả trạng thái thật của CVE.",
     "rows": [
       {
-        "cve": "CVE-2022-42969",
+        "cve": "CVE-2024-35195",
         "decision_T0": "BLOCK",
-        "decision_T1": "BLOCK"
+        "decision_T1": "WARN"
       },
       {
         "cve": "CVE-2023-45803",
         "decision_T0": "BLOCK",
-        "decision_T1": "BLOCK"
+        "decision_T1": "WARN"
       },
       {
         "cve": "CVE-2024-24762",
-        "decision_T0": "WARN",
+        "decision_T0": "BLOCK",
         "decision_T1": "BLOCK"
       }
     ],
     "changed_decisions": [
       {
-        "cve": "CVE-2024-24762",
-        "from": "WARN",
-        "to": "BLOCK"
+        "cve": "CVE-2024-35195",
+        "from": "BLOCK",
+        "to": "WARN"
+      },
+      {
+        "cve": "CVE-2023-45803",
+        "from": "BLOCK",
+        "to": "WARN"
       }
     ],
-    "changed_count": 1
+    "changed_count": 2
   },
   "live": null
 }

@@ -15,6 +15,12 @@ Trong chính sách G2 (`policy/g2/gate.rego`):
 - **EPSS cao (BLOCK):** Lỗ hổng có `epss >= 0.10` (xác suất khai thác từ 10% trở lên) sẽ bị chặn trực tiếp.
 - **EPSS trung bình (WARN):** Lỗ hổng có `0.01 <= epss < 0.10` được đưa vào danh sách cảnh báo để nhóm phát triển theo dõi mà không làm nghẽn pipeline.
 
-### 3. Cấu trúc tệp dữ liệu:
-- `cisa_kev_subset.json`: Tập con các CVE phục vụ thực nghiệm E1/E2 trong đề tài.
+### 3. Nguồn và trạng thái tệp dữ liệu
+- `cisa_kev_subset.json`: mục đã đối chiếu với CISA KEV, hiện chứa CVE-2025-30066.
+- `epss_subset.json`: hiện để trống vì chưa lưu được snapshot EPSS có ngày và nguồn
+  kiểm chứng. Không diễn giải giá trị thiếu thành EPSS bằng 0; khi đo lại, lưu
+  ngày truy vấn và nguồn FIRST trong artifact.
+
+Các quyết định E1/E2 fixture cũ có CVE/KEV/EPSS không được xác nhận; đã loại khỏi
+dữ liệu mẫu. Số liệu thực nghiệm cần thu lại từ scanner.
 

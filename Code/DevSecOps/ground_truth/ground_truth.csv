@@ -1,4 +1,4 @@
-id,type,category,file,rule_or_cve,expected_tool,severity,description,author
+id,type,category,file,rule_or_cve,expected_tool,severity,description,author,control_for
 D01,defect,sast,src/app/main.py,sql-injection,semgrep,HIGH,SQL injection via string concatenation,Duy
 D02,defect,sast,src/app/main.py,hardcoded-secret,semgrep,HIGH,Hardcoded password in source code,Duy
 D03,defect,sast,src/app/main.py,command-injection,semgrep,HIGH,Command injection via user input,Duy
@@ -7,9 +7,9 @@ D05,defect,sast,src/app/main.py,insecure-deserialization,semgrep,HIGH,Insecure d
 D06,defect,sast,src/app/main.py,weak-crypto,semgrep,MEDIUM,MD5 used for password hashing,Duy
 D07,defect,secret,.github/workflows/ci.yml,generic-api-key,gitleaks,HIGH,API key hardcoded in workflow file,Duy
 D08,defect,secret,src/app/main.py,generic-secret,gitleaks,HIGH,Secret token hardcoded in application,Duy
-D09,defect,sca,src/requirements.txt,CVE-2022-42969,trivy,HIGH,CVE in py library,Duy
-D10,defect,sca,src/requirements.txt,CVE-2023-45803,trivy,HIGH,CVE in urllib3,Duy
-D11,defect,sca,src/requirements.txt,CVE-2024-24762,trivy,CRITICAL,CVE in fastapi,Duy
+D09,defect,sca,src/requirements.txt,CVE-2024-35195,trivy,MEDIUM,Requests Session TLS verification state persists after verify=False,Duy
+D10,defect,sca,src/requirements.txt,CVE-2023-45803,trivy,MEDIUM,urllib3 request body retained across selected redirects,Duy
+D11,defect,sca,src/requirements.txt,CVE-2024-24762,trivy,HIGH,FastAPI form parsing ReDoS in versions before 0.109.1,Duy
 D12,defect,image,Code/DevSecOps/Dockerfile,CKV_DOCKER_1,checkov,HIGH,Base image not pinned to digest (full image),Tài
 D13,defect,image,Code/DevSecOps/Dockerfile,CKV_DOCKER_3,checkov,HIGH,Container runs as root user,Tài
 D14,defect,image,Code/DevSecOps/Dockerfile,CKV_DOCKER_4,checkov,HIGH,ADD instruction fetches remote URL,Tài
@@ -37,12 +37,12 @@ C07,clean,iac,Code/DevSecOps/infra/s3.tf,,checkov,,,Long
 C08,clean,k8s,Code/DevSecOps/deploy/deployment.yaml,,checkov,,,Long
 C09,clean,image,Code/DevSecOps/Dockerfile,,checkov,,,Long
 C10,clean,workflow,.github/workflows/ci.yml,,checkov,,,Long
-N01,control,sast,src/app/main.py,sql-injection-param,semgrep,INFO,Parameterized SQL query - control for D01,Long
-N02,control,sast,src/test/test_main.py,hardcoded-secret-test,semgrep,INFO,Mock token in unit test - control for D02,Long
-N03,control,secret,src/app/main.py,env-var-secret,gitleaks,INFO,Secret loaded via os.environ - control for D08,Long
-N04,control,sca,src/requirements.txt,safe-dependency,trivy,INFO,Pinned secure library version without CVE - control for D09-D11,Long
-N05,control,image,Code/DevSecOps/Dockerfile,CKV_DOCKER_3_ctrl,checkov,INFO,Explicit non-root USER directive - control for D13,Long
-N06,control,iac,Code/DevSecOps/infra/security_groups.tf,CKV_AWS_24_ctrl,checkov,INFO,Security group SSH ingress bound to internal CIDR - control for D16,Long
-N07,control,k8s,Code/DevSecOps/deploy/deployment.yaml,CKV_K8S_11_ctrl,checkov,INFO,Deployment manifest specifying CPU/memory limits - control for D22,Long
-N08,control,workflow,.github/workflows/ci.yml,CKV_GHA_7_ctrl,checkov,INFO,GitHub Action pinned to full 40-character commit SHA - control for D28,Long
+N01,control,sast,src/app/main.py,sql-injection-param,semgrep,INFO,Parameterized SQL query - control for D01,Long,D01
+N02,control,sast,src/test/test_main.py,hardcoded-secret-test,semgrep,INFO,Mock token in unit test - control for D02,Long,D02
+N03,control,secret,src/app/main.py,env-var-secret,gitleaks,INFO,Secret loaded via os.environ - control for D08,Long,D08
+N04,control,sca,src/requirements.txt,safe-dependency,trivy,INFO,Pinned secure library version without CVE - control for D09-D11,Long,D09;D10;D11
+N05,control,image,Code/DevSecOps/Dockerfile,CKV_DOCKER_3_ctrl,checkov,INFO,Explicit non-root USER directive - control for D13,Long,D13
+N06,control,iac,Code/DevSecOps/infra/security_groups.tf,CKV_AWS_24_ctrl,checkov,INFO,Security group SSH ingress bound to internal CIDR - control for D16,Long,D16
+N07,control,k8s,Code/DevSecOps/deploy/deployment.yaml,CKV_K8S_11_ctrl,checkov,INFO,Deployment manifest specifying CPU/memory limits - control for D22,Long,D22
+N08,control,workflow,.github/workflows/ci.yml,CKV_GHA_7_ctrl,checkov,INFO,GitHub Action pinned to full 40-character commit SHA - control for D28,Long,D28
 

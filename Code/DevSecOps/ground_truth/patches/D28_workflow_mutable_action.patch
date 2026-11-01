@@ -1,13 +1,6 @@
 --- a/.github/workflows/ci.yml
 +++ b/.github/workflows/ci.yml
-@@ -18,6 +18,9 @@
-     steps:
+@@ -37,2 +37,2 @@ jobs:
        - name: Checkout repository
-         uses: actions/checkout@v7
-+
-+      - name: Cache dependencies
-+        uses: actions/cache@v4
- 
-       - name: Set up Python
-         uses: actions/setup-python@v7
-\ No newline at end of file
+-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
++        uses: actions/checkout@v7

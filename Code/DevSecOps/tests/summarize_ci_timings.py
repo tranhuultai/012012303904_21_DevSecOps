@@ -35,8 +35,9 @@ def main() -> int:
 
     ids = {(r.get("run_id"), r.get("run_attempt")) for r in records}
     commits = {r.get("commit") for r in records}
-    if len(ids) != 1 or len(commits) != 1:
-        print("Timing files refer to different workflow attempts or commits; not combining.", file=sys.stderr)
+    fixtures = {r.get("fixture_id", "baseline") for r in records}
+    if len(ids) != 1 or len(commits) != 1 or len(fixtures) != 1:
+        print("Timing files refer to different workflow attempts, commits, or fixtures; not combining.", file=sys.stderr)
         return 1
 
     selected = [r for r in records if r.get("job") in required_jobs]
@@ -48,6 +49,7 @@ def main() -> int:
         "run_attempt": selected[0].get("run_attempt"),
         "run_url": run_url,
         "commit": selected[0].get("commit"),
+        "fixture_id": selected[0].get("fixture_id", "baseline"),
         "job_durations_seconds": durations,
         "parallel_scan_stage_critical_path_seconds": max(durations.values()),
         "serial_sum_estimate_seconds": sum(durations.values()),

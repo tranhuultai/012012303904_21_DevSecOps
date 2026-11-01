@@ -6,6 +6,12 @@ on:
   pull_request:
     branches: ["main", "develop"]
   workflow_dispatch:
+    inputs:
+      fixture_id:
+        description: "Dxx/Cxx/Nxx patch to evaluate, or baseline"
+        required: false
+        default: baseline
+        type: string
 
 # Quyền tối thiểu toàn workflow (4.5): từng job xin thêm quyền riêng khi cần.
 permissions:
@@ -20,14 +26,15 @@ env:
   SEMGREP_VERSION: "1.183.0"
   CONFTEST_VERSION: "0.71.1"
   CONTEST_POLICY: g2
+  FIXTURE_ID: ${{ github.event.inputs.fixture_id || 'baseline' }}
 
 defaults:
   run:
     working-directory: Code/DevSecOps
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event.inputs.fixture_id || 'baseline' }}
+  cancel-in-progress: false
 
 jobs:
   # ─────────────────────────────────────────────────────────────
@@ -76,6 +83,10 @@ jobs:
         with:
           fetch-depth: 0 # gitleaks git cần lịch sử commit
 
+      - name: Apply selected experiment fixture
+        if: github.event_name == 'workflow_dispatch' && inputs.fixture_id != '' && inputs.fixture_id != 'baseline'
+        run: python tests/apply_fixture_patch.py --id "$FIXTURE_ID"
+
       - name: Create reports directory
         run: mkdir -p reports
 
@@ -116,11 +127,20 @@ jobs:
         id: gitleaks
         continue-on-error: true
         run: |
-          gitleaks git \
-            --config "${GITHUB_WORKSPACE}/.gitleaks.toml" \
-            --report-format json \
-            --report-path reports/gitleaks.json \
-            --exit-code 0
+          if [ "$FIXTURE_ID" = "baseline" ]; then
+            gitleaks git \
+              --config "${GITHUB_WORKSPACE}/.gitleaks.toml" \
+              --report-format json \
+              --report-path reports/gitleaks.json \
+              --exit-code 0
+          else
+            # Quét working tree để bắt finding trong patch chưa commit.
+            gitleaks dir "${GITHUB_WORKSPACE}" \
+              --config "${GITHUB_WORKSPACE}/.gitleaks.toml" \
+              --report-format json \
+              --report-path reports/gitleaks.json \
+              --exit-code 0
+          fi
 
       # 2.3 SCA - Trivy (filesystem, CLI ghim phiên bản như các job khác)
       - name: Cài Trivy (binary ghim, kiểm checksum)
@@ -151,6 +171,10 @@ jobs:
         if: always()
         run: python tests/record_ci_timing.py --job security-scan --started-at-epoch "$JOB_START_EPOCH" --out reports/timing/security-scan.json
 
+      - name: Record Trivy database metadata
+        if: always()
+        run: python tests/record_trivy_runtime.py --out reports/experiment/trivy-runtime-security-scan.json
+
       - name: Upload security scan reports
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.0
@@ -176,6 +200,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
+      - name: Apply selected experiment fixture
+        if: github.event_name == 'workflow_dispatch' && inputs.fixture_id != '' && inputs.fixture_id != 'baseline'
+        run: python tests/apply_fixture_patch.py --id "$FIXTURE_ID"
+
       - name: Cài Trivy (binary ghim, kiểm checksum theo tệp phát hành)
         run: |
           asset="trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz"
@@ -195,7 +223,8 @@ jobs:
         run: |
           mkdir -p reports
           # Loại lab/ (mẫu gieo lỗi cố ý D12-D15, D26-D28) khỏi quét baseline.
-          checkov -d infra -d deploy -d .github/workflows -f Dockerfile \
+          # Workflow nằm tại repo root, ngoài working-directory Code/DevSecOps.
+          checkov -d infra -d deploy -d ../../.github/workflows -f Dockerfile \
             --skip-path lab \
             --compact --soft-fail -o json > reports/checkov.json || true
 
@@ -205,6 +234,10 @@ jobs:
       - name: Record CI timing
         if: always()
         run: python tests/record_ci_timing.py --job iac --started-at-epoch "$JOB_START_EPOCH" --out reports/timing/iac.json
+
+      - name: Record Trivy runtime metadata
+        if: always()
+        run: python tests/record_trivy_runtime.py --out reports/experiment/trivy-runtime-iac.json
 
       - name: Upload báo cáo iac
         if: always()
@@ -229,6 +262,10 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Apply selected experiment fixture
+        if: github.event_name == 'workflow_dispatch' && inputs.fixture_id != '' && inputs.fixture_id != 'baseline'
+        run: python tests/apply_fixture_patch.py --id "$FIXTURE_ID"
 
       - name: Cài Trivy/Syft/Grype (binary ghim, kiểm checksum theo tệp phát hành)
         run: |
@@ -259,25 +296,49 @@ jobs:
           grype version
 
       - name: Build image (không push)
+        if: ${{ !contains(fromJSON('["D12","D13","D14","D15"]'), env.FIXTURE_ID) }}
         run: docker build -f Dockerfile -t devsecops-app:scan .
 
       - name: Trivy image (chỉ báo cáo)
+        if: ${{ !contains(fromJSON('["D12","D13","D14","D15"]'), env.FIXTURE_ID) }}
         run: |
           mkdir -p reports
           trivy image --format json --output reports/trivy-image.json --exit-code 0 devsecops-app:scan
 
       - name: Syft SBOM (CycloneDX JSON)
+        if: ${{ !contains(fromJSON('["D12","D13","D14","D15"]'), env.FIXTURE_ID) }}
         run: syft devsecops-app:scan -o cyclonedx-json=reports/sbom.cdx.json
 
       - name: Grype quét SBOM (chỉ báo cáo)
+        if: ${{ !contains(fromJSON('["D12","D13","D14","D15"]'), env.FIXTURE_ID) }}
         run: grype "sbom:reports/sbom.cdx.json" -o json --file reports/grype-image.json
 
+      - name: Mark image scan intentionally skipped for Dockerfile fixtures
+        if: ${{ contains(fromJSON('["D12","D13","D14","D15"]'), env.FIXTURE_ID) }}
+        run: |
+          mkdir -p reports/experiment
+          printf '{"skipped":["image-build","trivy-image","syft-sbom","grype-image"],"reason":"Dockerfile defect fixture is evaluated by Checkov; vulnerable Dockerfile may not build reproducibly."}\n' \
+            > reports/experiment/skipped-scans.json
+          printf '{"matches":[]}\n' > reports/grype-image.json
+
       - name: E4 image remediation (before/after SBOM and vulnerabilities)
+        if: env.FIXTURE_ID == 'baseline'
         run: python tests/e4_image_remediation.py --live --out-dir reports/e4
+
+      - name: Mark E4 omitted from patch fixture run
+        if: env.FIXTURE_ID != 'baseline' && !contains(fromJSON('["D12","D13","D14","D15"]'), env.FIXTURE_ID)
+        run: |
+          mkdir -p reports/experiment
+          printf '{"skipped":["e4-live-image-remediation"],"reason":"E4 is a separate baseline experiment and runs only for the baseline dispatch."}\n' \
+            > reports/experiment/skipped-scans.json
 
       - name: Record CI timing
         if: always()
         run: python tests/record_ci_timing.py --job image --started-at-epoch "$JOB_START_EPOCH" --out reports/timing/image.json
+
+      - name: Record Trivy runtime metadata
+        if: always()
+        run: python tests/record_trivy_runtime.py --out reports/experiment/trivy-runtime-image.json
 
       - name: Upload SBOM và báo cáo image
         if: always()
@@ -361,7 +422,32 @@ jobs:
             --out gate_input.json
 
       - name: Chạy Security Gate (Conftest + Rego)
-        run: bash tools/run_gate.sh "policy/${CONTEST_POLICY}" gate_input.json gate-result.json
+        run: |
+          if [ "$GITHUB_EVENT_NAME" != "workflow_dispatch" ]; then
+            bash tools/run_gate.sh "policy/${CONTEST_POLICY}" gate_input.json gate-result.json
+          else
+            mkdir -p reports/experiment
+            python tools/validate_schema.py schemas/gate_input.schema.json gate_input.json
+            g2_status=0
+            for policy in g0 g1 g2; do
+              set +e
+              conftest test -p "policy/${policy}" gate_input.json --output json \
+                > "reports/experiment/conftest-${policy}.json"
+              policy_status=$?
+              set -e
+              python tools/conftest_gate_report.py \
+                --conftest "reports/experiment/conftest-${policy}.json" \
+                --findings reports/enriched_findings.json \
+                --policy "$policy" \
+                --out "reports/experiment/gate-report-${policy}.json"
+              if [ "$policy" = "g2" ]; then
+                g2_status=$policy_status
+                cp "reports/experiment/conftest-${policy}.json" gate-result.json
+                cp "reports/experiment/gate-report-${policy}.json" gate_report.json
+              fi
+            done
+            exit "$g2_status"
+          fi
 
       - name: Tóm tắt PR từ kết quả gate
         if: always()
@@ -379,6 +465,18 @@ jobs:
           if [ -f pr_summary.md ]; then
             cat pr_summary.md >> "$GITHUB_STEP_SUMMARY"
           fi
+
+      - name: Record traceable scan observation
+        if: always()
+        run: |
+          python tests/record_scan_observation.py \
+            --reports-dir reports \
+            --gate-report gate_report.json \
+            --timing-summary reports/e3-ci-run-timing.json \
+            --out reports/experiment/observation.json
+          python tools/validate_schema.py \
+            schemas/scan-observation.schema.json \
+            reports/experiment/observation.json
 
       - name: Upload kết quả gate và tóm tắt PR
         if: always()

@@ -327,9 +327,11 @@ def test_e4_g2_sca_decision_rules():
     assert e4.g2_sca_decision("MEDIUM", False, 0.0, True, "high") == "WARN"
 
 
-def test_e4_drift_with_current_kev():
-    kev_ids = {"CVE-2024-24762", "CVE-2023-45803", "CVE-2022-42969"}
-    epss = {"CVE-2024-24762": 0.156, "CVE-2023-45803": 0.182, "CVE-2022-42969": 0.124}
+def test_e4_drift_with_committed_kev_subset_and_empty_epss():
+    # This mirrors the committed KEV subset. Empty EPSS means no score was
+    # measured; the T0 values in e4_image_remediation are explicitly synthetic.
+    kev_ids = {"CVE-2025-30066"}
+    epss = {}
     drift = e4.db_drift_analysis(kev_ids, epss)
     changed = {c["cve"] for c in drift["changed_decisions"]}
-    assert "CVE-2024-24762" in changed
+    assert changed == {"CVE-2024-35195", "CVE-2023-45803"}
