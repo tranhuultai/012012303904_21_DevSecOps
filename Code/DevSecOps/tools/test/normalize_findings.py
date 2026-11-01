@@ -56,6 +56,54 @@ def load_json(path):
         ) from error
 
 
+def load_checkov_json(path):
+    """Load Checkov's JSON output, including adjacent framework documents.
+
+    Some Checkov CLI runs emit one JSON value per scanned framework. Accept
+    that JSON stream while still rejecting any non-JSON text in the report.
+    """
+    if path is None:
+        return None
+
+    report_path = Path(path)
+    if not report_path.is_file():
+        raise FileNotFoundError(f"Report not found: {report_path}")
+
+    with report_path.open("r", encoding="utf-8-sig") as file:
+        content = file.read()
+
+    decoder = json.JSONDecoder()
+    values = []
+    position = 0
+
+    while position < len(content):
+        while position < len(content) and content[position].isspace():
+            position += 1
+        if position == len(content):
+            break
+
+        try:
+            document, position = decoder.raw_decode(content, position)
+        except json.JSONDecodeError as error:
+            raise ValueError(
+                f"Invalid JSON in {report_path}: "
+                f"line {error.lineno}, column {error.colno}: {error.msg}"
+            ) from error
+
+        values.append(document)
+
+    if not values:
+        raise ValueError(f"Invalid JSON in {report_path}: report is empty.")
+
+    if len(values) == 1:
+        return values[0]
+
+    documents = []
+    for value in values:
+        documents.extend(value if isinstance(value, list) else [value])
+    return documents
+
+
 def require_object(data, source):
     """Ensure a report's root is a JSON object."""
     if not isinstance(data, dict):
@@ -669,7 +717,7 @@ def main():
         findings.extend(parse_semgrep(load_json(args.semgrep)))
         findings.extend(parse_gitleaks(load_json(args.gitleaks)))
         findings.extend(parse_trivy(load_json(args.trivy)))
-        findings.extend(parse_checkov(load_json(args.checkov)))
+        findings.extend(parse_checkov(load_checkov_json(args.checkov)))
         findings.extend(parse_trivy_config(load_json(args.trivy_config)))
         findings.extend(parse_grype(load_json(args.grype)))
 
