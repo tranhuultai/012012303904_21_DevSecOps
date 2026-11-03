@@ -1,0 +1,53 @@
+name: e3-orchestrate
+
+# Điều phối E3: chạy xen kẽ C1/C2/C3 qua nhiều lượt trên cùng một SHA, thu thời gian job,
+# đẩy kết quả sang nhánh dữ liệu exp-data/e3-<run_id>.
+on:
+  workflow_dispatch:
+    inputs:
+      reps:
+        description: "Số lượt cho mỗi cấu hình (lượt đầu của C3 là cache lạnh)"
+        type: string
+        default: "6"
+
+permissions:
+  contents: write # đẩy nhánh dữ liệu
+  actions: write # dispatch e3-timing.yml
+
+jobs:
+  orchestrate:
+    name: orchestrate
+    runs-on: ubuntu-24.04
+    timeout-minutes: 300
+    defaults:
+      run:
+        working-directory: Code/DevSecOps
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Chạy xen kẽ và thu thời gian
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPS: ${{ inputs.reps }}
+        run: python3 tests/e3_orchestrate.py --reps "${REPS}" --ref "${GITHUB_SHA}" --out e3
+
+      - name: Upload kết quả E3
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.0
+        with:
+          name: e3-summary
+          path: Code/DevSecOps/e3/
+          retention-days: 90
+
+      - name: Đẩy kết quả sang nhánh dữ liệu
+        run: |
+          dest="tests/results/raw/e3_$(date -u +%Y%m%d)_${GITHUB_RUN_ID}"
+          mkdir -p "${dest}"
+          cp -r e3/. "${dest}/"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "exp-data/e3-${GITHUB_RUN_ID}"
+          git add "${dest}"
+          git commit -q -m "data: e3 timing run ${GITHUB_RUN_ID}"
+          git push -q origin "exp-data/e3-${GITHUB_RUN_ID}"
