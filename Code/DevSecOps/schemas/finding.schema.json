@@ -31,7 +31,7 @@
     },
     "tool": {
       "type": "string",
-      "enum": ["semgrep", "gitleaks", "trivy", "checkov", "grype"]
+      "enum": ["semgrep", "semgrep-registry", "gitleaks", "trivy", "checkov", "grype", "conftest"]
     },
     "rule_id": {
       "type": "string",
