@@ -3,6 +3,8 @@
 # (D02, D07, D08...) nên máy quét phải bỏ qua để pipeline main không đỏ.
 # Việc phát hiện các lỗi này được thực hiện trên nhánh gieo lỗi bằng patch,
 # không phải trên lịch sử repo chứa tệp patch.
+# Không bỏ qua lab/: mẫu ở lab/ là baseline sạch, D07 được gieo vào đó bằng patch
+# nên Gitleaks phải nhìn thấy.
 
 title = "Gitleaks allowlist - bo dap an DevSecOps de tai 21"
 
@@ -10,10 +12,9 @@ title = "Gitleaks allowlist - bo dap an DevSecOps de tai 21"
 useDefault = true
 
 [allowlist]
-description = "Bo qua tep gieo loi, ban va va ket qua quen cua bo dap an"
+description = "Bo qua tep patch gieo loi va ket qua quet cua bo dap an"
 paths = [
   '''Code/DevSecOps/ground_truth/patches/''',
-  '''Code/DevSecOps/lab/''',
   '''Code/DevSecOps/tests/results/''',
   '''Extra/''',
 ]
