@@ -1,5 +1,10 @@
+diff --git a/Code/DevSecOps/src/requirements.txt b/Code/DevSecOps/src/requirements.txt
+index 5a3b9bb..827ac9f 100644
 --- a/Code/DevSecOps/src/requirements.txt
 +++ b/Code/DevSecOps/src/requirements.txt
 @@ -1,4 +1,4 @@
 -fastapi==0.115.6
-+fastapi==0.109.0  # D11: CVE-2024-24762, fixed in 0.109.1
++fastapi==0.109.0
+ uvicorn[standard]==0.34.0
+ pydantic==2.10.5
+ pytest==9.0.3
