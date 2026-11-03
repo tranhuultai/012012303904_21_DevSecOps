@@ -186,3 +186,10 @@ def test_gate_input_rejects_object_without_findings(tmp_path):
                              "--policy", "g2", "--out", str(tmp_path / "gi.json"))
     assert result.returncode != 0
     assert not (tmp_path / "gi.json").exists()
+
+
+def test_read_json_accepts_gzip_copy(tmp_path):
+    import gzip
+    with gzip.open(tmp_path / "normalized_findings.json.gz", "wt", encoding="utf-8") as fh:
+        json.dump([{"tool": "checkov"}], fh)
+    assert ce.read_json(tmp_path / "normalized_findings.json") == [{"tool": "checkov"}]

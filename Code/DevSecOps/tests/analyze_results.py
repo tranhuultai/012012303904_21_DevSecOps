@@ -166,22 +166,25 @@ def figures(out, by_tool, e2_rows, e3_rows, e4_rows, meta):
     ax.set_title(f"E1 – Lỗi gieo cài bắt được theo công cụ (n = 28 lỗi, {meta})", color=INK, loc="left")
     fig.savefig(out / "e1_recall_by_tool.png")
     plt.close(fig)
-    # E2: tỷ lệ chặn đúng và chặn nhầm theo chính sách và chế độ.
-    fig, axes = plt.subplots(1, 2, figsize=(8, 3.4), sharey=True)
-    labels = ["G0", "G1", "G2"]
+    # E2: tỷ lệ chặn đúng và chặn nhầm theo chính sách và chế độ; nhãn phân số cả khi bằng 0.
+    fig, axes = plt.subplots(1, 2, figsize=(8, 3.8), sharey=True)
     for ax, mode in zip(axes, ("full", "delta")):
         sel = [r for r in e2_rows if r["mode"] == mode]
-        x = range(len(sel))
-        ax.bar([i - 0.2 for i in x], [r["_block"] * 100 for r in sel], width=0.38, color=BLUE,
-               label="Chặn lỗi D (n = 28)")
-        ax.bar([i + 0.2 for i in x], [r["_false"] * 100 for r in sel], width=0.38, color=ORANGE,
-               hatch="///", edgecolor="white", label="Chặn nhầm C (n = 10)")
-        ax.set_xticks(list(x), labels)
-        ax.set_ylim(0, 105)
+        for i, r in enumerate(sel):
+            for dx, key, color, hatch in ((-0.2, "block_rate", BLUE, ""), (0.2, "false_block_rate", ORANGE, "///")):
+                value = r["_block"] if key == "block_rate" else r["_false"]
+                ax.bar(i + dx, value * 100, width=0.38, color=color, hatch=hatch, edgecolor="white")
+                ax.text(i + dx, value * 100 + 2, r[key].split(" ")[0], ha="center", va="bottom", fontsize=8, color=INK)
+        ax.set_xticks(range(len(sel)), [r["policy"].upper() for r in sel])
+        ax.set_ylim(0, 112)
         style(ax, "Chính sách", "Tỷ lệ (%)" if mode == "full" else "")
         ax.set_title(f"Chế độ {mode}", color=INK, loc="left")
-    axes[1].legend(frameon=False, loc="upper right")
-    fig.suptitle(f"E2 – Quyết định gate trên cùng bộ findings ({meta})", color=INK, x=0.01, ha="left")
+    handles = [plt.Rectangle((0, 0), 1, 1, color=BLUE),
+               plt.Rectangle((0, 0), 1, 1, facecolor=ORANGE, hatch="///", edgecolor="white")]
+    fig.legend(handles, ["Chặn lỗi D (n = 28)", "Chặn nhầm thay đổi sạch C (n = 10)"], loc="lower center",
+               ncol=2, frameon=False, bbox_to_anchor=(0.5, -0.04))
+    fig.suptitle(f"E2 – Quyết định gate trên cùng bộ findings ({meta})", color=INK, x=0.01, ha="left", y=1.0)
+    fig.subplots_adjust(top=0.84, bottom=0.2)
     fig.savefig(out / "e2_block_rates.png")
     plt.close(fig)
     if e3_rows:
@@ -207,7 +210,8 @@ def figures(out, by_tool, e2_rows, e3_rows, e4_rows, meta):
             ax.set_title(title, color=INK, fontsize=9)
             style(ax, "", "")
         fig.suptitle("E4 – Image trước (Dockerfile.vuln) và sau khắc phục (Dockerfile), cùng Trivy DB",
-                     color=INK, x=0.01, ha="left")
+                     color=INK, x=0.01, ha="left", y=1.02)
+        fig.subplots_adjust(top=0.8, wspace=0.45)
         fig.savefig(out / "e4_before_after.png")
         plt.close(fig)
 
