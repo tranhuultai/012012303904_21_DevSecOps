@@ -1,0 +1,25 @@
+{
+  "source": "https://api.first.org/data/v1/epss",
+  "downloaded_at": "2026-11-03T14:37:24Z",
+  "queried_cves": 3,
+  "scores": [
+    {
+      "cve": "CVE-2023-45803",
+      "epss": 0.00593,
+      "percentile": 0.48394,
+      "date": "2026-11-03"
+    },
+    {
+      "cve": "CVE-2024-24762",
+      "epss": 0.01523,
+      "percentile": 0.74661,
+      "date": "2026-11-03"
+    },
+    {
+      "cve": "CVE-2024-35195",
+      "epss": 0.0034,
+      "percentile": 0.27543,
+      "date": "2026-11-03"
+    }
+  ]
+}

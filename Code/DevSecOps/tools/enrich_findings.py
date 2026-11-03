@@ -2,8 +2,8 @@
 """Làm giàu findings đã chuẩn hóa bằng ngữ cảnh rủi ro cho Security Gate G2.
 
 Với mỗi finding, bổ sung các trường mà gate_input.schema.json cho phép:
-    - kev:              CVE nằm trong danh mục CISA KEV (tệp cisa_kev_subset.json).
-    - epss:             điểm EPSS [0..1] từ tệp epss_subset.json; không có thì 0.0.
+    - kev:              CVE nằm trong danh mục CISA KEV (kev_snapshot.json hoặc bản tải lúc chạy).
+    - epss:             điểm EPSS [0..1] từ epss_snapshot.json hoặc bản tải lúc chạy; không có thì 0.0.
     - fix_available:    có bản vá hay chưa (trivy: FixedVersion; grype: fix.versions).
     - match_confidence: "high" khi rule_id/CVE khớp trực tiếp với luật chặn của G2
                         hoặc CVE khớp KEV/EPSS; ngược lại "low".
@@ -15,8 +15,8 @@ Không sửa trường gốc nào ngoài việc bổ sung; giữ nguyên thứ t
 Dùng:
     python tools/enrich_findings.py \
         --findings reports/normalized_findings.json \
-        --kev security/kev/cisa_kev_subset.json \
-        --epss security/kev/epss_subset.json \
+        --kev security/kev/kev_snapshot.json \
+        --epss security/kev/epss_snapshot.json \
         --out reports/enriched_findings.json
 """
 
