@@ -481,6 +481,8 @@ CHECKOV_PREFIX_CATEGORY = (
 TRIVY_CONFIG_PREFIX_CATEGORY = (
     ("KSV", "k8s"),
     ("DSV", "image"),
+    ("DS-", "image"),
+    ("AWS-", "iac"),
     ("AVD", "iac"),
 )
 
@@ -585,9 +587,9 @@ def parse_trivy_config(data):
                     f"result {result_index}, index {index} must be an object."
                 )
 
-            # Chỉ lấy mục FAILED; PASSED/SKIPPED không phải phát hiện.
+            # Trivy ghi FAIL (bản cũ FAILED); PASS/EXCEPTION không phải phát hiện.
             status = (item.get("Status") or "").upper()
-            if status and status != "FAILED":
+            if status and status not in {"FAIL", "FAILED"}:
                 continue
 
             rule_id = item.get("ID")
@@ -667,10 +669,7 @@ def parse_grype(data):
 
 
 def parse_conftest(data):
-    """Convert Conftest JSON output (luật workflow tự viết) to findings.
-
-    Mỗi thông điệp deny có dạng "<RULE-ID>: <mô tả>"; rule ID lấy phần trước dấu hai chấm.
-    """
+    """Convert Conftest JSON output; rule ID là phần trước dấu hai chấm của thông điệp."""
     if data is None:
         return []
 
