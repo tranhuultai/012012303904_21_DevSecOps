@@ -1,5 +1,6 @@
 import csv
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -16,6 +17,12 @@ import collect_experiment as ce  # noqa: E402
 import e4_summarize as e4s  # noqa: E402
 import fetch_kev_epss as fke  # noqa: E402
 import normalize_findings as nf  # noqa: E402
+
+
+def run_py(script, *args):
+    env = {**os.environ, "PYTHONUTF8": "1"}
+    return subprocess.run([sys.executable, str(script), *map(str, args)],
+                          capture_output=True, encoding="utf-8", env=env)
 
 
 def finding(tool, rule_id, file, resource="", line=1, category="iac", severity="HIGH"):
@@ -79,8 +86,8 @@ def test_collect_marks_baseline_and_missing(tmp_path):
     write_sample(tmp_path / "exp", "BASE", [base])
     write_sample(tmp_path / "exp", "D16", [base, new])
     out = tmp_path / "out"
-    assert subprocess.run([sys.executable, str(PROJECT_DIR / "tests" / "collect_experiment.py"),
-                           "--input", str(tmp_path / "exp"), "--out", str(out)]).returncode == 0
+    assert run_py(str(PROJECT_DIR / "tests" / "collect_experiment.py"),
+                           "--input", str(tmp_path / "exp"), "--out", str(out)).returncode == 0
     rows = list(csv.DictReader((out / "findings_all.csv").open(encoding="utf-8")))
     d16 = {r["rule_id"]: r["in_baseline"] for r in rows if r["change_id"] == "D16"}
     assert d16 == {"CKV_AWS_18": "1", "CKV_AWS_24": "0"}
@@ -101,10 +108,10 @@ def test_eval_policies_full_vs_delta(tmp_path):
     (tmp_path / "kev.json").write_text('{"vulnerabilities": []}', encoding="utf-8")
     (tmp_path / "epss.json").write_text('{"scores": []}', encoding="utf-8")
     out = tmp_path / "out"
-    result = subprocess.run([sys.executable, str(PROJECT_DIR / "tests" / "eval_policies.py"),
+    result = run_py(str(PROJECT_DIR / "tests" / "eval_policies.py"),
                              "--input", str(tmp_path / "exp"), "--kev", str(tmp_path / "kev.json"),
                              "--epss", str(tmp_path / "epss.json"), "--today", "2026-11-03",
-                             "--out", str(out)], capture_output=True, text=True)
+                             "--out", str(out))
     assert result.returncode == 0, result.stderr
     rows = list(csv.DictReader((out / "decisions.csv").open(encoding="utf-8")))
     dec = {(r["change_id"], r["policy"], r["mode"]): r["decision"] for r in rows}
@@ -151,3 +158,31 @@ def test_kev_snapshot_and_cve_scan(tmp_path):
     path.write_text(json.dumps([{"rule_id": "CVE-2024-24762"}, {"rule_id": "CKV_AWS_24", "cve": None}]),
                     encoding="utf-8")
     assert fke.cves_in([path]) == ["CVE-2024-24762"]
+
+
+# ---- delta_findings: chế độ delta của gate trong CI ----
+def test_delta_findings_keeps_only_new(tmp_path):
+    import delta_findings as dfx
+    base = {"tool": "checkov", "rule_id": "CKV_AWS_18", "file": "infra/s3.tf", "resource": "aws_s3_bucket.logs", "line_start": 3}
+    moved = dict(base, line_start=30)
+    new = {"tool": "checkov", "rule_id": "CKV_AWS_24", "file": "infra/sg.tf", "resource": "aws_security_group.alb"}
+    (tmp_path / "base.json").write_text(json.dumps([base]), encoding="utf-8")
+    (tmp_path / "cur.json").write_text(json.dumps([moved, new]), encoding="utf-8")
+    out = tmp_path / "delta.json"
+    assert run_py(str(PROJECT_DIR / "tools" / "delta_findings.py"),
+                           "--current", str(tmp_path / "cur.json"), "--baseline", str(tmp_path / "base.json"),
+                           "--out", str(out)).returncode == 0
+    assert [f["rule_id"] for f in json.loads(out.read_text(encoding="utf-8"))] == ["CKV_AWS_24"]
+    assert dfx.stable_fingerprint(base) == dfx.stable_fingerprint(moved)
+
+
+def test_gate_input_rejects_object_without_findings(tmp_path):
+    bad = tmp_path / "bad.json"
+    bad.write_text('{"items": []}', encoding="utf-8")
+    exc = tmp_path / "exc.yaml"
+    exc.write_text("[]\n", encoding="utf-8")
+    result = run_py(str(PROJECT_DIR / "tools" / "gate_input.py"),
+                             "--findings", str(bad), "--exceptions", str(exc), "--today", "2026-11-03",
+                             "--policy", "g2", "--out", str(tmp_path / "gi.json"))
+    assert result.returncode != 0
+    assert not (tmp_path / "gi.json").exists()
