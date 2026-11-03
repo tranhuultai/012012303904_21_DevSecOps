@@ -141,7 +141,7 @@ TRIVY_CONFIG = {
             "Misconfigurations": [
                 {
                     "ID": "KSV-0109",
-                    "Status": "FAILED",
+                    "Status": "FAIL",
                     "Severity": "HIGH",
                     "Title": "Secret in ConfigMap",
                     "References": ["https://avd.aquasec.com/ksv-0109"],
