@@ -6,111 +6,665 @@ on:
   pull_request:
     branches: ["main", "develop"]
   workflow_dispatch:
+    inputs:
+      fixture_id:
+        description: "Dxx/Cxx/Nxx patch to evaluate, or baseline"
+        required: false
+        default: baseline
+        type: string
 
+# Quyền tối thiểu toàn workflow (4.5): từng job xin thêm quyền riêng khi cần.
 permissions:
   contents: read
 
+env:
+  TRIVY_VERSION: "0.76.1"
+  SYFT_VERSION: "1.54.1"
+  GRYPE_VERSION: "0.120.1"
+  CHECKOV_VERSION: "3.3.22"
+  GITLEAKS_VERSION: "8.30.1"
+  SEMGREP_VERSION: "1.183.0"
+  CONFTEST_VERSION: "0.71.1"
+  CONTEST_POLICY: g2
+  SEMGREP_REGISTRY_RULESET: p/python
+  FIXTURE_ID: ${{ github.event.inputs.fixture_id || 'baseline' }}
+
+defaults:
+  run:
+    working-directory: Code/DevSecOps
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event.inputs.fixture_id || 'baseline' }}
+  cancel-in-progress: false
+
 jobs:
+  # ─────────────────────────────────────────────────────────────
+  # 1) Unit test ứng dụng
+  # ─────────────────────────────────────────────────────────────
   test:
     name: Run Python tests
     runs-on: ubuntu-24.04
-
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set up Python
-        uses: actions/setup-python@v7
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
-          python-version: "3.12"
+          python-version: "3.13.18"
           cache: pip
           cache-dependency-path: Code/DevSecOps/src/requirements.txt
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install -r Code/DevSecOps/src/requirements.txt
+          python -m pip install --upgrade "pip==26.2.2"
+          pip install -r src/requirements.txt
 
       - name: Check Python syntax
-        run: python -m compileall -q Code/DevSecOps/src
+        run: python -m compileall -q src
 
       - name: Run tests
-        run: python -m pytest -v Code/DevSecOps/src/test
+        run: python -m pytest -v src/test
 
+  # ─────────────────────────────────────────────────────────────
+  # 2) SAST + Secret + SCA (chế độ thu thập: thoát 0, chỉ báo cáo)
+  # ─────────────────────────────────────────────────────────────
   security-scan:
     name: Security scans (collection mode)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
-
     steps:
+      - name: Mark job start
+        working-directory: ${{ github.workspace }}
+        run: echo "JOB_START_EPOCH=$(date +%s)" >> "$GITHUB_ENV"
+
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0 # gitleaks git cần lịch sử commit
+
+      - name: Apply selected experiment fixture
+        if: github.event_name == 'workflow_dispatch' && inputs.fixture_id != '' && inputs.fixture_id != 'baseline'
+        run: python tests/apply_fixture_patch.py --id "$FIXTURE_ID"
 
       - name: Create reports directory
         run: mkdir -p reports
 
-      # 1. SAST - Semgrep
+      # 2.1 SAST - Semgrep (quét cả luật tùy chỉnh rules/semgrep)
       - name: Set up Python for Semgrep
-        uses: actions/setup-python@v7
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
-          python-version: "3.12"
+          python-version: "3.13.18"
 
       - name: Install Semgrep
-        run: python -m pip install semgrep
+        run: python -m pip install "semgrep==${SEMGREP_VERSION}"
 
       - name: Run Semgrep SAST
         id: semgrep
         continue-on-error: true
         run: |
           semgrep scan \
-            --config auto \
+            --config rules/semgrep \
+            --config "${SEMGREP_REGISTRY_RULESET}" \
+            --metrics=off \
             --json \
             --output reports/semgrep.json \
-            Code/DevSecOps
+            src tools
 
-      # 2. Secret scanning - Gitleaks
-      - name: Install Gitleaks
-        uses: j178/prek-action@v1
-        if: false
-
-      - name: Set up Go
-        uses: actions/setup-go@v7
-        with: 
-          go-version: "1.24"
-          cache: false
-
+      # 2.2 Secret scanning - Gitleaks (binary ghim, kiểm checksum)
       - name: Install Gitleaks CLI
-        run: go install github.com/zricethezav/gitleaks/v8@v8.30.1
+        run: |
+          asset="gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
+          cd "$RUNNER_TEMP"
+          base="https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}"
+          curl -fsSL -o "${asset}" "${base}/${asset}"
+          curl -fsSL -o gitleaks.sums "${base}/gitleaks_${GITLEAKS_VERSION}_checksums.txt"
+          grep "  ${asset}$" gitleaks.sums | sha256sum -c -
+          tar xzf "${asset}" gitleaks
+          sudo install gitleaks /usr/local/bin/gitleaks
+          gitleaks version
 
       - name: Run Gitleaks secret scan
         id: gitleaks
         continue-on-error: true
         run: |
-          gitleaks git \
-            --report-format json \
-            --report-path reports/gitleaks.json \
-            --exit-code 0
+          if [ "$FIXTURE_ID" = "baseline" ]; then
+            gitleaks git \
+              --config "${GITHUB_WORKSPACE}/.gitleaks.toml" \
+              --report-format json \
+              --report-path reports/gitleaks.json \
+              --exit-code 0
+          else
+            # Quét working tree để bắt finding trong patch chưa commit.
+            gitleaks dir "${GITHUB_WORKSPACE}" \
+              --config "${GITHUB_WORKSPACE}/.gitleaks.toml" \
+              --report-format json \
+              --report-path reports/gitleaks.json \
+              --exit-code 0
+          fi
 
-      # 3. SCA - Trivy
+      # 2.3 SCA - Trivy (filesystem, CLI ghim phiên bản như các job khác)
+      - name: Cài Trivy (binary ghim, kiểm checksum)
+        run: |
+          asset="trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz"
+          base="https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}"
+          cd "$RUNNER_TEMP"
+          curl -fsSL -o "${asset}" "${base}/${asset}"
+          curl -fsSL -o trivy.sums "${base}/trivy_${TRIVY_VERSION}_checksums.txt"
+          grep "  ${asset}$" trivy.sums | sha256sum -c -
+          tar xzf "${asset}" trivy
+          sudo install trivy /usr/local/bin/trivy
+          trivy --version
+
       - name: Run Trivy dependency scan
         id: trivy
-        uses: aquasecurity/trivy-action@v0.36.0
-        with:
-          scan-type: fs
-          scan-ref: Code/DevSecOps
-          scanners: vuln
-          format: json
-          output: reports/trivy.json
-          exit-code: "0"
-          ignore-unfixed: true
+        continue-on-error: true
+        run: |
+          trivy fs \
+            --scanners vuln \
+            --format json \
+            --output reports/trivy.json \
+            --exit-code 0 \
+            --ignore-unfixed \
+            .
 
-      # Always upload whatever reports were generated
+      # 2.4 Luật workflow tự viết (Conftest, chỉ báo cáo)
+      - name: Conftest luật workflow
+        run: |
+          bash tools/install_scanners.sh conftest
+          conftest test -p rules/conftest ../../.github/workflows lab/workflows-vuln/.github/workflows \
+            -o json > reports/conftest_wf.json || true
+          test -s reports/conftest_wf.json
+
+      - name: Record CI timing
+        if: always()
+        run: python tests/record_ci_timing.py --job security-scan --started-at-epoch "$JOB_START_EPOCH" --out reports/timing/security-scan.json
+
+      - name: Record Trivy database metadata
+        if: always()
+        run: python tests/record_trivy_runtime.py --out reports/experiment/trivy-runtime-security-scan.json
+
       - name: Upload security scan reports
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.0
         with:
-          name: security-scan-reports
-          path: reports/
+          name: report-scan
+          path: Code/DevSecOps/reports/
           if-no-files-found: warn
           retention-days: 14
+
+  # ─────────────────────────────────────────────────────────────
+  # 3) IaC scanning: Checkov + Trivy config (chỉ báo cáo)
+  # ─────────────────────────────────────────────────────────────
+  iac:
+    name: iac
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - name: Mark job start
+        working-directory: ${{ github.workspace }}
+        run: echo "JOB_START_EPOCH=$(date +%s)" >> "$GITHUB_ENV"
+
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Apply selected experiment fixture
+        if: github.event_name == 'workflow_dispatch' && inputs.fixture_id != '' && inputs.fixture_id != 'baseline'
+        run: python tests/apply_fixture_patch.py --id "$FIXTURE_ID"
+
+      - name: Cài Trivy (binary ghim, kiểm checksum theo tệp phát hành)
+        run: |
+          asset="trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz"
+          base="https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}"
+          cd "$RUNNER_TEMP"
+          curl -fsSL -o "${asset}" "${base}/${asset}"
+          curl -fsSL -o trivy.sums "${base}/trivy_${TRIVY_VERSION}_checksums.txt"
+          grep "  ${asset}$" trivy.sums | sha256sum -c -
+          tar xzf "${asset}" trivy
+          sudo install trivy /usr/local/bin/trivy
+          trivy --version
+
+      - name: Cài Checkov (ghim)
+        run: pipx install "checkov==${CHECKOV_VERSION}"
+
+      - name: Checkov (soft-fail, chỉ báo cáo)
+        run: |
+          mkdir -p reports
+          # Gọi riêng từng framework rồi gộp: gọi gộp kèm -f Dockerfile có thể bỏ sót Dockerfile.
+          checkov -d infra -d deploy --framework terraform kubernetes --compact --soft-fail -o json > reports/checkov_iac.json
+          checkov -f Dockerfile --framework dockerfile --compact --soft-fail -o json > reports/checkov_docker.json
+          checkov -d ../.. --framework github_actions --compact --soft-fail -o json > reports/checkov_gha.json
+          jq -s 'map(if type == "array" then .[] else . end)' \
+            reports/checkov_iac.json reports/checkov_docker.json reports/checkov_gha.json > reports/checkov.json
+
+      - name: Trivy config (chỉ báo cáo)
+        run: trivy config --format json --output reports/trivy-config.json --exit-code 0 --skip-dirs lab .
+
+      - name: Record CI timing
+        if: always()
+        run: python tests/record_ci_timing.py --job iac --started-at-epoch "$JOB_START_EPOCH" --out reports/timing/iac.json
+
+      - name: Record Trivy runtime metadata
+        if: always()
+        run: python tests/record_trivy_runtime.py --out reports/experiment/trivy-runtime-iac.json
+
+      - name: Upload báo cáo iac
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.0
+        with:
+          name: report-iac
+          path: Code/DevSecOps/reports/
+          if-no-files-found: warn
+
+  # ─────────────────────────────────────────────────────────────
+  # 4) Container image: build, Trivy image, Syft SBOM, Grype
+  # ─────────────────────────────────────────────────────────────
+  image:
+    name: image
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - name: Mark job start
+        working-directory: ${{ github.workspace }}
+        run: echo "JOB_START_EPOCH=$(date +%s)" >> "$GITHUB_ENV"
+
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Apply selected experiment fixture
+        if: github.event_name == 'workflow_dispatch' && inputs.fixture_id != '' && inputs.fixture_id != 'baseline'
+        run: python tests/apply_fixture_patch.py --id "$FIXTURE_ID"
+
+      - name: Cài Trivy/Syft/Grype (binary ghim, kiểm checksum theo tệp phát hành)
+        run: |
+          fetch() {
+            local repo="$1" ver="$2" asset="$3"
+            local base="https://github.com/${repo}/releases/download/v${ver}"
+            local checksum_file="${repo##*/}_${ver}_checksums.txt"
+            local expected actual
+            cd "$RUNNER_TEMP"
+            curl -fsSL -o "${asset}" "${base}/${asset}"
+            test -s "${asset}"
+            curl -fsSL -o pkg.sums "${base}/${checksum_file}"
+            # So sánh hash trực tiếp; không phụ thuộc cách manifest ghi tên file.
+            expected="$(awk -v name="${asset}" '($2 == name || $2 == ("*" name)) {print $1; found=1} END {if (!found) exit 1}' pkg.sums)"
+            actual="$(sha256sum "${asset}" | awk '{print $1}')"
+            if [ "${actual}" != "${expected}" ]; then
+              echo "Checksum mismatch for ${asset}" >&2
+              exit 1
+            fi
+            tar xzf "${asset}" "${repo##*/}"
+            sudo install "${repo##*/}" /usr/local/bin/
+          }
+          fetch aquasecurity/trivy "$TRIVY_VERSION" "trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz"
+          fetch anchore/syft "$SYFT_VERSION" "syft_${SYFT_VERSION}_linux_amd64.tar.gz"
+          fetch anchore/grype "$GRYPE_VERSION" "grype_${GRYPE_VERSION}_linux_amd64.tar.gz"
+          trivy --version
+          syft version
+          grype version
+
+      - name: Build image (không push)
+        if: ${{ !contains(fromJSON('["D12","D13","D14","D15"]'), env.FIXTURE_ID) }}
+        run: docker build -f Dockerfile -t devsecops-app:scan .
+
+      - name: Trivy image (chỉ báo cáo)
+        if: ${{ !contains(fromJSON('["D12","D13","D14","D15"]'), env.FIXTURE_ID) }}
+        run: |
+          mkdir -p reports
+          trivy image --format json --output reports/trivy-image.json --exit-code 0 devsecops-app:scan
+
+      - name: Syft SBOM (CycloneDX JSON)
+        if: ${{ !contains(fromJSON('["D12","D13","D14","D15"]'), env.FIXTURE_ID) }}
+        run: syft devsecops-app:scan -o cyclonedx-json=reports/sbom.cdx.json
+
+      - name: Grype quét SBOM (chỉ báo cáo)
+        if: ${{ !contains(fromJSON('["D12","D13","D14","D15"]'), env.FIXTURE_ID) }}
+        run: grype "sbom:reports/sbom.cdx.json" -o json --file reports/grype-image.json
+
+      - name: Mark image scan intentionally skipped for Dockerfile fixtures
+        if: ${{ contains(fromJSON('["D12","D13","D14","D15"]'), env.FIXTURE_ID) }}
+        run: |
+          mkdir -p reports/experiment
+          printf '{"skipped":["image-build","trivy-image","syft-sbom","grype-image"],"reason":"Dockerfile defect fixture is evaluated by Checkov; vulnerable Dockerfile may not build reproducibly."}\n' \
+            > reports/experiment/skipped-scans.json
+          printf '{"matches":[]}\n' > reports/grype-image.json
+
+      - name: Record Trivy runtime metadata
+        if: always()
+        run: python tests/record_trivy_runtime.py --out reports/experiment/trivy-runtime-image.json
+
+      - name: Record CI timing
+        if: always()
+        run: python tests/record_ci_timing.py --job image --started-at-epoch "$JOB_START_EPOCH" --out reports/timing/image.json
+
+      - name: Upload SBOM và báo cáo image
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.0
+        with:
+          name: report-image
+          path: Code/DevSecOps/reports/
+          if-no-files-found: warn
+
+  # ─────────────────────────────────────────────────────────────
+  # 5) Security Gate: chuẩn hóa → làm giàu (KEV/EPSS) → Conftest G2 → tóm tắt PR
+  #    Fail-closed: thiếu báo cáo hoặc schema sai thì gate chặn (thoát khác 0).
+  # ─────────────────────────────────────────────────────────────
+  gate:
+    name: gate (Conftest Rego)
+    needs: [security-scan, iac, image]
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      actions: read # tải findings của lần chạy gần nhất trên main cho chế độ delta
+    env:
+      GATE_FINDINGS: reports/enriched_findings.json
+      GATE_MODE: full
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Tải báo cáo quét
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        with:
+          pattern: report-*
+          path: Code/DevSecOps/reports/
+          merge-multiple: true
+
+      - name: Set up Python
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.13.18"
+
+      - name: Summarize timings for this workflow run
+        run: python tests/summarize_ci_timings.py --input-dir reports/timing --out reports/e3-ci-run-timing.json
+
+      - name: Install gate dependencies
+        run: python -m pip install jsonschema PyYAML
+
+      - name: Cài Conftest (binary ghim, kiểm checksum)
+        run: |
+          asset="conftest_${CONFTEST_VERSION}_Linux_x86_64.tar.gz"
+          cd "$RUNNER_TEMP"
+          base="https://github.com/open-policy-agent/conftest/releases/download/v${CONFTEST_VERSION}"
+          curl -fsSL -o "${asset}" "${base}/${asset}"
+          curl -fsSL -o conftest.sums "${base}/checksums.txt"
+          # grep neo cuối dòng: checksums.txt còn chứa dòng *.sbom.json.
+          grep "  ${asset}$" conftest.sums | sha256sum -c -
+          tar xzf "${asset}" conftest
+          sudo install conftest /usr/local/bin/conftest
+          conftest --version
+
+      - name: Kiểm thử chính sách gate và luật workflow
+        run: |
+          for policy in g0 g1 g2; do conftest verify -p "policy/${policy}"; done
+          conftest verify -p rules/conftest
+
+      - name: Chuẩn hóa findings (schema bắt buộc, fail-closed)
+        run: |
+          python tools/test/normalize_findings.py \
+            --semgrep reports/semgrep.json \
+            --gitleaks reports/gitleaks.json \
+            --trivy reports/trivy.json \
+            --checkov reports/checkov.json \
+            --trivy-config reports/trivy-config.json \
+            --grype reports/grype-image.json \
+            --conftest-workflow reports/conftest_wf.json \
+            --output reports/normalized_findings.json
+
+      - name: Lấy KEV (CISA) và EPSS (FIRST); lỗi mạng thì dùng snapshot đã commit
+        run: |
+          if python tools/fetch_kev_epss.py --findings reports/normalized_findings.json --out-dir reports/kev; then
+            echo "KEV_FILE=reports/kev/kev.json" >> "$GITHUB_ENV"
+            echo "EPSS_FILE=reports/kev/epss.json" >> "$GITHUB_ENV"
+          else
+            echo "::warning::Không tải được KEV/EPSS, dùng snapshot trong security/kev"
+            echo "KEV_FILE=security/kev/kev_snapshot.json" >> "$GITHUB_ENV"
+            echo "EPSS_FILE=security/kev/epss_snapshot.json" >> "$GITHUB_ENV"
+          fi
+
+      - name: Làm giàu ngữ cảnh rủi ro (KEV, EPSS, bản vá, độ tin cậy)
+        run: |
+          python tools/enrich_findings.py \
+            --findings reports/normalized_findings.json \
+            --kev "${KEV_FILE}" \
+            --epss "${EPSS_FILE}" \
+            --out reports/enriched_findings.json
+
+      - name: PR chấm theo delta so với lần quét gần nhất trên main
+        if: github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          run_id="$(gh run list --repo "${GITHUB_REPOSITORY}" --workflow ci.yml --branch main --event push \
+            --status success --limit 1 --json databaseId -q '.[0].databaseId')"
+          if [ -n "${run_id}" ] && gh run download "${run_id}" --repo "${GITHUB_REPOSITORY}" -n report-gate -D baseline; then
+            python tools/delta_findings.py --current reports/enriched_findings.json \
+              --baseline baseline/reports/enriched_findings.json --out reports/delta_findings.json
+            echo "GATE_FINDINGS=reports/delta_findings.json" >> "$GITHUB_ENV"
+            echo "GATE_MODE=delta" >> "$GITHUB_ENV"
+          else
+            echo "::notice::Chưa có baseline trên main, gate chấm toàn bộ finding"
+          fi
+
+      - name: Dựng gate_input.json
+        run: |
+          python tools/gate_input.py \
+            --findings "${GATE_FINDINGS}" \
+            --exceptions security/exceptions.yaml \
+            --today "$(date -u +%F)" \
+            --policy "${CONTEST_POLICY}" \
+            --out gate_input.json
+
+      - name: Chạy Security Gate (Conftest + Rego)
+        run: |
+          if [ "$GITHUB_EVENT_NAME" != "workflow_dispatch" ]; then
+            bash tools/run_gate.sh "policy/${CONTEST_POLICY}" gate_input.json gate-result.json
+          else
+            mkdir -p reports/experiment
+            python tools/validate_schema.py schemas/gate_input.schema.json gate_input.json
+            g2_status=0
+            for policy in g0 g1 g2; do
+              set +e
+              conftest test -p "policy/${policy}" gate_input.json --output json \
+                > "reports/experiment/conftest-${policy}.json"
+              policy_status=$?
+              set -e
+              python tools/conftest_gate_report.py \
+                --conftest "reports/experiment/conftest-${policy}.json" \
+                --findings reports/enriched_findings.json \
+                --policy "$policy" \
+                --out "reports/experiment/gate-report-${policy}.json"
+              if [ "$policy" = "g2" ]; then
+                g2_status=$policy_status
+                cp "reports/experiment/conftest-${policy}.json" gate-result.json
+                cp "reports/experiment/gate-report-${policy}.json" gate_report.json
+              fi
+            done
+            exit "$g2_status"
+          fi
+
+      - name: Tóm tắt PR từ kết quả gate
+        if: always()
+        run: |
+          python tools/conftest_gate_report.py \
+            --conftest gate-result.json \
+            --findings reports/enriched_findings.json \
+            --policy "${CONTEST_POLICY}" \
+            --out gate_report.json || true
+          python tools/test/generate_pr_summary.py \
+            --findings reports/enriched_findings.json \
+            --gate gate_report.json \
+            --output pr_summary.md \
+            --title "DevSecOps Security Summary (${CONTEST_POLICY})" || true
+          echo "Chế độ gate: ${GATE_MODE}" >> "$GITHUB_STEP_SUMMARY"
+          if [ -f pr_summary.md ]; then
+            cat pr_summary.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Record traceable scan observation
+        if: always()
+        run: |
+          python tests/record_scan_observation.py \
+            --reports-dir reports \
+            --gate-report gate_report.json \
+            --timing-summary reports/e3-ci-run-timing.json \
+            --out reports/experiment/observation.json
+          python tools/validate_schema.py \
+            schemas/scan-observation.schema.json \
+            reports/experiment/observation.json
+
+      - name: Upload kết quả gate và tóm tắt PR
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.0
+        with:
+          name: report-gate
+          path: |
+            Code/DevSecOps/reports/
+            Code/DevSecOps/gate_input.json
+            Code/DevSecOps/gate-result.json
+            Code/DevSecOps/gate_report.json
+            Code/DevSecOps/pr_summary.md
+          if-no-files-found: warn
+
+  # ─────────────────────────────────────────────────────────────
+  # 6) Release: push image theo digest, ký keyless bằng Cosign (chỉ trên main)
+  # ─────────────────────────────────────────────────────────────
+  release:
+    name: release
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [test, gate]
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+      attestations: write
+    env:
+      IMAGE: ghcr.io/${{ github.repository_owner }}/devsecops
+      COSIGN_VERSION: "3.1.3"
+    outputs:
+      ref: ${{ steps.push.outputs.ref }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Cài syft + cosign (binary ghim, kiểm checksum)
+        run: |
+          cd "$RUNNER_TEMP"
+          sbase="https://github.com/anchore/syft/releases/download/v${SYFT_VERSION}"
+          syft_asset="syft_${SYFT_VERSION}_linux_amd64.tar.gz"
+          curl -fsSL -o "${syft_asset}" "${sbase}/${syft_asset}"
+          curl -fsSL -o syft.sums "${sbase}/syft_${SYFT_VERSION}_checksums.txt"
+          test -s "${syft_asset}"
+          expected="$(awk -v name="${syft_asset}" '($2 == name || $2 == ("*" name)) {print $1; found=1} END {if (!found) exit 1}' syft.sums)"
+          actual="$(sha256sum "${syft_asset}" | awk '{print $1}')"
+          if [ "${actual}" != "${expected}" ]; then
+            echo "Checksum mismatch for ${syft_asset}" >&2
+            exit 1
+          fi
+          tar xzf "${syft_asset}" syft && sudo install syft /usr/local/bin/
+          cbase="https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}"
+          curl -fsSL -o cosign "${cbase}/cosign-linux-amd64"
+          curl -fsSL -o cosign.sums "${cbase}/cosign_checksums.txt"
+          grep "  cosign-linux-amd64$" cosign.sums | sed 's#cosign-linux-amd64#cosign#' | sha256sum -c -
+          sudo install cosign /usr/local/bin/
+          syft version && cosign version
+
+      - name: Đăng nhập GHCR
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GHCR_USER: ${{ github.actor }}
+        run: echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
+
+      - name: Build và push theo digest
+        id: push
+        env:
+          SHA: ${{ github.sha }}
+        run: |
+          docker build -f Dockerfile -t "${IMAGE}:${SHA}" .
+          docker push "${IMAGE}:${SHA}"
+          ref="$(docker inspect --format '{{index .RepoDigests 0}}' "${IMAGE}:${SHA}")"
+          digest="${ref##*@}"
+          echo "ref=${ref}" >> "$GITHUB_OUTPUT"
+          echo "digest=${digest}" >> "$GITHUB_OUTPUT"
+          echo "Pushed ${ref}"
+
+      - name: Generate SLSA build provenance
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
+        with:
+          subject-name: ${{ env.IMAGE }}
+          subject-digest: ${{ steps.push.outputs.digest }}
+          push-to-registry: true
+          create-storage-record: false
+
+      - name: SBOM (CycloneDX)
+        run: syft "${{ steps.push.outputs.ref }}" -o cyclonedx-json=sbom.cdx.json
+
+      - name: Ký và attest (cosign keyless)
+        run: |
+          cosign sign --yes "${{ steps.push.outputs.ref }}"
+          cosign attest --yes --predicate sbom.cdx.json --type cyclonedx "${{ steps.push.outputs.ref }}"
+
+      - name: Upload SBOM
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.0
+        with:
+          name: sbom
+          path: Code/DevSecOps/sbom.cdx.json
+          if-no-files-found: warn
+
+  # ─────────────────────────────────────────────────────────────
+  # 7) Deploy smoke test trên kind: xác minh chữ ký rồi triển khai thử
+  # ─────────────────────────────────────────────────────────────
+  deploy-smoke:
+    name: deploy-smoke
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: release
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: read
+    env:
+      REF: ${{ needs.release.outputs.ref }}
+      COSIGN_VERSION: "3.1.3"
+      KIND_VERSION: "0.33.0"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Cài cosign + kind (binary ghim)
+        run: |
+          cd "$RUNNER_TEMP"
+          cbase="https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}"
+          curl -fsSL -o cosign "${cbase}/cosign-linux-amd64"
+          curl -fsSL -o cosign.sums "${cbase}/cosign_checksums.txt"
+          grep "  cosign-linux-amd64$" cosign.sums | sed 's#cosign-linux-amd64#cosign#' | sha256sum -c -
+          sudo install cosign /usr/local/bin/
+          # kind không phát hành tệp checksums gộp; ghim theo tag + TLS.
+          curl -fsSL -o kind "https://github.com/kubernetes-sigs/kind/releases/download/v${KIND_VERSION}/kind-linux-amd64"
+          sudo install kind /usr/local/bin/
+          cosign version && kind version
+
+      - name: Xác minh chữ ký (ràng buộc danh tính workflow)
+        run: |
+          cosign verify \
+            --certificate-identity-regexp "^https://github.com/${{ github.repository }}/.github/workflows/.+" \
+            --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
+            "${REF}"
+
+      - name: Tạo cluster kind
+        run: kind create cluster --name smoke --wait 60s
+
+      - name: Triển khai và gọi /health
+        run: |
+          kubectl create secret generic devsecops-app-db \
+            --from-literal=password="$(openssl rand -hex 16)"
+          kubectl apply -f deploy/serviceaccount.yaml -f deploy/service.yaml -f deploy/deployment.yaml
+          kubectl set image deployment/devsecops-app app="${REF}"
+          kubectl rollout status deployment/devsecops-app --timeout=120s
+          kubectl port-forward service/devsecops-app 8080:80 &
+          sleep 5
+          curl -fsS http://127.0.0.1:8080/health

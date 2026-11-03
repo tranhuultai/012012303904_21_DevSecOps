@@ -1,0 +1,14 @@
+# Bỏ qua tệp patch gieo lỗi và kết quả quét (chứa giá trị GIẢ).
+# Không bỏ qua lab/: đó là baseline sạch, D07 gieo vào bằng patch phải bị quét thấy.
+
+title = "Gitleaks allowlist - bo dap an DevSecOps de tai 21"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Bo qua tep patch gieo loi va ket qua quet cua bo dap an"
+paths = [
+  '''Code/DevSecOps/ground_truth/patches/''',
+  '''Code/DevSecOps/tests/results/''',
+]

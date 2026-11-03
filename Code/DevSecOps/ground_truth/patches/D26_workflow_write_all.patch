@@ -1,0 +1,14 @@
+diff --git a/Code/DevSecOps/lab/workflows-vuln/.github/workflows/ci-vuln.yml b/Code/DevSecOps/lab/workflows-vuln/.github/workflows/ci-vuln.yml
+index 61f69c8..51e446f 100644
+--- a/Code/DevSecOps/lab/workflows-vuln/.github/workflows/ci-vuln.yml
++++ b/Code/DevSecOps/lab/workflows-vuln/.github/workflows/ci-vuln.yml
+@@ -7,8 +7,7 @@ on:
+   pull_request:
+   workflow_dispatch:
+ 
+-permissions:
+-  contents: read
++permissions: write-all
+ 
+ jobs:
+   build:

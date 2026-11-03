@@ -1,0 +1,161 @@
+name: e3-timing
+run-name: e3 ${{ inputs.mode }} ${{ inputs.tag }}
+
+# E3: một lượt đo thời gian pipeline theo cấu hình C1 (tuần tự, không cache),
+# C2 (song song, không cache) hoặc C3 (song song, cache pip, Trivy DB, binary công cụ).
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        type: choice
+        options: [c1_seq_nocache, c2_par_nocache, c3_par_cache]
+        required: true
+      ref:
+        description: "SHA cố định của mã được quét"
+        type: string
+        required: true
+      tag:
+        description: "Nhãn để bộ điều phối nhận ra lượt chạy"
+        type: string
+        required: false
+        default: manual
+
+permissions:
+  contents: read
+
+concurrency:
+  group: e3-timing-${{ github.run_id }}
+  cancel-in-progress: false
+
+env:
+  PYTHON_VERSION: "3.13.18"
+  TRIVY_VERSION: "0.76.1"
+  CHECKOV_VERSION: "3.3.22"
+  GITLEAKS_VERSION: "8.30.1"
+  SEMGREP_VERSION: "1.183.0"
+  CONFTEST_VERSION: "0.71.1"
+  SEMGREP_REGISTRY_RULESET: p/python
+
+jobs:
+  sequential:
+    name: c1 sequential
+    if: inputs.mode == 'c1_seq_nocache'
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: Code/DevSecOps
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.ref }}
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Cài công cụ
+        run: |
+          bash tools/install_scanners.sh trivy gitleaks conftest semgrep checkov
+          python -m pip install --quiet jsonschema PyYAML
+
+      - name: Quét tuần tự 5 lớp
+        run: bash tests/run_scans.sh reports --image
+
+      - name: Gate G2
+        run: bash tests/e3_gate.sh reports
+
+  scan:
+    name: scan ${{ matrix.layer }}
+    if: inputs.mode != 'c1_seq_nocache'
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        layer: [sast, secret, sca, iac, image]
+    defaults:
+      run:
+        working-directory: Code/DevSecOps
+    env:
+      TOOL_CACHE_DIR: /home/runner/.cache/e3-tools
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.ref }}
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Cache pip, Trivy DB và binary công cụ (chỉ C3)
+        if: inputs.mode == 'c3_par_cache'
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: |
+            ~/.cache/pip
+            ~/.cache/trivy
+            ~/.cache/e3-tools
+          key: e3-${{ matrix.layer }}-${{ env.TRIVY_VERSION }}-${{ env.CHECKOV_VERSION }}-${{ env.SEMGREP_VERSION }}
+
+      - name: Cài công cụ của lớp
+        env:
+          LAYER: ${{ matrix.layer }}
+        run: |
+          case "${LAYER}" in
+            sast) bash tools/install_scanners.sh semgrep ;;
+            secret) bash tools/install_scanners.sh gitleaks ;;
+            sca | image) bash tools/install_scanners.sh trivy ;;
+            iac) bash tools/install_scanners.sh checkov trivy conftest ;;
+          esac
+
+      - name: Quét lớp
+        env:
+          LAYERS: ${{ matrix.layer }}
+        run: bash tests/run_scans.sh reports --image
+
+      - name: Upload báo cáo lớp
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.0
+        with:
+          name: e3-${{ matrix.layer }}
+          path: Code/DevSecOps/reports/
+          retention-days: 7
+
+  gate:
+    name: gate
+    if: inputs.mode != 'c1_seq_nocache'
+    needs: scan
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: Code/DevSecOps
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.ref }}
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Cài Conftest và thư viện
+        run: |
+          bash tools/install_scanners.sh conftest
+          python -m pip install --quiet jsonschema PyYAML
+
+      - name: Tải báo cáo các lớp
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        with:
+          pattern: e3-*
+          path: Code/DevSecOps/reports
+          merge-multiple: true
+
+      - name: Gate G2
+        run: bash tests/e3_gate.sh reports

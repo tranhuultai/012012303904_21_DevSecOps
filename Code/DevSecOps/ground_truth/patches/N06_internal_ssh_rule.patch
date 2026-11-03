@@ -1,0 +1,27 @@
+--- a/Code/DevSecOps/infra/security_groups.tf
++++ b/Code/DevSecOps/infra/security_groups.tf
+@@ -51,2 +51,24 @@ resource "aws_security_group" "app" {
+   tags = { Name = "${var.name_prefix}-app" }
+ }
++
++# N06: management SSH is restricted to the private VPC network.
++resource "aws_security_group" "admin_internal" {
++  name        = "${var.name_prefix}-admin-internal"
++  description = "SSH only from the private VPC network"
++  vpc_id      = aws_vpc.main.id
++
++  ingress {
++    description = "SSH from private VPC CIDR only"
++    from_port   = 22
++    to_port     = 22
++    protocol    = "tcp"
++    cidr_blocks = ["10.0.0.0/16"]
++  }
++
++  egress {
++    from_port = 0
++    to_port = 0
++    protocol = "-1"
++    cidr_blocks = ["10.0.0.0/16"]
++  }
++}
