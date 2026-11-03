@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
-# Chạy đủ 5 lớp quét trên cây làm việc hiện tại (đã áp patch nếu có), cùng phạm vi với CI.
-# Ghi báo cáo thô, thời gian từng công cụ (timings.tsv) và phiên bản (versions.json) vào <out_dir>.
-# Mã thoát của từng công cụ được ghi lại; script không dừng giữa chừng để giữ đủ dữ liệu.
+# Quét đủ 5 lớp trên cây làm việc (đã áp patch); ghi báo cáo thô, timings.tsv, versions.json.
 # Dùng (đứng ở Code/DevSecOps): tests/run_scans.sh <out_dir> [--image]
 set -uo pipefail
 

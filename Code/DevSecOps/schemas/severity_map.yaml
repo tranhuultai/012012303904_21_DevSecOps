@@ -1,9 +1,5 @@
-# Bảng quy đổi mức độ cho finding KHÔNG có severity gốc:
-# - Checkov bản mở trả check_severity rỗng (chỉ có PASSED/FAILED);
-# - luật Conftest tự viết trong rules/conftest.
-# Quyết định của nhóm: khóa kiểm soát tác động cao (trùng iac_block_controls của G2) -> HIGH,
-# rule còn lại -> mức mặc định MEDIUM. Công cụ nào tự chấm mức (Trivy, Semgrep, Grype) thì giữ
-# mức của công cụ, không tra bảng này.
+# Mức độ cho finding không có severity gốc (Checkov bản mở, luật Conftest tự viết).
+# Quyết định của nhóm: khóa kiểm soát tác động cao (trùng iac_block_controls của G2) là HIGH.
 default: MEDIUM
 
 rules:

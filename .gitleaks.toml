@@ -1,10 +1,5 @@
-# Allowlist Gitleaks cho bộ đáp án thực nghiệm.
-# Các tệp dưới đây chứa giá trị GIẢ có entropy cao được gieo cố ý làm lỗi mẫu
-# (D02, D07, D08...) nên máy quét phải bỏ qua để pipeline main không đỏ.
-# Việc phát hiện các lỗi này được thực hiện trên nhánh gieo lỗi bằng patch,
-# không phải trên lịch sử repo chứa tệp patch.
-# Không bỏ qua lab/: mẫu ở lab/ là baseline sạch, D07 được gieo vào đó bằng patch
-# nên Gitleaks phải nhìn thấy.
+# Bỏ qua tệp patch gieo lỗi và kết quả quét (chứa giá trị GIẢ).
+# Không bỏ qua lab/: đó là baseline sạch, D07 gieo vào bằng patch phải bị quét thấy.
 
 title = "Gitleaks allowlist - bo dap an DevSecOps de tai 21"
 
