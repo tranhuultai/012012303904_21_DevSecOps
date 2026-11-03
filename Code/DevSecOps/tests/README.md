@@ -34,76 +34,25 @@ Pipeline chạy quá 10 phút.
 - H3: Cấu hình song song có cache (C3) rút ngắn thời gian trung vị ít nhất 30% so với tuần tự không cache (C1).
 - H4: Image sau khắc phục giảm ít nhất một nửa số CVE CRITICAL/HIGH có bản vá và nhẹ hơn image trước.
 
-## Mục 3. Trạng thái nguồn dữ liệu đang commit
+## Mục 3. Dữ liệu và cách thu
 
-- Baseline CI mới nhất đã phân tích là commit
-  `cbcef8e32d5b007229be5e424409e8ee00fe278e`:
-  [run #13](https://github.com/gialong611/DevSecOps_Project/actions/runs/41288998886).
-  Metadata và ID artifact nằm ở `results/metrics/ci_baseline_latest.json`.
-  Gate có 275 findings, 0 blockers, 30 warnings và quyết định `WARN`; đây là
-  run `push`, còn ngưỡng 20 warnings áp dụng cho PR nên chưa đo trực tiếp PR bị
-  tê liệt.
-- Raw artifact E4 đã được đọc: Trivy giảm 4.721→188 record (-4.533), gồm
-  CRITICAL 21→0, HIGH 531→52, MEDIUM 2.037→71, LOW 2.030→64, UNKNOWN 102→1;
-  SBOM giảm 22.921→2.860 package (-20.061). Cả hai image dùng Trivy 0.76.1,
-  cùng snapshot DB `2026-11-01 07:08:40 UTC`, Debian 13.7 và amd64; Python
-  khác phiên bản 3.12.15→3.12.16. Vì vậy không quy delta cho từng kiểm soát
-  riêng lẻ. Hai image chỉ có local image ID, không có `RepoDigests`.
-- E3 run #13 có 28s (security-scan), 37s (IaC), 171s (image); critical path
-  của ba job scan song song là 171s. Tổng 236s là phép cộng tuần tự ước tính,
-  không phải workflow tuần tự đã đo. Run #11 có 148s trên commit khác, không
-  gộp với #13 thành lần lặp. Chưa so sánh cache bật/tắt hoặc mức song song.
-- Checkov artifact `checkov.json` là stream gồm 3 JSON document liên tiếp.
-  Loader của dự án có thể đọc stream, còn `json.load` tiêu chuẩn báo `Extra
-  data` ở dòng 6354. Workflow local hiện lưu nguyên bản vào
-  `checkov.stream.json` rồi dùng `jq -s` tạo `checkov.json` dạng JSON array;
-  cần CI run tiếp theo để xác nhận output mới.
-- 15 cảnh báo MEDIUM đã được phân nhóm: 5 Python, 5 pip, 2 pytest và 3
-  Starlette. Các cập nhật Python 3.13.18, pip 26.2.2 và pytest 9.0.3 trong
-  working tree nhắm tới 12 cảnh báo; 3 cảnh báo Starlette được hoãn để đánh
-  giá tương thích. 18 warning là dự báo nếu cả 12 advisory biến mất và không
-  có cảnh báo mới, không phải kết quả đo. Xem
-  `results/metrics/ci_warning_triage_run13.md`.
-- `findings.csv` là bộ finding dự kiến gắn với lỗi gieo cài, không phải bản xuất
-  thô của Semgrep/Gitleaks/Trivy/Checkov.
-- `decisions.csv` ghi các quyết định fixture theo policy. E1/E2 dùng các quyết
-  định này; chúng không chứng minh scanner đã bắt lỗi nếu thiếu báo cáo thô và
-  liên kết GitHub Actions cho từng mẫu.
-- `runs.csv` hiện không có URL workflow run, mỗi `change_id` chỉ có một dòng,
-  và không phân nhóm cache bật/tắt hoặc chế độ song song. Không dùng các thống
-  kê này để kết luận thời gian CI đại diện cho pipeline.
-- Patch N01–N08 hiện có thể chạy độc lập qua workflow dispatch. Chưa có lần
-  chạy CI thật ghi nhận scanner false positive và gate false block cho từng control.
-- E4 độ nhạy KEV/EPSS T0 hiện là mô phỏng; chỉ kết luận thay đổi dữ liệu theo
-  thời gian khi lưu được ít nhất hai snapshot có ngày/nguồn. E4 chỉ được coi là
-  so sánh image/SBOM hoàn tất khi output live chứa cả hai
-  báo cáo Trivy và hai SBOM Syft. Workflow image chạy script này và lưu output
-  trong artifact `report-image`.
-- `report-gate` có `reports/experiment/observation.json`: bản ghi cho đúng một
-  workflow run, có thể là baseline hoặc một patch fixture. Bản ghi gồm run URL,
-  commit, phiên bản tool đã ghim, quyết định gate, metadata thời điểm cập nhật
-  vulnerability DB của Trivy, thống kê finding và SHA-256 của các báo cáo thô.
-  `evidence_status` là
-  `partial` nếu thiếu báo cáo/timing/gate hoặc không có run URL. Bản ghi này
-  giúp truy vết một lần chạy, nhưng chưa thay cho phép thử từng patch D/N/C hay
-  các lần lặp E3. Cấu trúc được mô tả tại
-  `schemas/scan-observation.schema.json` và workflow xác thực schema sau khi tạo.
-- Chạy thủ công workflow `DevSecOps CI` với `fixture_id=baseline`, sau đó chạy
-  từng `D01`–`D28`, `C01`–`C10` và `N01`–`N08` để áp patch độc lập, quét working tree và lưu
-  gate của cả G0/G1/G2. Tải artifact `report-gate` của các run vào cùng thư mục,
-  rồi dùng `python tests/analyze_fixture_observations.py --input-dir <thu_muc_artifact>
-  --out-dir results/metrics/live`. Bộ tổng hợp so fingerprint với baseline cùng
-  commit/tool versions/Trivy DB snapshot và chỉ tính finding mới trên file mục tiêu. Báo cáo tách
-  scanner false positive trên N controls khỏi gate false block trên C changes.
-  Trạng thái chỉ là complete sau khi đủ tất cả D/C/N và một baseline cùng commit.
-  Bộ tổng hợp yêu cầu các run có cùng phiên bản công cụ và cùng Trivy database
-  snapshot. Nếu metadata DB khác baseline, không gộp các run đó; chạy lại cả
-  nhóm với một baseline mới để tránh so findings từ hai tập dữ liệu lỗ hổng khác
-  nhau.
-
-Khi thu thập lại, lưu artifact scanner không chuẩn hóa, kết quả gate của G0/G1/G2,
-URL run, hash commit, phiên bản tool, thời gian bắt đầu/kết thúc và cấu hình
-cache/song song. Không thay dữ liệu fixture bằng số đo CI nếu chưa lưu nguồn.
+- E1, E2, E4: workflow `experiments.yml` chạy ma trận 47 mẫu (BASE, D01–D28, C01–C10, N01–N08) trên
+  commit của tag `gt-v1`. Mỗi mẫu áp đúng một patch rồi chạy `run_scans.sh` với cùng phiên bản công
+  cụ như `ci.yml`; Semgrep chạy tách luật tự viết và bộ luật registry. Job `aggregate` lấy KEV/EPSS
+  tại thời điểm chấm, chạy `collect_experiment.py` và `eval_policies.py` (Conftest thật cho G0/G1/G2,
+  chế độ full và delta), job `e4-image` build mỗi image ba lần rồi quét SBOM và lỗ hổng.
+- E3: workflow `e3-orchestrate.yml` chạy xen kẽ C1 (tuần tự, không cache), C2 (song song, không cache),
+  C3 (song song, cache pip, Trivy DB, binary công cụ) trên cùng một SHA; thời gian lấy từ API jobs,
+  không tính thời gian xếp hàng. Lượt đầu của C3 là cache lạnh và được loại khi tính trung vị.
+- Dữ liệu thô được lưu tại `results/raw/exp_<ngày>_<run_id>/` và `results/raw/e3_<ngày>_<run_id>/`:
+  `findings_all.csv`, `decisions.csv`, `samples.csv`, `scan_runs.csv`, `consistency.json`,
+  `e4_images.csv`, `kev/`, `samples/<mẫu>/` và `runs.csv`, `jobs.csv`. Mọi tệp có URL run GitHub
+  Actions; báo cáo thô đầy đủ của từng công cụ nằm trong artifact của run (giữ 90 ngày).
+- `analyze_results.py` (hoặc `analysis.ipynb`) sinh `results/metrics/*.csv`, `results/figures/*.png`
+  và `results/metrics/so_lieu_bao_cao.csv`; số nào chưa có nguồn được ghi `CHUA_DO`.
+- Finding được tính là phát hiện đúng khi là finding mới so với baseline, có rule ID thuộc
+  `accepted_rule_ids` và trỏ đúng tệp đích trong `ground_truth.csv`. Recall trình bày phân số trước,
+  phần trăm sau; không dùng accuracy.
 
 ## Ước tính chi phí runner
 

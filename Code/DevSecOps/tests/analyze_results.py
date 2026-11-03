@@ -219,6 +219,8 @@ def main() -> int:
     args = parser.parse_args()
     exp = args.exp or latest("exp_*")
     e3_dir = args.e3 or latest("e3_*")
+    if exp is None:
+        raise SystemExit("chưa có dữ liệu thực nghiệm trong tests/results/raw/exp_*")
     truth = read_csv(GROUND_TRUTH)
     samples = read_csv(exp / "samples.csv")
     run_url = samples[0]["run_url"]

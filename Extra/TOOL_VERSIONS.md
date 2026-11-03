@@ -5,7 +5,7 @@ binary bên ngoài được kiểm checksum theo tệp phát hành chính thức
 `.github/workflows/ci.yml`). Bảng này là nguồn sự thật duy nhất về phiên bản.
 
 Người chịu trách nhiệm cập nhật: Trần Hữu Tài (Tài) — mục 4.5 phân công.
-Khi nâng phiên bản: cập nhật bảng này + env trong `ci.yml` trong cùng một PR.
+Khi nâng phiên bản: cập nhật bảng này cùng env trong `ci.yml`, `experiments.yml`, `e3-timing.yml` trong một PR.
 
 ## 1. GitHub Actions (ghim SHA đầy đủ 40 ký tự)
 
@@ -13,7 +13,7 @@ Khi nâng phiên bản: cập nhật bảng này + env trong `ci.yml` trong cùn
 |---|---|---|---|
 | actions/checkout | v7.0.1 | `3d3c42e5aac5ba805825da76410c181273ba90b1` | tất cả job |
 | actions/setup-python | v7.1.0 | `6d4fd22b20465ccc0f7354476588e8df7c9ca0e0` | test, security-scan, gate |
-| actions/setup-go | v7 | `b7ad1dad31e06c5925ef5d2fc7ad053ef454303e` | (dự phòng, chưa dùng) |
+| actions/cache | v5.0.5 | `27d5ce7f107fe9357f9df03efb73ab90386fccae` | e3-timing (cấu hình C3) |
 | actions/upload-artifact | v7.0.0 | `cf430e030ddbb5b0abf93d22962f4752f3646cd9` | scan, iac, image, gate, release |
 | actions/download-artifact | v7.0.0 | `37930b1c2abaa49bbe596cd826c3c89aef350131` | gate |
 | actions/attest | v4.2.2 | `1e69f48acb82d1966a394da916b4c1698aa569d6` | release provenance |
