@@ -15,7 +15,7 @@ VALID_DECISIONS = {"PASS", "WARN", "BLOCK"}
 
 PROJECT_DIR = Path(__file__).resolve().parents[2]
 DEFAULT_FINDINGS = PROJECT_DIR / "reports" / "normalized_findings.json"
-DEFAULT_GATE = PROJECT_DIR / "reports" / "security_gate.json"
+DEFAULT_GATE = PROJECT_DIR / "gate_report.json"
 DEFAULT_OUTPUT = PROJECT_DIR / "reports" / "pr_summary.md"
 
 
@@ -386,7 +386,7 @@ def main():
     parser.add_argument(
         "--gate",
         default=str(DEFAULT_GATE),
-        help="Path to security_gate.json",
+        help="Path to gate_report.json (tools/conftest_gate_report.py)",
     )
     parser.add_argument(
         "--output",
@@ -418,7 +418,7 @@ def main():
         else:
             raise FileNotFoundError(
                 f"Gate report not found: {gate_path}. "
-                "Run security_gate.py first or use --allow-missing-gate."
+                "Run tools/conftest_gate_report.py first or use --allow-missing-gate."
             )
 
         markdown = build_summary(findings, gate_report, args.title)

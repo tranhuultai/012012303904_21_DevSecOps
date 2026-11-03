@@ -11,5 +11,4 @@ description = "Bo qua tep patch gieo loi va ket qua quet cua bo dap an"
 paths = [
   '''Code/DevSecOps/ground_truth/patches/''',
   '''Code/DevSecOps/tests/results/''',
-  '''Extra/''',
 ]

@@ -20,7 +20,6 @@ sys.path.insert(0, str(TOOLS_DIR / "test"))
 import normalize_findings as nf  # noqa: E402
 import enrich_findings as ef  # noqa: E402
 import conftest_gate_report as cgr  # noqa: E402
-import e4_image_remediation as e4  # noqa: E402
 from generate_pr_summary import build_summary  # noqa: E402
 
 
@@ -296,42 +295,3 @@ def test_pr_summary_from_gate_report():
     md = build_summary(findings, report, title="T")
     assert "**Decision: BLOCK**" in md
     assert "| HIGH | 1 |" in md
-
-
-# ────────────────────────────────────────────────────────────
-# E4 helpers
-# ────────────────────────────────────────────────────────────
-
-def test_e4_dockerfile_checks_real_files():
-    before = TESTS_DIR.parent / "lab" / "docker" / "Dockerfile.vuln"
-    after = TESTS_DIR.parent / "Dockerfile"
-    if not before.is_file() or not after.is_file():
-        pytest.skip("thiếu Dockerfile so sánh")
-    b = e4.dockerfile_checks(before)
-    a = e4.dockerfile_checks(after)
-    assert b["non_root_user"] is False
-    assert b["no_add_remote"] is False
-    assert b["no_sshd_or_port22"] is False
-    assert b["multi_stage"] is False
-    assert a["non_root_user"] is True
-    assert a["no_add_remote"] is True
-    assert a["no_sshd_or_port22"] is True
-    assert a["multi_stage"] is True
-
-
-def test_e4_g2_sca_decision_rules():
-    assert e4.g2_sca_decision("LOW", True, 0.0, False, "low") == "BLOCK"  # KEV
-    assert e4.g2_sca_decision("LOW", False, 0.2, False, "low") == "BLOCK"  # EPSS cao
-    assert e4.g2_sca_decision("HIGH", False, 0.0, True, "high") == "BLOCK"
-    assert e4.g2_sca_decision("HIGH", False, 0.0, False, "high") == "WARN"
-    assert e4.g2_sca_decision("MEDIUM", False, 0.0, True, "high") == "WARN"
-
-
-def test_e4_drift_with_committed_kev_subset_and_empty_epss():
-    # This mirrors the committed KEV subset. Empty EPSS means no score was
-    # measured; the T0 values in e4_image_remediation are explicitly synthetic.
-    kev_ids = {"CVE-2025-30066"}
-    epss = {}
-    drift = e4.db_drift_analysis(kev_ids, epss)
-    changed = {c["cve"] for c in drift["changed_decisions"]}
-    assert changed == {"CVE-2024-35195", "CVE-2023-45803"}

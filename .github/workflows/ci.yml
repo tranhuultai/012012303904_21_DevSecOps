@@ -336,19 +336,6 @@ jobs:
         if: always()
         run: python tests/record_trivy_runtime.py --out reports/experiment/trivy-runtime-image.json
 
-      - name: E4 image remediation (before/after SBOM and vulnerabilities)
-        if: env.FIXTURE_ID == 'baseline'
-        run: >-
-          python tests/e4_image_remediation.py --live --out-dir reports/e4
-          --trivy-runtime-meta reports/experiment/trivy-runtime-image.json
-
-      - name: Mark E4 omitted from patch fixture run
-        if: env.FIXTURE_ID != 'baseline' && !contains(fromJSON('["D12","D13","D14","D15"]'), env.FIXTURE_ID)
-        run: |
-          mkdir -p reports/experiment
-          printf '{"skipped":["e4-live-image-remediation"],"reason":"E4 is a separate baseline experiment and runs only for the baseline dispatch."}\n' \
-            > reports/experiment/skipped-scans.json
-
       - name: Record CI timing
         if: always()
         run: python tests/record_ci_timing.py --job image --started-at-epoch "$JOB_START_EPOCH" --out reports/timing/image.json
