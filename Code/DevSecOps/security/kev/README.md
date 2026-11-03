@@ -16,11 +16,7 @@ Trong chính sách G2 (`policy/g2/gate.rego`):
 - **EPSS trung bình (WARN):** Lỗ hổng có `0.01 <= epss < 0.10` được đưa vào danh sách cảnh báo để nhóm phát triển theo dõi mà không làm nghẽn pipeline.
 
 ### 3. Nguồn và trạng thái tệp dữ liệu
-- `cisa_kev_subset.json`: mục đã đối chiếu với CISA KEV, hiện chứa CVE-2025-30066.
-- `epss_subset.json`: hiện để trống vì chưa lưu được snapshot EPSS có ngày và nguồn
-  kiểm chứng. Không diễn giải giá trị thiếu thành EPSS bằng 0; khi đo lại, lưu
-  ngày truy vấn và nguồn FIRST trong artifact.
-
-Các quyết định E1/E2 fixture cũ có CVE/KEV/EPSS không được xác nhận; đã loại khỏi
-dữ liệu mẫu. Số liệu thực nghiệm cần thu lại từ scanner.
-
+- `kev_snapshot.json`: catalog CISA KEV đầy đủ (mã CVE, ngày thêm), tải ngày 2026-11-03, `catalogVersion` 2026.10.30.
+- `epss_snapshot.json`: điểm EPSS của FIRST cho các CVE trong bộ đáp án (D09–D11), tải cùng ngày.
+- Gate trong CI và workflow thực nghiệm tải lại cả hai nguồn mỗi lần chạy bằng `tools/fetch_kev_epss.py`;
+  hai tệp trên chỉ được dùng khi không tải được nguồn.
