@@ -1,5 +1,13 @@
---- a/.github/workflows/ci.yml
-+++ b/.github/workflows/ci.yml
-@@ -37,1 +37,1 @@ jobs:
--        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1; N08 immutable SHA
+diff --git a/Code/DevSecOps/lab/workflows-vuln/.github/workflows/ci-vuln.yml b/Code/DevSecOps/lab/workflows-vuln/.github/workflows/ci-vuln.yml
+index 61f69c8..3aeb110 100644
+--- a/Code/DevSecOps/lab/workflows-vuln/.github/workflows/ci-vuln.yml
++++ b/Code/DevSecOps/lab/workflows-vuln/.github/workflows/ci-vuln.yml
+@@ -28,3 +28,8 @@ jobs:
+         env:
+           APP_ENV: test
+         run: echo "running tests in ${APP_ENV}"
++
++      - name: Set up Python
++        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
++        with:
++          python-version: "3.13"

@@ -1,6 +1,13 @@
---- a/.github/workflows/ci.yml
-+++ b/.github/workflows/ci.yml
-@@ -37,2 +37,2 @@ jobs:
-       - name: Checkout repository
+diff --git a/Code/DevSecOps/lab/workflows-vuln/.github/workflows/ci-vuln.yml b/Code/DevSecOps/lab/workflows-vuln/.github/workflows/ci-vuln.yml
+index 61f69c8..655f6af 100644
+--- a/Code/DevSecOps/lab/workflows-vuln/.github/workflows/ci-vuln.yml
++++ b/Code/DevSecOps/lab/workflows-vuln/.github/workflows/ci-vuln.yml
+@@ -15,7 +15,7 @@ jobs:
+     runs-on: ubuntu-24.04
+     steps:
+       - name: Checkout
 -        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 +        uses: actions/checkout@v7
+ 
+       # Giá trị từ người dùng đi qua biến môi trường, không chèn thẳng vào lệnh shell.
+       - name: Show PR title

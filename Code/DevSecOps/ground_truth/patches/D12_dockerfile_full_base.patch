@@ -1,5 +1,5 @@
 diff --git a/Code/DevSecOps/Dockerfile b/Code/DevSecOps/Dockerfile
-index 580c3fb..8fcbe51 100644
+index 0a7de84..e78eb51 100644
 --- a/Code/DevSecOps/Dockerfile
 +++ b/Code/DevSecOps/Dockerfile
 @@ -1,5 +1,5 @@
@@ -10,11 +10,11 @@ index 580c3fb..8fcbe51 100644
  WORKDIR /build
  COPY src/requirements.txt .
 @@ -7,7 +7,7 @@ RUN python -m venv /opt/venv \
-    && /opt/venv/bin/pip install --no-cache-dir --upgrade "pip==26.2.2" \
+     && /opt/venv/bin/pip install --no-cache-dir --upgrade "pip==26.2.2" \
      && /opt/venv/bin/pip install --no-cache-dir -r requirements.txt
  
 -FROM python:3.13.18-slim-trixie@sha256:76baad6037690d6e8c4397fbcaef17bca6f19eecef822b708fe8fa3417d30bb5 AS runtime
 +FROM python:3.13.18-trixie@sha256:f32f0f0e0d159bb11df450a10a84e9fae1ff115d4e67710f082a47d0a139dad9 AS runtime
  
- ENV PYTHONDONTWRITEBYTECODE=1 \
-     PYTHONUNBUFFERED=1 \
+ # Pip thuộc base image nằm ngoài virtualenv; cập nhật vì ứng dụng không dùng bản pip cũ.
+ RUN python -m pip install --no-cache-dir --upgrade "pip==26.2.2" \

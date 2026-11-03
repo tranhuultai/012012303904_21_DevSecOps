@@ -1,9 +1,15 @@
---- a/.github/workflows/ci.yml
-+++ b/.github/workflows/ci.yml
-@@ -51,2 +51,6 @@ jobs:
-       - name: Run tests
-         run: python -m pytest -v src/test
-+
-+      - name: Echo PR title unsafely (experiment fixture)
+diff --git a/Code/DevSecOps/lab/workflows-vuln/.github/workflows/ci-vuln.yml b/Code/DevSecOps/lab/workflows-vuln/.github/workflows/ci-vuln.yml
+index 61f69c8..013612d 100644
+--- a/Code/DevSecOps/lab/workflows-vuln/.github/workflows/ci-vuln.yml
++++ b/Code/DevSecOps/lab/workflows-vuln/.github/workflows/ci-vuln.yml
+@@ -24,6 +24,10 @@ jobs:
+           PR_TITLE: ${{ github.event.pull_request.title }}
+         run: echo "PR title ${PR_TITLE}"
+ 
++      - name: Echo PR title unsafely
 +        if: github.event_name == 'pull_request'
-+        run: echo "PR ${{ github.event.pull_request.title }}"
++        run: echo "PR title ${{ github.event.pull_request.title }}"
++
+       - name: Run tests
+         env:
+           APP_ENV: test
