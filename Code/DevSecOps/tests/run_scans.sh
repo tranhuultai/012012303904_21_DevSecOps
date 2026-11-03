@@ -6,9 +6,12 @@ set -uo pipefail
 out="${1:?thiếu out_dir}"
 with_image="${2:-}"
 root="$(git rev-parse --show-toplevel)"
+layers=" ${LAYERS:-sast secret sca iac image} "
 mkdir -p "${out}"
 timings="${out}/timings.tsv"
 printf 'step\tstarted\tfinished\texit_code\n' > "${timings}"
+
+has() { case "${layers}" in *" $1 "*) return 0 ;; esac; return 1; }
 
 step() {
   local name="$1" start end status
@@ -21,27 +24,30 @@ step() {
 }
 
 # SAST: chạy tách hai bộ luật để so luật tự viết với bộ luật registry.
+if has sast; then
 step semgrep_custom semgrep scan --config rules/semgrep --metrics=off --json --output "${out}/semgrep.json" src tools
 step semgrep_registry semgrep scan --config "${SEMGREP_REGISTRY_RULESET:-p/python}" --metrics=off --json --output "${out}/semgrep_registry.json" src tools
+fi
 # Secret: quét cây làm việc để thấy thay đổi chưa commit.
-step gitleaks gitleaks dir "${root}" --config "${root}/.gitleaks.toml" --report-format json --report-path "${out}/gitleaks.json" --exit-code 0
+has secret && step gitleaks gitleaks dir "${root}" --config "${root}/.gitleaks.toml" --report-format json --report-path "${out}/gitleaks.json" --exit-code 0
 # SCA
-step trivy_fs trivy fs --scanners vuln --format json --output "${out}/trivy.json" --exit-code 0 --ignore-unfixed .
+has sca && step trivy_fs trivy fs --scanners vuln --format json --output "${out}/trivy.json" --exit-code 0 --ignore-unfixed .
 # IaC: gọi Checkov riêng từng framework rồi gộp, tránh trường hợp gọi gộp bỏ sót Dockerfile.
+if has iac; then
 step checkov_iac sh -c "checkov -d infra -d deploy --framework terraform kubernetes --compact --soft-fail -o json > '${out}/checkov_iac.json'"
 step checkov_docker sh -c "checkov -f Dockerfile --framework dockerfile --compact --soft-fail -o json > '${out}/checkov_docker.json'"
 step checkov_gha sh -c "checkov -d lab/workflows-vuln --framework github_actions --compact --soft-fail -o json > '${out}/checkov_gha.json'"
 step trivy_config trivy config --format json --output "${out}/trivy_config.json" --exit-code 0 --skip-dirs lab .
 # Workflow: luật Conftest tự viết (Conftest thoát 1 khi có deny, vẫn ghi đủ báo cáo).
 step conftest_wf sh -c "conftest test -p rules/conftest lab/workflows-vuln/.github/workflows/ci-vuln.yml -o json > '${out}/conftest_wf.json'; test -s '${out}/conftest_wf.json'"
+jq -s 'map(if type == "array" then .[] else . end)' \
+  "${out}/checkov_iac.json" "${out}/checkov_docker.json" "${out}/checkov_gha.json" > "${out}/checkov.json"
+fi
 
-if [ "${with_image}" = "--image" ]; then
+if [ "${with_image}" = "--image" ] && has image; then
   step image_build docker build -q -f Dockerfile -t exp-image:scan .
   step trivy_image trivy image --format json --output "${out}/trivy_image.json" --exit-code 0 exp-image:scan
 fi
-
-jq -s 'map(if type == "array" then .[] else . end)' \
-  "${out}/checkov_iac.json" "${out}/checkov_docker.json" "${out}/checkov_gha.json" > "${out}/checkov.json"
 
 python - "${out}" <<'PY'
 import json
