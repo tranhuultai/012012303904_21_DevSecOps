@@ -1,0 +1,46 @@
+ma_so,gia_tri,don_vi,n,cach_tinh,tep_nguon,run_url
+E1_RECALL_KET_HOP,28/28 (100.0 %),lỗi,28,lỗi D có ít nhất một finding mới khớp rule chấp nhận và tệp đích,exp_20261103_41659076551/findings_all.csv,https://github.com/tranhuultai/012012303904_21_DevSecOps/actions/runs/41659076551
+E1_RECALL_CONG_CU_CAO_NHAT,checkov: 13/28 (46.4 %),lỗi,28,số lỗi D một công cụ bắt được trên 28,exp_20261103_41659076551/findings_all.csv,https://github.com/tranhuultai/012012303904_21_DevSecOps/actions/runs/41659076551
+E1_N_BAO_DUNG_RULE_DICH,0/8 (0.0 %),mẫu,8,mẫu N có finding mới đúng rule đích của lỗi tương ứng,exp_20261103_41659076551/findings_all.csv,https://github.com/tranhuultai/012012303904_21_DevSecOps/actions/runs/41659076551
+E1_C_CO_FINDING_MOI,0/10 (0.0 %),thay đổi,10,thay đổi sạch có finding mới so với baseline,exp_20261103_41659076551/findings_all.csv,https://github.com/tranhuultai/012012303904_21_DevSecOps/actions/runs/41659076551
+E1_FINDING_NGOAI_DAP_AN,"{""MEDIUM"": 26, ""HIGH"": 27, ""LOW"": 25, ""INFO"": 18, ""CRITICAL"": 1}",finding,,"finding mới trên mẫu D không khớp đáp án, theo mức",exp_20261103_41659076551/findings_all.csv,https://github.com/tranhuultai/012012303904_21_DevSecOps/actions/runs/41659076551
+E2_G0_DELTA_BLOCK_RATE,0/28 (0.0 %),lỗi,28,mẫu D bị gate trả BLOCK,exp_20261103_41659076551/decisions.csv,https://github.com/tranhuultai/012012303904_21_DevSecOps/actions/runs/41659076551
+E2_G0_DELTA_FALSE_BLOCK,0/10 (0.0 %),thay đổi,10,mẫu C bị gate trả BLOCK,exp_20261103_41659076551/decisions.csv,https://github.com/tranhuultai/012012303904_21_DevSecOps/actions/runs/41659076551
+E2_G0_DELTA_WARN_TRUNG_VI,0.0,cảnh báo/PR,38,trung vị số WARN trên D+C,exp_20261103_41659076551/decisions.csv,https://github.com/tranhuultai/012012303904_21_DevSecOps/actions/runs/41659076551
+E2_G0_DELTA_WARN_LON_NHAT,0,cảnh báo/PR,38,lớn nhất số WARN trên D+C,exp_20261103_41659076551/decisions.csv,https://github.com/tranhuultai/012012303904_21_DevSecOps/actions/runs/41659076551
+E2_G0_FULL_BLOCK_RATE,0/28 (0.0 %),lỗi,28,mẫu D bị gate trả BLOCK,exp_20261103_41659076551/decisions.csv,https://github.com/tranhuultai/012012303904_21_DevSecOps/actions/runs/41659076551
+E2_G0_FULL_FALSE_BLOCK,0/10 (0.0 %),thay đổi,10,mẫu C bị gate trả BLOCK,exp_20261103_41659076551/decisions.csv,https://github.com/tranhuultai/012012303904_21_DevSecOps/actions/runs/41659076551
+E2_G0_FULL_WARN_TRUNG_VI,0.0,cảnh báo/PR,38,trung vị số WARN trên D+C,exp_20261103_41659076551/decisions.csv,https://github.com/tranhuultai/012012303904_21_DevSecOps/actions/runs/41659076551
+E2_G0_FULL_WARN_LON_NHAT,0,cảnh báo/PR,38,lớn nhất số WARN trên D+C,exp_20261103_41659076551/decisions.csv,https://github.com/tranhuultai/012012303904_21_DevSecOps/actions/runs/41659076551
+E2_G1_DELTA_BLOCK_RATE,28/28 (100.0 %),lỗi,28,mẫu D bị gate trả BLOCK,exp_20261103_41659076551/decisions.csv,https://github.com/tranhuultai/012012303904_21_DevSecOps/actions/runs/41659076551
+E2_G1_DELTA_FALSE_BLOCK,0/10 (0.0 %),thay đổi,10,mẫu C bị gate trả BLOCK,exp_20261103_41659076551/decisions.csv,https://github.com/tranhuultai/012012303904_21_DevSecOps/actions/runs/41659076551
+E2_G1_DELTA_WARN_TRUNG_VI,0.0,cảnh báo/PR,38,trung vị số WARN trên D+C,exp_20261103_41659076551/decisions.csv,https://github.com/tranhuultai/012012303904_21_DevSecOps/actions/runs/41659076551
+E2_G1_DELTA_WARN_LON_NHAT,0,cảnh báo/PR,38,lớn nhất số WARN trên D+C,exp_20261103_41659076551/decisions.csv,https://github.com/tranhuultai/012012303904_21_DevSecOps/actions/runs/41659076551
+E2_G1_FULL_BLOCK_RATE,28/28 (100.0 %),lỗi,28,mẫu D bị gate trả BLOCK,exp_20261103_41659076551/decisions.csv,https://github.com/tranhuultai/012012303904_21_DevSecOps/actions/runs/41659076551
+E2_G1_FULL_FALSE_BLOCK,10/10 (100.0 %),thay đổi,10,mẫu C bị gate trả BLOCK,exp_20261103_41659076551/decisions.csv,https://github.com/tranhuultai/012012303904_21_DevSecOps/actions/runs/41659076551
+E2_G1_FULL_WARN_TRUNG_VI,0.0,cảnh báo/PR,38,trung vị số WARN trên D+C,exp_20261103_41659076551/decisions.csv,https://github.com/tranhuultai/012012303904_21_DevSecOps/actions/runs/41659076551
+E2_G1_FULL_WARN_LON_NHAT,0,cảnh báo/PR,38,lớn nhất số WARN trên D+C,exp_20261103_41659076551/decisions.csv,https://github.com/tranhuultai/012012303904_21_DevSecOps/actions/runs/41659076551
+E2_G2_DELTA_BLOCK_RATE,22/28 (78.6 %),lỗi,28,mẫu D bị gate trả BLOCK,exp_20261103_41659076551/decisions.csv,https://github.com/tranhuultai/012012303904_21_DevSecOps/actions/runs/41659076551
+E2_G2_DELTA_FALSE_BLOCK,0/10 (0.0 %),thay đổi,10,mẫu C bị gate trả BLOCK,exp_20261103_41659076551/decisions.csv,https://github.com/tranhuultai/012012303904_21_DevSecOps/actions/runs/41659076551
+E2_G2_DELTA_WARN_TRUNG_VI,0.0,cảnh báo/PR,38,trung vị số WARN trên D+C,exp_20261103_41659076551/decisions.csv,https://github.com/tranhuultai/012012303904_21_DevSecOps/actions/runs/41659076551
+E2_G2_DELTA_WARN_LON_NHAT,951,cảnh báo/PR,38,lớn nhất số WARN trên D+C,exp_20261103_41659076551/decisions.csv,https://github.com/tranhuultai/012012303904_21_DevSecOps/actions/runs/41659076551
+E2_G2_FULL_BLOCK_RATE,22/28 (78.6 %),lỗi,28,mẫu D bị gate trả BLOCK,exp_20261103_41659076551/decisions.csv,https://github.com/tranhuultai/012012303904_21_DevSecOps/actions/runs/41659076551
+E2_G2_FULL_FALSE_BLOCK,0/10 (0.0 %),thay đổi,10,mẫu C bị gate trả BLOCK,exp_20261103_41659076551/decisions.csv,https://github.com/tranhuultai/012012303904_21_DevSecOps/actions/runs/41659076551
+E2_G2_FULL_WARN_TRUNG_VI,96.0,cảnh báo/PR,38,trung vị số WARN trên D+C,exp_20261103_41659076551/decisions.csv,https://github.com/tranhuultai/012012303904_21_DevSecOps/actions/runs/41659076551
+E2_G2_FULL_WARN_LON_NHAT,1047,cảnh báo/PR,38,lớn nhất số WARN trên D+C,exp_20261103_41659076551/decisions.csv,https://github.com/tranhuultai/012012303904_21_DevSecOps/actions/runs/41659076551
+E3_C1_TRUNG_VI,CHUA_DO,s,,trung vị thời gian tường,e3/runs.csv,
+E3_C1_P90,CHUA_DO,s,,phân vị 90 thời gian tường,e3/runs.csv,
+E3_C2_TRUNG_VI,CHUA_DO,s,,trung vị thời gian tường,e3/runs.csv,
+E3_C2_P90,CHUA_DO,s,,phân vị 90 thời gian tường,e3/runs.csv,
+E3_C3_TRUNG_VI,CHUA_DO,s,,trung vị thời gian tường,e3/runs.csv,
+E3_C3_P90,CHUA_DO,s,,phân vị 90 thời gian tường,e3/runs.csv,
+E4_SIZE_MB_TRUOC,1204.1,MB,,image Dockerfile.vuln,exp_20261103_41659076551/e4_images.csv,https://github.com/tranhuultai/012012303904_21_DevSecOps/actions/runs/41659076551
+E4_SIZE_MB_SAU,179.1,MB,,image Dockerfile,exp_20261103_41659076551/e4_images.csv,https://github.com/tranhuultai/012012303904_21_DevSecOps/actions/runs/41659076551
+E4_SBOM_PACKAGES_TRUOC,517,gói,,image Dockerfile.vuln,exp_20261103_41659076551/e4_images.csv,https://github.com/tranhuultai/012012303904_21_DevSecOps/actions/runs/41659076551
+E4_SBOM_PACKAGES_SAU,118,gói,,image Dockerfile,exp_20261103_41659076551/e4_images.csv,https://github.com/tranhuultai/012012303904_21_DevSecOps/actions/runs/41659076551
+E4_UNIQUE_CVES_TRUOC,1532,CVE,,image Dockerfile.vuln,exp_20261103_41659076551/e4_images.csv,https://github.com/tranhuultai/012012303904_21_DevSecOps/actions/runs/41659076551
+E4_UNIQUE_CVES_SAU,85,CVE,,image Dockerfile,exp_20261103_41659076551/e4_images.csv,https://github.com/tranhuultai/012012303904_21_DevSecOps/actions/runs/41659076551
+E4_CRIT_HIGH_FIXABLE_TRUOC,62,CVE,,image Dockerfile.vuln,exp_20261103_41659076551/e4_images.csv,https://github.com/tranhuultai/012012303904_21_DevSecOps/actions/runs/41659076551
+E4_CRIT_HIGH_FIXABLE_SAU,0,CVE,,image Dockerfile,exp_20261103_41659076551/e4_images.csv,https://github.com/tranhuultai/012012303904_21_DevSecOps/actions/runs/41659076551
+E4_KEV_CVES_TRUOC,0,CVE,,image Dockerfile.vuln,exp_20261103_41659076551/e4_images.csv,https://github.com/tranhuultai/012012303904_21_DevSecOps/actions/runs/41659076551
+E4_KEV_CVES_SAU,0,CVE,,image Dockerfile,exp_20261103_41659076551/e4_images.csv,https://github.com/tranhuultai/012012303904_21_DevSecOps/actions/runs/41659076551
