@@ -1,6 +1,5 @@
-# Mẫu workflow SẠCH dùng làm baseline cho D07, D26-D28, C10, N08: lỗi chỉ được gieo bằng patch.
-# Không chạy trên GitHub vì nằm ngoài .github/workflows ở gốc repo; đường dẫn chứa
-# .github/workflows để Checkov nhận diện đúng framework github_actions.
+# Baseline sạch cho D07, D26-D28, C10, N08; lỗi chỉ được gieo bằng patch.
+# Không chạy trên GitHub (nằm ngoài .github/workflows gốc repo); giữ đường dẫn để Checkov nhận diện.
 name: lab-ci-sample
 
 on:

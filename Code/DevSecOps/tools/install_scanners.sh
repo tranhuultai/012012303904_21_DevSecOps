@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-# Cài công cụ quét bản ghim trên runner Linux, kiểm checksum theo tệp phát hành.
-# Phiên bản lấy từ biến môi trường (TRIVY_VERSION, GITLEAKS_VERSION, ...), giống ci.yml.
+# Cài công cụ quét bản ghim (phiên bản từ biến môi trường như ci.yml), kiểm checksum.
 # Dùng: install_scanners.sh trivy gitleaks conftest syft grype semgrep checkov
 set -euo pipefail
 

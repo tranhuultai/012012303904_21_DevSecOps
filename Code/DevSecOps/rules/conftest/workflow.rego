@@ -1,7 +1,5 @@
-# Luật PHÁT HIỆN lỗi workflow GitHub Actions (D26-D28), chạy bằng Conftest:
-#   conftest test -p rules/conftest lab/workflows-vuln/.github/workflows/ci-vuln.yml
-# Khác policy/: đây là luật đầu vào của máy quét, không phải luật chặn của gate.
-# Mã luật riêng (GHA-...) để không trùng với rule ID của Checkov khi gộp finding.
+# Luật phát hiện lỗi workflow (D26-D28) cho Conftest; là đầu vào máy quét, không phải luật gate.
+# Mã GHA-... riêng để không trùng rule ID của Checkov khi gộp finding.
 package main
 
 import rego.v1
