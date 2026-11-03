@@ -1,0 +1,9 @@
+--- a/.github/workflows/ci.yml
++++ b/.github/workflows/ci.yml
+@@ -51,2 +51,6 @@ jobs:
+       - name: Run tests
+         run: python -m pytest -v src/test
++
++      - name: Echo PR title unsafely (experiment fixture)
++        if: github.event_name == 'pull_request'
++        run: echo "PR ${{ github.event.pull_request.title }}"

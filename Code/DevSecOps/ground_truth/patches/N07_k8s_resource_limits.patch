@@ -1,0 +1,11 @@
+--- a/Code/DevSecOps/deploy/deployment.yaml
++++ b/Code/DevSecOps/deploy/deployment.yaml
+@@ -48,7 +48,8 @@
+           resources:
+             requests:
+               cpu: 50m
+               memory: 64Mi
++            # N07: explicit upper bounds limit resource exhaustion.
+             limits:
+               cpu: 250m
+               memory: 128Mi

@@ -1,6 +1,6 @@
 # CHỈ dùng cho E4 (so sánh image trước/sau khắc phục). KHÔNG triển khai.
 # Cố ý không an toàn: base đầy đủ (D12), chạy root (D13), ADD từ URL (D14), sshd + cổng 22 (D15).
-FROM python@sha256:42dc0ee40d7707e2f2ee506a1cbe52e09ab11c207c5b429342638f83177601fe
+FROM python:3.13.18-trixie@sha256:f32f0f0e0d159bb11df450a10a84e9fae1ff115d4e67710f082a47d0a139dad9
 
 # D15: cài sshd và mở cổng 22
 RUN apt-get update \

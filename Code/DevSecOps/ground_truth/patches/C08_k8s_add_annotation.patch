@@ -1,0 +1,12 @@
+--- a/Code/DevSecOps/deploy/deployment.yaml
++++ b/Code/DevSecOps/deploy/deployment.yaml
+@@ -13,6 +13,9 @@
+     metadata:
+       labels:
+         app: devsecops-app
++      annotations:
++        prometheus.io/scrape: "true"
++        prometheus.io/port: "8000"
+     spec:
+       serviceAccountName: devsecops-app
+       automountServiceAccountToken: false

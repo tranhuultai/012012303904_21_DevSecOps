@@ -1,0 +1,24 @@
+# MẪU WORKFLOW CÓ LỖI - chỉ dùng để gieo D26-D28 bằng patch và kiểm chứng luật.
+# KHÔNG được GitHub Actions thực thi (tên tệp không nằm trong .github/workflows).
+# Lỗi cố ý: D26 permissions write-all, D27 script injection, D28 action không ghim SHA.
+name: vuln-ci-sample
+
+on:
+  workflow_dispatch:
+
+permissions: write-all # D26 / CKV2_GHA_1
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    permissions: write-all # D26 / CKV2_GHA_1 (mức job)
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7 # D28 / CKV_GHA_7: mutable reference
+
+      - name: In tiêu đề PR
+        run: |
+          echo "PR: ${{ github.event.pull_request.title }}" # D27 / CKV_GHA_2
+
+      - name: Chào mừng
+        run: echo "Xin chao ${{ github.event.sender.login }}" # D27 / CKV_GHA_2

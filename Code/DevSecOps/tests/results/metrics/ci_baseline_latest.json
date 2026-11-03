@@ -1,0 +1,311 @@
+{
+  "evidence_status": "workflow_success_gate_warn_raw_artifacts_analyzed_remediation_pending_ci",
+  "recorded_at": "2026-11-01T09:33:57Z",
+  "run": {
+    "run_id": 41288998886,
+    "run_number": 13,
+    "event": "push",
+    "branch": "main",
+    "head_sha": "cbcef8e32d5b007229be5e424409e8ee00fe278e",
+    "created_at": "2026-11-01T09:28:16Z",
+    "conclusion": "success",
+    "url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/41288998886"
+  },
+  "jobs": [
+    {
+      "name": "Run Python tests",
+      "conclusion": "success"
+    },
+    {
+      "name": "Security scans (collection mode)",
+      "conclusion": "success"
+    },
+    {
+      "name": "iac",
+      "conclusion": "success"
+    },
+    {
+      "name": "image",
+      "conclusion": "success"
+    },
+    {
+      "name": "gate (Conftest Rego)",
+      "conclusion": "success"
+    },
+    {
+      "name": "release",
+      "conclusion": "success"
+    },
+    {
+      "name": "deploy-smoke",
+      "conclusion": "success"
+    }
+  ],
+  "gate_result_from_artifact": {
+    "decision": "WARN",
+    "normalized_findings": 275,
+    "blockers": 0,
+    "warnings": 30,
+    "warning_budget": 20,
+    "warning_budget_exceeded": true,
+    "warning_budget_scope": "Run is push; the 20-warning threshold applies to PRs, so this is a baseline noise signal, not a measured PR paralysis.",
+    "warning_severity_counts": {
+      "HIGH": 15,
+      "MEDIUM": 15
+    },
+    "finding_counts_by_tool": {
+      "trivy": 1,
+      "checkov": 92,
+      "grype": 182
+    },
+    "finding_counts_by_severity": {
+      "HIGH": 152,
+      "MEDIUM": 63,
+      "LOW": 13,
+      "INFO": 47
+    }
+  },
+  "scan_artifact_analysis": {
+    "semgrep_findings": 0,
+    "gitleaks_findings": 0,
+    "trivy_dependency_findings": 1,
+    "checkov_failed_checks": 92,
+    "trivy_config_failed_checks": 0,
+    "grype_image_matches": 182,
+    "checkov_raw": {
+      "strict_single_document_json": false,
+      "adjacent_json_documents": 3,
+      "parser_note": "Project loader parses the Checkov JSON stream; generic json.load fails at line 6354. CI is being changed to preserve checkov.stream.json and store a standard JSON array as checkov.json."
+    }
+  },
+  "warning_triage": {
+    "medium_total": 15,
+    "local_remediation_targets": [
+      {
+        "package": "python",
+        "installed": "3.12.16",
+        "planned": "3.13.18",
+        "warning_count": 5,
+        "ids": [
+          "CVE-2025-12781",
+          "CVE-2025-15366",
+          "CVE-2025-15367",
+          "CVE-2026-3446",
+          "CVE-2026-6019"
+        ]
+      },
+      {
+        "package": "pip",
+        "installed": "25.0.1",
+        "planned": "26.2.2",
+        "warning_count": 5,
+        "ids": [
+          "GHSA-4XH5-X5GV-QWPH",
+          "GHSA-58QW-9MGM-455V",
+          "GHSA-JP4C-XJXW-MGF9",
+          "GHSA-QWM4-QH6W-59XR",
+          "GHSA-WF93-45JW-7689"
+        ]
+      },
+      {
+        "package": "pytest",
+        "installed": "8.3.4",
+        "planned": "9.0.3",
+        "warning_count": 2,
+        "ids": [
+          "CVE-2025-71176",
+          "GHSA-6W46-J5RX-G56G"
+        ]
+      }
+    ],
+    "deferred": {
+      "package": "starlette",
+      "installed": "0.41.3",
+      "warning_count": 3,
+      "ids": [
+        "GHSA-2C2J-9GV5-CJ73",
+        "GHSA-86QP-5C8J-P5MR",
+        "GHSA-X746-7M8F-X49C"
+      ],
+      "reason": "Fix versions in the report require Starlette 1.x; PyPI labels that line Alpha and current FastAPI pin is 0.115.6. Avoid a framework major-line change before compatibility review."
+    },
+    "high_unpatched_warnings": 15,
+    "estimated_warnings_after_local_updates": 18,
+    "estimate_note": "Expected only if a fresh scan confirms these 12 advisory findings are gone and no new warnings appear; not a measured result."
+  },
+  "e3_timing": {
+    "evidence_status": "traceable_single_run",
+    "run_attempt_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/41288998886/attempts/1",
+    "commit": "cbcef8e32d5b007229be5e424409e8ee00fe278e",
+    "fixture_id": "baseline",
+    "job_durations_seconds": {
+      "security-scan": 28,
+      "iac": 37,
+      "image": 171
+    },
+    "parallel_scan_stage_critical_path_seconds": 171,
+    "serial_sum_estimate_seconds": 236,
+    "previous_traceable_run_not_pooled": {
+      "run_number": 11,
+      "commit": "00e4f40f7488c6407e99c0076f03c0c0ba344d3c",
+      "critical_path_seconds": 148,
+      "reason": "Different commit; do not combine into a controlled repeated-run estimate."
+    },
+    "repeated_runs_same_commit": false,
+    "cache_modes_compared": false
+  },
+  "e4_from_raw_artifacts": {
+    "evidence_status": "traceable_raw_artifact_analyzed",
+    "run_id": 41288998886,
+    "run_attempt": 1,
+    "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/41288998886/attempts/1",
+    "commit": "cbcef8e32d5b007229be5e424409e8ee00fe278e",
+    "fixture_id": "baseline",
+    "tool_versions": {
+      "trivy": "0.76.1",
+      "syft": "1.54.1"
+    },
+    "trivy_vulnerability_database": {
+      "version": "2",
+      "updated_at": "2026-11-01 07:08:40.846369079 +0000 UTC",
+      "next_update": "2026-11-02 07:08:40.846368621 +0000 UTC"
+    },
+    "before": {
+      "vulnerabilities": {
+        "CRITICAL": 21,
+        "HIGH": 531,
+        "MEDIUM": 2037,
+        "LOW": 2030,
+        "UNKNOWN": 102
+      },
+      "sbom_packages": 22921,
+      "image": {
+        "image_id": "sha256:5310731d113763ab98be5751527dbea9ccae7fbbc03b5a6927ac95e0a25fc1f2",
+        "repo_tags": [
+          "devsecops-e4-before:lab"
+        ],
+        "repo_digests": [],
+        "os": {
+          "Family": "debian",
+          "Name": "13.7"
+        },
+        "architecture": "amd64",
+        "python_version": "3.12.15"
+      },
+      "sbom": {
+        "serial_number": "urn:uuid:4d53337c-12b3-462a-92cb-9da7dd4c80f2",
+        "timestamp": "2026-11-01T08:31:07Z",
+        "component": {
+          "bom-ref": "a6c9cae908161ddf",
+          "type": "container",
+          "name": "devsecops-e4-before",
+          "version": "lab"
+        },
+        "components": 22921
+      },
+      "vulnerabilities_total": 4721
+    },
+    "after": {
+      "vulnerabilities": {
+        "CRITICAL": 0,
+        "HIGH": 52,
+        "MEDIUM": 71,
+        "LOW": 64,
+        "UNKNOWN": 1
+      },
+      "sbom_packages": 2860,
+      "image": {
+        "image_id": "sha256:c99a5a371e35e898fffb680ccb384c9132bf7965db403e47cc0d78a257f639fa",
+        "repo_tags": [
+          "devsecops-app:scan",
+          "devsecops-e4-after:lab"
+        ],
+        "repo_digests": [],
+        "os": {
+          "Family": "debian",
+          "Name": "13.7"
+        },
+        "architecture": "amd64",
+        "python_version": "3.12.16"
+      },
+      "sbom": {
+        "serial_number": "urn:uuid:534fa66a-7c87-4517-b2b8-f91a6143d0eb",
+        "timestamp": "2026-11-01T08:31:11Z",
+        "component": {
+          "bom-ref": "3fbe1a27a35423e0",
+          "type": "container",
+          "name": "devsecops-e4-after",
+          "version": "lab"
+        },
+        "components": 2860
+      },
+      "vulnerabilities_total": 188
+    },
+    "delta": {
+      "vulnerabilities_total": -4533,
+      "sbom_packages": -20061,
+      "vulnerabilities_by_severity": {
+        "CRITICAL": -21,
+        "HIGH": -479,
+        "LOW": -1966,
+        "MEDIUM": -1966,
+        "UNKNOWN": -101
+      }
+    },
+    "comparability": {
+      "same_application_build_context": true,
+      "same_trivy_version": true,
+      "same_trivy_database_snapshot": true,
+      "same_os_release": true,
+      "same_architecture": true,
+      "same_python_version": false,
+      "confounds": [
+        {
+          "dimension": "Python version",
+          "before": "3.12.15",
+          "after": "3.12.16",
+          "interpretation": "Delta được đo thật nhưng không thể quy hoàn toàn cho bốn kiểm soát Dockerfile vì phiên bản Python khác nhau."
+        }
+      ],
+      "repo_digests_available": false,
+      "interpretation": "Image ID là ID image cục bộ; Trivy không có RepoDigests cho hai image E4 này. So sánh cùng kiến trúc, OS và DB; Python khác bản vá. Dockerfile.vuln đã được cập nhật ở working tree để lượt E4 sau dùng cùng phiên bản Python với runtime."
+    }
+  },
+  "artifacts": [
+    {
+      "name": "report-scan",
+      "artifact_id": 13076651264
+    },
+    {
+      "name": "report-image",
+      "artifact_id": 13076507050
+    },
+    {
+      "name": "sbom",
+      "artifact_id": 13076761376
+    },
+    {
+      "name": "report-iac",
+      "artifact_id": 13075449967
+    },
+    {
+      "name": "report-gate",
+      "artifact_id": 13076193613
+    }
+  ],
+  "analysis": {
+    "artifact_contents_analyzed": true,
+    "e4_absolute_counts_extracted": true,
+    "e4_image_ids_extracted": true,
+    "registry_repo_digests_available": false,
+    "medium_warning_packages_identified": 15,
+    "ci_changes_awaiting_scan": [
+      "standardize Checkov JSON output",
+      "Python 3.13.18 base and CI",
+      "pip 26.2.2",
+      "pytest 9.0.3",
+      "align E4 before/after Python base versions"
+    ],
+    "tests_run_this_turn": false
+  }
+}

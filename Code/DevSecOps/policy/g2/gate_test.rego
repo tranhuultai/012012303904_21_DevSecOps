@@ -85,3 +85,21 @@ test_g2_secret_not_excusable if {
 test_g2_failclosed_missing_today if {
 	count(deny) > 0 with input as {"context": {"policy": "g2"}, "findings": [], "exceptions": []}
 }
+
+test_g2_failclosed_missing_findings if {
+	count(deny) > 0 with input as {"context": ctx, "exceptions": []}
+}
+
+test_g2_failclosed_finding_missing_severity if {
+	count(deny) > 0 with input as base([{"category": "sast", "rule_id": "rule-no-sev"}])
+}
+
+test_g2_block_epss_high if {
+	count(deny) > 0 with input as base([{"category": "sca", "rule_id": "CVE-epss-high", "severity": "LOW", "epss": 0.45, "location": {"file": "req"}}])
+}
+
+test_g2_warn_epss_medium if {
+	inp := base([{"category": "sca", "rule_id": "CVE-epss-med", "severity": "LOW", "epss": 0.05, "location": {"file": "req"}}])
+	count(deny) == 0 with input as inp
+	count(warn) > 0 with input as inp
+}

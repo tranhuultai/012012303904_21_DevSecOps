@@ -1,7 +1,9 @@
 import argparse
 import json
 import sys
+from pathlib import Path
 
+import jsonschema
 import yaml
 
 
@@ -13,6 +15,10 @@ def main() -> int:
     p.add_argument("--today", required=True)
     p.add_argument("--policy", required=True, choices=["g0", "g1", "g2"])
     p.add_argument("--out", required=True)
+    p.add_argument(
+        "--exceptions-schema",
+        default=str(Path(__file__).resolve().parents[1] / "schemas" / "exception.schema.json"),
+    )
     a = p.parse_args()
 
     with open(a.findings, encoding="utf-8") as fh:
@@ -22,6 +28,10 @@ def main() -> int:
 
     with open(a.exceptions, encoding="utf-8") as fh:
         exceptions = yaml.safe_load(fh) or []
+
+    with open(a.exceptions_schema, encoding="utf-8") as fh:
+        exception_schema = json.load(fh)
+    jsonschema.validate(exceptions, exception_schema)
 
     gate_input = {
         "findings": findings,

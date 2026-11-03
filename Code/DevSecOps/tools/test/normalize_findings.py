@@ -23,6 +23,10 @@ SEVERITY_MAP = {
     "INFO": "INFO",
     "INFORMATIONAL": "INFO",
     "UNKNOWN": "INFO",
+    # Checkov dùng thang riêng cho kết quả misconfiguration.
+    "FAILED": "HIGH",
+    "PASSED": "INFO",
+    "SKIPPED": "INFO",
 }
 
 VALID_SEVERITIES = {"CRITICAL", "HIGH", "MEDIUM", "LOW", "INFO"}
@@ -50,6 +54,54 @@ def load_json(path):
             f"Invalid JSON in {report_path}: "
             f"line {error.lineno}, column {error.colno}: {error.msg}"
         ) from error
+
+
+def load_checkov_json(path):
+    """Load Checkov's JSON output, including adjacent framework documents.
+
+    Some Checkov CLI runs emit one JSON value per scanned framework. Accept
+    that JSON stream while still rejecting any non-JSON text in the report.
+    """
+    if path is None:
+        return None
+
+    report_path = Path(path)
+    if not report_path.is_file():
+        raise FileNotFoundError(f"Report not found: {report_path}")
+
+    with report_path.open("r", encoding="utf-8-sig") as file:
+        content = file.read()
+
+    decoder = json.JSONDecoder()
+    values = []
+    position = 0
+
+    while position < len(content):
+        while position < len(content) and content[position].isspace():
+            position += 1
+        if position == len(content):
+            break
+
+        try:
+            document, position = decoder.raw_decode(content, position)
+        except json.JSONDecodeError as error:
+            raise ValueError(
+                f"Invalid JSON in {report_path}: "
+                f"line {error.lineno}, column {error.colno}: {error.msg}"
+            ) from error
+
+        values.append(document)
+
+    if not values:
+        raise ValueError(f"Invalid JSON in {report_path}: report is empty.")
+
+    if len(values) == 1:
+        return values[0]
+
+    documents = []
+    for value in values:
+        documents.extend(value if isinstance(value, list) else [value])
+    return documents
 
 
 def require_object(data, source):
@@ -163,6 +215,7 @@ def make_finding(
     title,
     message,
     file=None,
+    resource=None,
     line_start=None,
     line_end=None,
     cve=None,
@@ -198,6 +251,7 @@ def make_finding(
         "title": safe_title,
         "message": safe_message,
         "file": file,
+        "resource": str(resource) if resource is not None else None,
         "line_start": line_start,
         "line_end": line_end,
         "cve": cve,
@@ -387,6 +441,210 @@ def parse_trivy(data):
     return findings
 
 
+# Tiền tố rule ID của Checkov theo loại tài nguyên (D.3.4, D.3.5).
+CHECKOV_PREFIX_CATEGORY = (
+    ("CKV_DOCKER_", "image"),
+    ("CKV_K8S_", "k8s"),
+    ("CKV_AWS_", "iac"),
+    ("CKV_AZURE_", "iac"),
+    ("CKV_GCP_", "iac"),
+    ("CKV_GHA_", "workflow"),
+    ("CKV2_GHA_", "workflow"),
+    ("CKV2_AWS_", "iac"),
+    ("CKV2_K8S_", "k8s"),
+)
+
+# Tiền tố rule ID của Trivy misconfiguration (KSV/DSV/AVD...).
+TRIVY_CONFIG_PREFIX_CATEGORY = (
+    ("KSV", "k8s"),
+    ("DSV", "image"),
+    ("AVD", "iac"),
+)
+
+
+def category_for_check_rule(rule_id, fallback="iac"):
+    """Suy ra category từ tiền tố rule ID của Checkov/Trivy config."""
+    if not isinstance(rule_id, str):
+        return fallback
+    for prefix, category in CHECKOV_PREFIX_CATEGORY + TRIVY_CONFIG_PREFIX_CATEGORY:
+        if rule_id.startswith(prefix):
+            return category
+    return fallback
+
+
+def parse_checkov(data):
+    """Convert a Checkov JSON report (results.failed_checks) to findings."""
+    if data is None:
+        return []
+
+    # Chấp nhận cả dạng {"results": {...}} và dạng danh sách check trần.
+    if isinstance(data, dict):
+        results = data.get("results") or {}
+        if isinstance(results, dict):
+            checks = results.get("failed_checks") or []
+        elif isinstance(results, list):
+            checks = [
+                check for check in results
+                if isinstance(check, dict) and check.get("check_result", {}).get("result") == "FAILED"
+            ]
+        else:
+            checks = []
+    else:
+        require_list(data, "Checkov report")
+        checks = []
+        for item in data:
+            if not isinstance(item, dict):
+                continue
+            results = item.get("results")
+            if isinstance(results, dict):
+                # Dạng CLI: danh sách khung (terraform, kubernetes, dockerfile...).
+                checks.extend(results.get("failed_checks") or [])
+            elif (item.get("check_result") or {}).get("result") == "FAILED":
+                # Dạng mảng check trần: chỉ giữ mục FAILED.
+                checks.append(item)
+
+    require_list(checks, "Checkov failed_checks")
+
+    findings = []
+    for index, item in enumerate(checks):
+        if not isinstance(item, dict):
+            raise ValueError(f"Checkov check at index {index} must be an object.")
+
+        rule_id = item.get("check_id")
+        severity = item.get("check_severity") or item.get("severity")
+        if not severity:
+            severity = "FAILED" if (item.get("check_result") or {}).get("result") == "FAILED" else "INFO"
+
+        references = item.get("guideline")
+        findings.append(
+            make_finding(
+                tool="checkov",
+                rule_id=rule_id,
+                category=category_for_check_rule(rule_id),
+                severity=severity,
+                title=item.get("check_name") or rule_id or "Checkov finding",
+                message=item.get("check_name") or "",
+                file=item.get("file_path"),
+                resource=item.get("resource"),
+                line_start=item.get("file_line_range", [None])[0] if isinstance(item.get("file_line_range"), list) else None,
+                line_end=item.get("file_line_range", [None])[-1] if isinstance(item.get("file_line_range"), list) else None,
+                references=[references] if references else [],
+            )
+        )
+
+    return findings
+
+
+def parse_trivy_config(data):
+    """Convert Trivy misconfiguration results (Results[].Misconfigurations)."""
+    if data is None:
+        return []
+
+    require_object(data, "Trivy config")
+    results = data.get("Results", []) or []
+    require_list(results, "Trivy config Results")
+
+    findings = []
+    for result_index, result in enumerate(results):
+        if not isinstance(result, dict):
+            raise ValueError(
+                f"Trivy config result at index {result_index} must be an object."
+            )
+
+        misconfigs = result.get("Misconfigurations") or []
+        require_list(
+            misconfigs,
+            f"Trivy misconfigurations in result {result_index}",
+        )
+
+        for index, item in enumerate(misconfigs):
+            if not isinstance(item, dict):
+                raise ValueError(
+                    "Trivy misconfiguration at "
+                    f"result {result_index}, index {index} must be an object."
+                )
+
+            # Chỉ lấy mục FAILED; PASSED/SKIPPED không phải phát hiện.
+            status = (item.get("Status") or "").upper()
+            if status and status != "FAILED":
+                continue
+
+            rule_id = item.get("ID")
+            references = list(item.get("References") or [])
+            primary_url = item.get("PrimaryURL")
+            if primary_url:
+                references.append(primary_url)
+
+            findings.append(
+                make_finding(
+                    tool="trivy",
+                    rule_id=rule_id,
+                    category=category_for_check_rule(rule_id),
+                    severity=item.get("Severity"),
+                    title=item.get("Title") or rule_id or "Misconfiguration",
+                    message=item.get("Description") or "",
+                    file=result.get("Target"),
+                    references=references,
+                )
+            )
+
+    return findings
+
+
+def parse_grype(data):
+    """Convert a Grype JSON report (matches[]) to normalized findings."""
+    if data is None:
+        return []
+
+    require_object(data, "Grype")
+    matches = data.get("matches", []) or []
+    require_list(matches, "Grype matches")
+
+    findings = []
+    for index, item in enumerate(matches):
+        if not isinstance(item, dict):
+            raise ValueError(f"Grype match at index {index} must be an object.")
+
+        vuln = item.get("vulnerability") or {}
+        artifact = item.get("artifact") or {}
+        locations = artifact.get("locations") or []
+        first_file = None
+        if locations and isinstance(locations[0], dict):
+            first_file = locations[0].get("path")
+
+        fixed_versions = vuln.get("fix", {}).get("versions") or []
+        message_parts = [
+            f"Package: {artifact.get('name')}",
+            f"Installed version: {artifact.get('version')}",
+        ]
+        if fixed_versions:
+            message_parts.append(f"Fixed version: {', '.join(fixed_versions)}")
+        if vuln.get("description"):
+            message_parts.append(str(vuln["description"]))
+
+        references = []
+        for ref in vuln.get("urls") or []:
+            if isinstance(ref, str):
+                references.append(ref)
+
+        findings.append(
+            make_finding(
+                tool="grype",
+                rule_id=vuln.get("id"),
+                category="image",
+                severity=vuln.get("severity"),
+                title=vuln.get("id") or "Image vulnerability",
+                message="; ".join(message_parts),
+                file=first_file or artifact.get("name"),
+                cve=vuln.get("id"),
+                references=references,
+                package=artifact.get("name"),
+            )
+        )
+
+    return findings
+
+
 def validate_findings(findings, schema_path):
     """Validate normalized findings against the JSON Schema."""
     if not schema_path.is_file():
@@ -434,6 +692,12 @@ def main():
     parser.add_argument("--semgrep", help="Path to Semgrep JSON report")
     parser.add_argument("--gitleaks", help="Path to Gitleaks JSON report")
     parser.add_argument("--trivy", help="Path to Trivy JSON report")
+    parser.add_argument("--checkov", help="Path to Checkov JSON report")
+    parser.add_argument(
+        "--trivy-config",
+        help="Path to Trivy misconfiguration (config) JSON report",
+    )
+    parser.add_argument("--grype", help="Path to Grype JSON report")
     parser.add_argument(
         "--output",
         default="reports/normalized_findings.json",
@@ -456,6 +720,9 @@ def main():
         findings.extend(parse_semgrep(load_json(args.semgrep)))
         findings.extend(parse_gitleaks(load_json(args.gitleaks)))
         findings.extend(parse_trivy(load_json(args.trivy)))
+        findings.extend(parse_checkov(load_checkov_json(args.checkov)))
+        findings.extend(parse_trivy_config(load_json(args.trivy_config)))
+        findings.extend(parse_grype(load_json(args.grype)))
 
         # Validate before writing so invalid results do not replace the
         # last known-good output file.
@@ -477,7 +744,7 @@ def main():
             key = finding["tool"]
             counts[key] = counts.get(key, 0) + 1
 
-        for tool in ("semgrep", "gitleaks", "trivy"):
+        for tool in ("semgrep", "gitleaks", "trivy", "checkov", "grype"):
             print(f"  {tool}: {counts.get(tool, 0)}")
 
     except (
