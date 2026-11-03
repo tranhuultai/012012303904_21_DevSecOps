@@ -28,6 +28,12 @@ Pipeline được coi là bị tê liệt khi dính 1 trong các dấu hiệu sa
 Pipeline chạy quá 10 phút.
 1 PR nhận hơn 20 cảnh báo.
 
+## Mục 2b. Giả thuyết (viết ngày 03/11/2026, trước lần chạy thực nghiệm chính thức; không sửa sau khi có số liệu)
+- H1: Không công cụ đơn lẻ nào đạt recall từ 50% trên 28 lỗi, nhưng 5 lớp kết hợp đạt ít nhất 85%.
+- H2: G1 chặn nhầm ít nhất một nửa số thay đổi sạch; G2 không chặn nhầm thay đổi sạch nào và chặn mọi lỗi tầng BLOCK.
+- H3: Cấu hình song song có cache (C3) rút ngắn thời gian trung vị ít nhất 30% so với tuần tự không cache (C1).
+- H4: Image sau khắc phục giảm ít nhất một nửa số CVE CRITICAL/HIGH có bản vá và nhẹ hơn image trước.
+
 ## Mục 3. Trạng thái nguồn dữ liệu đang commit
 
 - Baseline CI mới nhất đã phân tích là commit
