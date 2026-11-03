@@ -1,0 +1,282 @@
+name: experiments
+
+# Thực nghiệm E1, E2, E4 (D.4): mỗi mẫu D/C/N được áp patch độc lập trên cùng baseline,
+# quét đủ 5 lớp với cùng phiên bản công cụ như ci.yml, rồi chấm offline bằng Conftest.
+on:
+  workflow_dispatch:
+    inputs:
+      gt_ref:
+        description: "Ref của bộ đáp án (ví dụ tag gt-v1)"
+        required: false
+        default: gt-v1
+        type: string
+  push:
+    branches: ["exp/run-**"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: experiments-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  PYTHON_VERSION: "3.13.18"
+  TRIVY_VERSION: "0.76.1"
+  SYFT_VERSION: "1.54.1"
+  GRYPE_VERSION: "0.120.1"
+  CHECKOV_VERSION: "3.3.22"
+  GITLEAKS_VERSION: "8.30.1"
+  SEMGREP_VERSION: "1.183.0"
+  CONFTEST_VERSION: "0.71.1"
+  SEMGREP_REGISTRY_RULESET: p/python
+  CHECKOUT_REF: ${{ inputs.gt_ref || github.sha }}
+
+jobs:
+  scan:
+    name: scan ${{ matrix.change }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      max-parallel: 15
+      matrix:
+        change: [BASE,
+          D01, D02, D03, D04, D05, D06, D07, D08, D09, D10, D11, D12, D13, D14,
+          D15, D16, D17, D18, D19, D20, D21, D22, D23, D24, D25, D26, D27, D28,
+          C01, C02, C03, C04, C05, C06, C07, C08, C09, C10,
+          N01, N02, N03, N04, N05, N06, N07, N08]
+    defaults:
+      run:
+        working-directory: Code/DevSecOps
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.CHECKOUT_REF }}
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Cài công cụ quét (bản ghim, kiểm checksum)
+        run: |
+          bash tools/install_scanners.sh trivy gitleaks conftest semgrep checkov
+          python -m pip install --quiet jsonschema PyYAML
+
+      - name: Áp patch của mẫu
+        env:
+          CHANGE: ${{ matrix.change }}
+        run: |
+          id="${CHANGE}"
+          if [ "${id}" = "BASE" ]; then id=baseline; fi
+          python tests/apply_fixture_patch.py --id "${id}"
+          git -C "${GITHUB_WORKSPACE}" status --short
+
+      - name: Quét 5 lớp
+        env:
+          IMAGE_FLAG: ${{ (matrix.change == 'BASE' || matrix.change == 'D12') && '--image' || '' }}
+        run: bash tests/run_scans.sh reports ${IMAGE_FLAG}
+
+      - name: Chuẩn hóa findings
+        run: |
+          extra=()
+          if [ -f reports/trivy_image.json ]; then extra=(--trivy-image reports/trivy_image.json); fi
+          python tools/test/normalize_findings.py \
+            --semgrep reports/semgrep.json \
+            --semgrep-registry reports/semgrep_registry.json \
+            --gitleaks reports/gitleaks.json \
+            --trivy reports/trivy.json \
+            --checkov reports/checkov.json \
+            --trivy-config reports/trivy_config.json \
+            --conftest-workflow reports/conftest_wf.json \
+            "${extra[@]}" \
+            --output reports/normalized_findings.json
+
+      - name: Ghi metadata lần chạy
+        if: always()
+        env:
+          CHANGE: ${{ matrix.change }}
+        run: |
+          python - <<'PY'
+          import json, os, subprocess
+          server, repo, run_id = os.environ["GITHUB_SERVER_URL"], os.environ["GITHUB_REPOSITORY"], os.environ["GITHUB_RUN_ID"]
+          meta = {
+              "kind": "scan",
+              "change_id": os.environ["CHANGE"],
+              "commit": subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip(),
+              "checkout_ref": os.environ["CHECKOUT_REF"],
+              "run_id": run_id,
+              "run_attempt": os.environ["GITHUB_RUN_ATTEMPT"],
+              "run_url": f"{server}/{repo}/actions/runs/{run_id}",
+              "semgrep_registry_ruleset": os.environ["SEMGREP_REGISTRY_RULESET"],
+          }
+          os.makedirs("reports", exist_ok=True)
+          json.dump(meta, open("reports/meta.json", "w"), indent=2)
+          PY
+
+      - name: Upload kết quả mẫu
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.0
+        with:
+          name: exp-${{ matrix.change }}
+          path: Code/DevSecOps/reports/
+          retention-days: 90
+
+  e4-image:
+    name: e4-image
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    defaults:
+      run:
+        working-directory: Code/DevSecOps
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.CHECKOUT_REF }}
+          persist-credentials: false
+
+      - name: Cài Trivy, Syft, Grype (bản ghim, kiểm checksum)
+        run: bash tools/install_scanners.sh trivy syft grype
+
+      - name: Build mỗi image 3 lần, đo thời gian và kích thước
+        run: |
+          mkdir -p e4
+          # Kéo base image trước để thời gian build không gồm thời gian tải mạng.
+          grep -hE '^FROM' Dockerfile lab/docker/Dockerfile.vuln | awk '{print $2}' | sort -u | xargs -n1 docker pull -q
+          printf 'image\trep\tseconds\n' > e4/builds.tsv
+          for img in vuln fixed; do
+            file=Dockerfile
+            if [ "${img}" = vuln ]; then file=lab/docker/Dockerfile.vuln; fi
+            for rep in 1 2 3; do
+              start=$(date +%s.%N)
+              docker build --no-cache -q -f "${file}" -t "e4-${img}:latest" . > /dev/null
+              end=$(date +%s.%N)
+              printf '%s\t%s\t%s\n' "${img}" "${rep}" "$(awk -v a="${start}" -v b="${end}" 'BEGIN {printf "%.3f", b - a}')" >> e4/builds.tsv
+            done
+          done
+          printf 'image\tbytes\n' > e4/sizes.tsv
+          for img in vuln fixed; do
+            printf '%s\t%s\n' "${img}" "$(docker image inspect -f '{{.Size}}' "e4-${img}:latest")" >> e4/sizes.tsv
+          done
+
+      - name: SBOM và quét lỗ hổng hai image
+        run: |
+          for img in vuln fixed; do
+            syft "e4-${img}:latest" -o syft-json="e4/syft_${img}.json"
+            trivy image --format json --output "e4/trivy_${img}.json" --exit-code 0 "e4-${img}:latest"
+            grype "e4-${img}:latest" -o json --file "e4/grype_${img}.json"
+          done
+          trivy version --format json > e4/trivy_version.json
+          syft version > e4/syft_version.txt
+          grype version > e4/grype_version.txt
+          grype db status > e4/grype_db_status.txt || true
+
+      - name: Ghi metadata
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import json, os, subprocess
+          server, repo, run_id = os.environ["GITHUB_SERVER_URL"], os.environ["GITHUB_REPOSITORY"], os.environ["GITHUB_RUN_ID"]
+          meta = {
+              "kind": "e4",
+              "commit": subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip(),
+              "run_id": run_id,
+              "run_url": f"{server}/{repo}/actions/runs/{run_id}",
+          }
+          os.makedirs("e4", exist_ok=True)
+          json.dump(meta, open("e4/meta.json", "w"), indent=2)
+          PY
+
+      - name: Upload kết quả E4
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.0
+        with:
+          name: exp-e4
+          path: Code/DevSecOps/e4/
+          retention-days: 90
+
+  aggregate:
+    name: aggregate
+    needs: [scan, e4-image]
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: write # đẩy nhánh dữ liệu exp-data/run-<id>
+    defaults:
+      run:
+        working-directory: Code/DevSecOps
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.CHECKOUT_REF }}
+
+      - name: Set up Python
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Cài Conftest và thư viện
+        run: |
+          bash tools/install_scanners.sh conftest
+          python -m pip install --quiet jsonschema PyYAML
+
+      - name: Tải kết quả các mẫu
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        with:
+          pattern: exp-*
+          path: Code/DevSecOps/exp
+
+      - name: Lấy KEV (CISA) và EPSS (FIRST) tại thời điểm chấm
+        run: python tools/fetch_kev_epss.py --findings exp/exp-*/normalized_findings.json --out-dir summary/kev
+
+      - name: Gom findings và thời gian quét
+        run: python tests/collect_experiment.py --input exp --out summary
+
+      - name: Chấm G0/G1/G2 ở chế độ full và delta bằng Conftest
+        run: python tests/eval_policies.py --input exp --kev summary/kev/kev.json --epss summary/kev/epss.json --today "$(date -u +%F)" --out summary
+
+      - name: Tóm tắt E4
+        run: |
+          if [ -f exp/exp-e4/trivy_vuln.json ]; then
+            python tests/e4_summarize.py --input exp/exp-e4 --kev summary/kev/kev.json --out summary
+            mkdir -p summary/e4
+            cp exp/exp-e4/builds.tsv exp/exp-e4/sizes.tsv exp/exp-e4/meta.json exp/exp-e4/*version* summary/e4/
+          else
+            echo "E4 không có kết quả" | tee summary/e4_missing.txt
+          fi
+
+      - name: Gom dữ liệu gọn theo mẫu
+        run: |
+          for d in exp/exp-*; do
+            id="${d#exp/exp-}"
+            if [ "${id}" = e4 ]; then continue; fi
+            mkdir -p "summary/samples/${id}"
+            for f in normalized_findings.json meta.json versions.json timings.tsv; do
+              if [ -f "${d}/${f}" ]; then cp "${d}/${f}" "summary/samples/${id}/"; fi
+            done
+          done
+
+      - name: Upload tổng hợp
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.0
+        with:
+          name: exp-summary
+          path: Code/DevSecOps/summary/
+          retention-days: 90
+
+      - name: Đẩy tổng hợp sang nhánh dữ liệu
+        run: |
+          dest="tests/results/raw/exp_$(date -u +%Y%m%d)_${GITHUB_RUN_ID}"
+          mkdir -p "${dest}"
+          cp -r summary/. "${dest}/"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "exp-data/run-${GITHUB_RUN_ID}"
+          git add "${dest}"
+          git commit -q -m "data: experiment run ${GITHUB_RUN_ID}"
+          git push -q origin "exp-data/run-${GITHUB_RUN_ID}"
