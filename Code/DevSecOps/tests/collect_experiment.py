@@ -1,5 +1,6 @@
 import argparse
 import csv
+import gzip
 import json
 import sys
 from pathlib import Path
@@ -24,9 +25,13 @@ def stable_fingerprint(finding):
 
 def read_json(path, default=None):
     path = Path(path)
-    if not path.is_file():
-        return default
-    return json.loads(path.read_text(encoding="utf-8"))
+    if path.is_file():
+        return json.loads(path.read_text(encoding="utf-8"))
+    packed = path.with_name(path.name + ".gz")  # dữ liệu đã commit được nén gzip
+    if packed.is_file():
+        with gzip.open(packed, "rt", encoding="utf-8") as fh:
+            return json.load(fh)
+    return default
 
 
 def read_timings(path):
@@ -49,7 +54,8 @@ def unique(findings):
 
 def load_samples(input_dir):
     samples = {}
-    for sample_dir in sorted(Path(input_dir).glob("exp-*")):
+    # Nhận cả artifact exp-<ID>/ lẫn thư mục samples/<ID>/ đã commit: mỗi mẫu có meta.json.
+    for sample_dir in sorted(d for d in Path(input_dir).iterdir() if (d / "meta.json").is_file()):
         meta = read_json(sample_dir / "meta.json")
         if not meta or meta.get("kind") == "e4":
             continue
