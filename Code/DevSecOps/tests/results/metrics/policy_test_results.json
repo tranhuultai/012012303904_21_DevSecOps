@@ -1,0 +1,17 @@
+﻿[
+    {
+        "Policy":  "G0",
+        "Status":  "PASS",
+        "ExitCode":  0
+    },
+    {
+        "Policy":  "G1",
+        "Status":  "PASS",
+        "ExitCode":  0
+    },
+    {
+        "Policy":  "G2",
+        "Status":  "PASS",
+        "ExitCode":  0
+    }
+]

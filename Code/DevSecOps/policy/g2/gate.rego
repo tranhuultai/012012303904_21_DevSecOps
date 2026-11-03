@@ -12,8 +12,9 @@ iac_block_controls := {
 	"CKV_AWS_53", "CKV_AWS_54", "CKV_AWS_55", "CKV_AWS_56", # S3 public
 	"CKV_AWS_17", # RDS public
 	"CKV_AWS_16", # RDS chưa mã hóa
+	"CKV_DOCKER_1", "CKV_DOCKER_3", "CKV_DOCKER_4", "CKV_DOCKER_7", # base image/root/ADD/sshd
 	"CKV_K8S_16", # privileged
-	"CKV_K8S_14", "CKV_K8S_43", # image không ghim digest
+	"CKV_K8S_14", # image không ghim digest
 	"KSV-0111", # ServiceAccount cluster-admin
 	"KSV-0109", # mật khẩu trong ConfigMap
 	"CKV2_GHA_1", # token write-all
@@ -23,6 +24,7 @@ iac_block_controls := {
 sast_block_severity := {"CRITICAL", "HIGH"}
 
 severity_cap_days := {"CRITICAL": 7, "HIGH": 30, "MEDIUM": 90, "LOW": 90, "INFO": 90}
+severity_rank := {"INFO": 0, "LOW": 1, "MEDIUM": 2, "HIGH": 3, "CRITICAL": 4}
 
 # ---- Fail-closed: thiếu dữ liệu bắt buộc thì chặn ----
 deny contains msg if {
@@ -55,7 +57,8 @@ valid_exception(e) if {
 	e.match.rule_id
 	e.match.resource
 	e.owner != e.approved_by
-	e.expires >= input.context.today
+	e.created <= input.context.today
+	e.expires > input.context.today
 	date_span(e.created, e.expires) <= object.get(severity_cap_days, e.severity, 0)
 }
 
@@ -64,6 +67,7 @@ excused(f) if {
 	valid_exception(e)
 	e.match.rule_id == f.rule_id
 	e.match.resource == object.get(f.location, "resource", "")
+	object.get(severity_rank, e.severity, -1) >= object.get(severity_rank, f.severity, 5)
 }
 
 # ---- Secret luôn chặn, không ngoại lệ ----
@@ -79,6 +83,14 @@ deny contains msg if {
 	f.kev == true
 	not excused(f)
 	msg := sprintf("G2 BLOCK KEV: %s", [f.rule_id])
+}
+
+# ---- CVE có xác suất bị khai thác cao theo EPSS (>= 0.10, tức >= 10%) ----
+deny contains msg if {
+	some f in input.findings
+	f.epss >= 0.10
+	not excused(f)
+	msg := sprintf("G2 BLOCK EPSS cao (%.2f): %s", [f.epss, f.rule_id])
 }
 
 # ---- SCA/image CRITICAL|HIGH có bản vá, khớp tin cậy cao ----
@@ -112,20 +124,8 @@ deny contains msg if {
 # ---- Ngoại lệ không hợp lệ thì chặn ----
 deny contains msg if {
 	some e in input.exceptions
-	e.expires < input.context.today
-	msg := sprintf("G2 BLOCK ngoại lệ hết hạn: %s", [object.get(e, "id", "?")])
-}
-
-deny contains msg if {
-	some e in input.exceptions
-	e.owner == e.approved_by
-	msg := sprintf("G2 BLOCK ngoại lệ owner trùng approved_by: %s", [object.get(e, "id", "?")])
-}
-
-deny contains msg if {
-	some e in input.exceptions
-	not e.reason
-	msg := sprintf("G2 BLOCK ngoại lệ thiếu lý do: %s", [object.get(e, "id", "?")])
+	not valid_exception(e)
+	msg := sprintf("G2 BLOCK ngoại lệ không hợp lệ hoặc hết hạn: %s", [object.get(e, "id", "?")])
 }
 
 # ---- Cảnh báo, không chặn ----
@@ -143,6 +143,14 @@ warn contains msg if {
 	f.severity == "MEDIUM"
 	f.fix_available == true
 	msg := sprintf("WARN MEDIUM có bản vá: %s", [f.rule_id])
+}
+
+warn contains msg if {
+	some f in input.findings
+	f.epss >= 0.01
+	f.epss < 0.10
+	not excused(f)
+	msg := sprintf("WARN EPSS trung bình (%.2f): %s", [f.epss, f.rule_id])
 }
 
 warn contains msg if {

@@ -1,0 +1,11 @@
+--- a/Code/DevSecOps/src/app/main.py
++++ b/Code/DevSecOps/src/app/main.py
+@@ -61,3 +61,7 @@
+ @app.get("/users")
+ def list_users():
+     return {"users": users_db}
+\ No newline at end of file
++
++
++def hash_password(password: str) -> str:
++    return hashlib.md5(password.encode()).hexdigest()

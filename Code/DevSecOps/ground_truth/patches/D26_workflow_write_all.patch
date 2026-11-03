@@ -1,0 +1,8 @@
+--- a/.github/workflows/ci.yml
++++ b/.github/workflows/ci.yml
+@@ -20,4 +20,3 @@
+-permissions:
+-  contents: read
++permissions: write-all
+ 
+ env:

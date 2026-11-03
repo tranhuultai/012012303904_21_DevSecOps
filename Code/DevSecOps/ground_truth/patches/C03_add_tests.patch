@@ -1,0 +1,14 @@
+--- a/Code/DevSecOps/src/test/test_main.py
++++ b/Code/DevSecOps/src/test/test_main.py
+@@ -70,3 +70,10 @@
+         },
+     )
+     assert response.status_code == 422
+\ No newline at end of file
++
++
++def test_list_users_empty():
++    response = client.get("/users")
++
++    assert response.status_code == 200
++    assert response.json() == {"users": []}

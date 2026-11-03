@@ -1,0 +1,4 @@
+--- a/Code/DevSecOps/src/requirements.txt
++++ b/Code/DevSecOps/src/requirements.txt
+@@ -6,0 +7 @@ email-validator==2.3.0
++urllib3==2.0.6  # D10: CVE-2023-45803

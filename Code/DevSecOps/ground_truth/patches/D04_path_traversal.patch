@@ -1,0 +1,13 @@
+--- a/Code/DevSecOps/src/app/main.py
++++ b/Code/DevSecOps/src/app/main.py
+@@ -61,3 +61,9 @@
+ @app.get("/users")
+ def list_users():
+     return {"users": users_db}
+\ No newline at end of file
++
++
++@app.get("/files")
++def read_file(name: str):
++    with open("/srv/data/" + name) as fh:
++        return {"content": fh.read()}

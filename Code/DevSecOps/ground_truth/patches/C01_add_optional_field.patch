@@ -1,0 +1,10 @@
+--- a/Code/DevSecOps/src/app/main.py
++++ b/Code/DevSecOps/src/app/main.py
+@@ -11,6 +11,7 @@
+ class UserRequest(BaseModel):
+     name: str
+     email: EmailStr
++    nickname: str | None = None
+ 
+ 
+ users_db: list[dict] = []

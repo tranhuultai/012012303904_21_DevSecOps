@@ -1,0 +1,5 @@
+--- a/Code/DevSecOps/Dockerfile
++++ b/Code/DevSecOps/Dockerfile
+@@ -21,1 +21,2 @@
++# N05: non-root runtime identity
+ USER 10001

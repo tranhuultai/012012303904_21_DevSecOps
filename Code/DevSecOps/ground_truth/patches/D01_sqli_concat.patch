@@ -1,0 +1,15 @@
+--- a/Code/DevSecOps/src/app/main.py
++++ b/Code/DevSecOps/src/app/main.py
+@@ -61,3 +61,11 @@
+ @app.get("/users")
+ def list_users():
+     return {"users": users_db}
+\ No newline at end of file
++
++
++@app.get("/search")
++def search_users(q: str):
++    conn = sqlite3.connect(":memory:")
++    cursor = conn.cursor()
++    cursor.execute("SELECT * FROM users WHERE name = '" + q + "'")
++    return {"rows": cursor.fetchall()}

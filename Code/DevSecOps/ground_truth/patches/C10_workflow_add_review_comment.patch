@@ -1,0 +1,9 @@
+--- a/.github/workflows/ci.yml
++++ b/.github/workflows/ci.yml
+@@ -51,2 +51,6 @@ jobs:
+       - name: Run tests
+         run: python -m pytest -v src/test
++
++      - name: Add clean completion summary
++        if: always()
++        run: echo "CI job completed" >> "$GITHUB_STEP_SUMMARY"
