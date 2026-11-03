@@ -1,0 +1,7 @@
+image	rep	seconds
+vuln	1	16.192
+vuln	2	15.658
+vuln	3	15.410
+fixed	1	10.486
+fixed	2	10.841
+fixed	3	10.320
