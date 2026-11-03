@@ -3,14 +3,16 @@
 # Dùng: install_scanners.sh trivy gitleaks conftest syft grype semgrep checkov
 set -euo pipefail
 
-tmp="${RUNNER_TEMP:-/tmp}"
+# Tệp đã có trong TOOL_CACHE_DIR thì dùng lại (vẫn kiểm checksum) để cấu hình C3 cache được.
+tmp="${TOOL_CACHE_DIR:-${RUNNER_TEMP:-/tmp}}"
+mkdir -p "${tmp}"
 
 fetch_tar() {
   local repo="$1" ver="$2" asset="$3" sums="$4" bin="$5"
   local base="https://github.com/${repo}/releases/download/v${ver}"
   local expected actual
-  curl -fsSL --retry 3 -o "${tmp}/${asset}" "${base}/${asset}"
-  curl -fsSL --retry 3 -o "${tmp}/${bin}.sums" "${base}/${sums}"
+  [ -s "${tmp}/${asset}" ] || curl -fsSL --retry 3 -o "${tmp}/${asset}" "${base}/${asset}"
+  [ -s "${tmp}/${bin}.sums" ] || curl -fsSL --retry 3 -o "${tmp}/${bin}.sums" "${base}/${sums}"
   expected="$(awk -v n="${asset}" '($2 == n || $2 == ("*" n)) {print $1; f = 1} END {if (!f) exit 1}' "${tmp}/${bin}.sums")"
   actual="$(sha256sum "${tmp}/${asset}" | awk '{print $1}')"
   if [ "${expected}" != "${actual}" ]; then
