@@ -26,6 +26,7 @@ env:
   SEMGREP_VERSION: "1.183.0"
   CONFTEST_VERSION: "0.71.1"
   CONTEST_POLICY: g2
+  SEMGREP_REGISTRY_RULESET: p/python
   FIXTURE_ID: ${{ github.event.inputs.fixture_id || 'baseline' }}
 
 defaults:
@@ -104,8 +105,9 @@ jobs:
         continue-on-error: true
         run: |
           semgrep scan \
-            --config auto \
             --config rules/semgrep \
+            --config "${SEMGREP_REGISTRY_RULESET}" \
+            --metrics=off \
             --json \
             --output reports/semgrep.json \
             src tools
@@ -167,6 +169,14 @@ jobs:
             --ignore-unfixed \
             .
 
+      # 2.4 Luật workflow tự viết (Conftest, chỉ báo cáo)
+      - name: Conftest luật workflow
+        run: |
+          bash tools/install_scanners.sh conftest
+          conftest test -p rules/conftest ../../.github/workflows lab/workflows-vuln/.github/workflows \
+            -o json > reports/conftest_wf.json || true
+          test -s reports/conftest_wf.json
+
       - name: Record CI timing
         if: always()
         run: python tests/record_ci_timing.py --job security-scan --started-at-epoch "$JOB_START_EPOCH" --out reports/timing/security-scan.json
@@ -222,14 +232,12 @@ jobs:
       - name: Checkov (soft-fail, chỉ báo cáo)
         run: |
           mkdir -p reports
-          # Loại lab/ (mẫu gieo lỗi cố ý D12-D15, D26-D28) khỏi quét baseline.
-          # Workflow nằm tại repo root, ngoài working-directory Code/DevSecOps.
-          checkov -d infra -d deploy -d ../../.github/workflows -f Dockerfile \
-            --skip-path lab \
-            --compact --soft-fail -o json > reports/checkov.stream.json || true
-          test -s reports/checkov.stream.json
+          # Gọi riêng từng framework rồi gộp: gọi gộp kèm -f Dockerfile có thể bỏ sót Dockerfile.
+          checkov -d infra -d deploy --framework terraform kubernetes --compact --soft-fail -o json > reports/checkov_iac.json
+          checkov -f Dockerfile --framework dockerfile --compact --soft-fail -o json > reports/checkov_docker.json
+          checkov -d ../.. --framework github_actions --compact --soft-fail -o json > reports/checkov_gha.json
           jq -s 'map(if type == "array" then .[] else . end)' \
-            reports/checkov.stream.json > reports/checkov.json
+            reports/checkov_iac.json reports/checkov_docker.json reports/checkov_gha.json > reports/checkov.json
 
       - name: Trivy config (chỉ báo cáo)
         run: trivy config --format json --output reports/trivy-config.json --exit-code 0 --skip-dirs lab .
@@ -363,6 +371,10 @@ jobs:
     runs-on: ubuntu-24.04
     permissions:
       contents: read
+      actions: read # tải findings của lần chạy gần nhất trên main cho chế độ delta
+    env:
+      GATE_FINDINGS: reports/enriched_findings.json
+      GATE_MODE: full
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -398,6 +410,11 @@ jobs:
           sudo install conftest /usr/local/bin/conftest
           conftest --version
 
+      - name: Kiểm thử chính sách gate và luật workflow
+        run: |
+          for policy in g0 g1 g2; do conftest verify -p "policy/${policy}"; done
+          conftest verify -p rules/conftest
+
       - name: Chuẩn hóa findings (schema bắt buộc, fail-closed)
         run: |
           python tools/test/normalize_findings.py \
@@ -407,20 +424,48 @@ jobs:
             --checkov reports/checkov.json \
             --trivy-config reports/trivy-config.json \
             --grype reports/grype-image.json \
+            --conftest-workflow reports/conftest_wf.json \
             --output reports/normalized_findings.json
+
+      - name: Lấy KEV (CISA) và EPSS (FIRST); lỗi mạng thì dùng snapshot đã commit
+        run: |
+          if python tools/fetch_kev_epss.py --findings reports/normalized_findings.json --out-dir reports/kev; then
+            echo "KEV_FILE=reports/kev/kev.json" >> "$GITHUB_ENV"
+            echo "EPSS_FILE=reports/kev/epss.json" >> "$GITHUB_ENV"
+          else
+            echo "::warning::Không tải được KEV/EPSS, dùng snapshot trong security/kev"
+            echo "KEV_FILE=security/kev/kev_snapshot.json" >> "$GITHUB_ENV"
+            echo "EPSS_FILE=security/kev/epss_snapshot.json" >> "$GITHUB_ENV"
+          fi
 
       - name: Làm giàu ngữ cảnh rủi ro (KEV, EPSS, bản vá, độ tin cậy)
         run: |
           python tools/enrich_findings.py \
             --findings reports/normalized_findings.json \
-            --kev security/kev/cisa_kev_subset.json \
-            --epss security/kev/epss_subset.json \
+            --kev "${KEV_FILE}" \
+            --epss "${EPSS_FILE}" \
             --out reports/enriched_findings.json
+
+      - name: PR chấm theo delta so với lần quét gần nhất trên main
+        if: github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          run_id="$(gh run list --repo "${GITHUB_REPOSITORY}" --workflow ci.yml --branch main --event push \
+            --status success --limit 1 --json databaseId -q '.[0].databaseId')"
+          if [ -n "${run_id}" ] && gh run download "${run_id}" --repo "${GITHUB_REPOSITORY}" -n report-gate -D baseline; then
+            python tools/delta_findings.py --current reports/enriched_findings.json \
+              --baseline baseline/reports/enriched_findings.json --out reports/delta_findings.json
+            echo "GATE_FINDINGS=reports/delta_findings.json" >> "$GITHUB_ENV"
+            echo "GATE_MODE=delta" >> "$GITHUB_ENV"
+          else
+            echo "::notice::Chưa có baseline trên main, gate chấm toàn bộ finding"
+          fi
 
       - name: Dựng gate_input.json
         run: |
           python tools/gate_input.py \
-            --findings reports/enriched_findings.json \
+            --findings "${GATE_FINDINGS}" \
             --exceptions security/exceptions.yaml \
             --today "$(date -u +%F)" \
             --policy "${CONTEST_POLICY}" \
@@ -467,6 +512,7 @@ jobs:
             --gate gate_report.json \
             --output pr_summary.md \
             --title "DevSecOps Security Summary (${CONTEST_POLICY})" || true
+          echo "Chế độ gate: ${GATE_MODE}" >> "$GITHUB_STEP_SUMMARY"
           if [ -f pr_summary.md ]; then
             cat pr_summary.md >> "$GITHUB_STEP_SUMMARY"
           fi
