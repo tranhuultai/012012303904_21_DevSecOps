@@ -36,7 +36,7 @@ def run_conftest(policy_dir, gate_input):
     try:
         result = subprocess.run(
             ["conftest", "test", "-p", str(policy_dir), path, "-o", "json"],
-            capture_output=True, text=True, check=False,
+            capture_output=True, encoding="utf-8", check=False,
         )
     finally:
         Path(path).unlink(missing_ok=True)

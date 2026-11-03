@@ -77,7 +77,7 @@ jobs:
 
       - name: Quét 5 lớp
         env:
-          IMAGE_FLAG: ${{ (matrix.change == 'BASE' || matrix.change == 'D12') && '--image' || '' }}
+          IMAGE_FLAG: --image
         run: bash tests/run_scans.sh reports ${IMAGE_FLAG}
 
       - name: Chuẩn hóa findings

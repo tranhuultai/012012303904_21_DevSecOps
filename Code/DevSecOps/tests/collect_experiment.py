@@ -37,6 +37,16 @@ def read_timings(path):
         return list(csv.DictReader(fh, delimiter="\t"))
 
 
+def unique(findings):
+    seen, out = set(), []
+    for f in findings:
+        fp = stable_fingerprint(f)
+        if fp not in seen:
+            seen.add(fp)
+            out.append(f)
+    return out
+
+
 def load_samples(input_dir):
     samples = {}
     for sample_dir in sorted(Path(input_dir).glob("exp-*")):
@@ -45,7 +55,8 @@ def load_samples(input_dir):
             continue
         samples[meta["change_id"]] = {
             "meta": meta,
-            "findings": read_json(sample_dir / "normalized_findings.json"),
+            "findings": None if (raw := read_json(sample_dir / "normalized_findings.json")) is None
+            else unique(raw),
             "timings": read_timings(sample_dir / "timings.tsv"),
             "versions": read_json(sample_dir / "versions.json", {}),
         }
