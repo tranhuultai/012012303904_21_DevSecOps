@@ -23,10 +23,6 @@ SEVERITY_MAP = {
     "INFO": "INFO",
     "INFORMATIONAL": "INFO",
     "UNKNOWN": "INFO",
-    # Checkov dùng thang riêng cho kết quả misconfiguration.
-    "FAILED": "HIGH",
-    "PASSED": "INFO",
-    "SKIPPED": "INFO",
 }
 
 VALID_SEVERITIES = {"CRITICAL", "HIGH", "MEDIUM", "LOW", "INFO"}
@@ -35,6 +31,33 @@ CVE_PATTERN = re.compile(r"^CVE-\d{4}-\d+$", re.IGNORECASE)
 # This file is expected at Code/DevSecOps/tools/test/normalize_findings.py.
 PROJECT_DIR = Path(__file__).resolve().parents[2]
 DEFAULT_SCHEMA = PROJECT_DIR / "schemas" / "finding.schema.json"
+DEFAULT_SEVERITY_MAP = PROJECT_DIR / "schemas" / "severity_map.yaml"
+
+# Checkov bản mở và luật Conftest tự viết không trả severity: tra bảng quy đổi của nhóm.
+_severity_map = None
+
+
+def load_severity_map(path=DEFAULT_SEVERITY_MAP):
+    """Đọc bảng quy đổi mức độ; trả về (mức mặc định, {rule_id: mức})."""
+    import yaml
+
+    with Path(path).open("r", encoding="utf-8") as file:
+        data = yaml.safe_load(file) or {}
+    default = str(data.get("default", "MEDIUM")).upper()
+    rules = {str(k): str(v).upper() for k, v in (data.get("rules") or {}).items()}
+    for value in [default, *rules.values()]:
+        if value not in VALID_SEVERITIES:
+            raise ValueError(f"severity_map: mức không hợp lệ {value}")
+    return default, rules
+
+
+def mapped_severity(rule_id):
+    """Mức độ cho rule không có severity gốc, theo schemas/severity_map.yaml."""
+    global _severity_map
+    if _severity_map is None:
+        _severity_map = load_severity_map()
+    default, rules = _severity_map
+    return rules.get(str(rule_id), default)
 
 
 def load_json(path):
@@ -261,7 +284,7 @@ def make_finding(
     }
 
 
-def parse_semgrep(data):
+def parse_semgrep(data, tool="semgrep"):
     """Convert a Semgrep JSON report to normalized findings."""
     if data is None:
         return []
@@ -306,7 +329,7 @@ def parse_semgrep(data):
 
         findings.append(
             make_finding(
-                tool="semgrep",
+                tool=tool,
                 rule_id=item.get("check_id"),
                 category="sast",
                 severity=severity,
@@ -365,8 +388,8 @@ def parse_gitleaks(data):
     return findings
 
 
-def parse_trivy(data):
-    """Convert Trivy vulnerability results to normalized findings."""
+def parse_trivy(data, category="sca"):
+    """Convert Trivy vulnerability results (fs hoặc image) to normalized findings."""
     if data is None:
         return []
 
@@ -423,7 +446,7 @@ def parse_trivy(data):
                 make_finding(
                     tool="trivy",
                     rule_id=vuln_id,
-                    category="sca",
+                    category=category,
                     severity=vuln.get("Severity"),
                     title=(
                         vuln.get("Title")
@@ -511,9 +534,7 @@ def parse_checkov(data):
             raise ValueError(f"Checkov check at index {index} must be an object.")
 
         rule_id = item.get("check_id")
-        severity = item.get("check_severity") or item.get("severity")
-        if not severity:
-            severity = "FAILED" if (item.get("check_result") or {}).get("result") == "FAILED" else "INFO"
+        severity = item.get("check_severity") or item.get("severity") or mapped_severity(rule_id)
 
         references = item.get("guideline")
         findings.append(
@@ -645,6 +666,39 @@ def parse_grype(data):
     return findings
 
 
+def parse_conftest(data):
+    """Convert Conftest JSON output (luật workflow tự viết) to findings.
+
+    Mỗi thông điệp deny có dạng "<RULE-ID>: <mô tả>"; rule ID lấy phần trước dấu hai chấm.
+    """
+    if data is None:
+        return []
+
+    require_list(data, "Conftest results")
+    findings = []
+    for result in data:
+        if not isinstance(result, dict):
+            raise ValueError("Conftest result must be an object.")
+        for failure in result.get("failures") or []:
+            message = str((failure or {}).get("msg", "")).strip()
+            if not message:
+                continue
+            rule_id = message.split(":", 1)[0].strip() or "unknown"
+            findings.append(
+                make_finding(
+                    tool="conftest",
+                    rule_id=rule_id,
+                    category="workflow",
+                    severity=mapped_severity(rule_id),
+                    title=rule_id,
+                    message=message,
+                    file=result.get("filename"),
+                    references=[],
+                )
+            )
+    return findings
+
+
 def validate_findings(findings, schema_path):
     """Validate normalized findings against the JSON Schema."""
     if not schema_path.is_file():
@@ -699,6 +753,20 @@ def main():
     )
     parser.add_argument("--grype", help="Path to Grype JSON report")
     parser.add_argument(
+        "--semgrep-registry",
+        help="Semgrep JSON report chạy riêng với bộ luật registry",
+    )
+    parser.add_argument("--trivy-image", help="Trivy image JSON report")
+    parser.add_argument(
+        "--conftest-workflow",
+        help="Conftest JSON report của luật workflow trong rules/conftest",
+    )
+    parser.add_argument(
+        "--severity-map",
+        default=str(DEFAULT_SEVERITY_MAP),
+        help="Bảng quy đổi mức độ cho rule không có severity gốc",
+    )
+    parser.add_argument(
         "--output",
         default="reports/normalized_findings.json",
         help="Output JSON path",
@@ -716,13 +784,21 @@ def main():
     args = parser.parse_args()
 
     try:
+        global _severity_map
+        _severity_map = load_severity_map(args.severity_map)
+
         findings = []
         findings.extend(parse_semgrep(load_json(args.semgrep)))
+        findings.extend(
+            parse_semgrep(load_json(args.semgrep_registry), tool="semgrep-registry")
+        )
         findings.extend(parse_gitleaks(load_json(args.gitleaks)))
         findings.extend(parse_trivy(load_json(args.trivy)))
+        findings.extend(parse_trivy(load_json(args.trivy_image), category="image"))
         findings.extend(parse_checkov(load_checkov_json(args.checkov)))
         findings.extend(parse_trivy_config(load_json(args.trivy_config)))
         findings.extend(parse_grype(load_json(args.grype)))
+        findings.extend(parse_conftest(load_json(args.conftest_workflow)))
 
         # Validate before writing so invalid results do not replace the
         # last known-good output file.
@@ -744,7 +820,7 @@ def main():
             key = finding["tool"]
             counts[key] = counts.get(key, 0) + 1
 
-        for tool in ("semgrep", "gitleaks", "trivy", "checkov", "grype"):
+        for tool in ("semgrep", "semgrep-registry", "gitleaks", "trivy", "checkov", "grype", "conftest"):
             print(f"  {tool}: {counts.get(tool, 0)}")
 
     except (
