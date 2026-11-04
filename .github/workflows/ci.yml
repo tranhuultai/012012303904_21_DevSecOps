@@ -59,12 +59,15 @@ jobs:
         run: |
           python -m pip install --upgrade "pip==26.2.2"
           pip install -r src/requirements.txt
+          # Thư viện và Conftest cho test của bộ chuẩn hóa, gate, thực nghiệm và phân tích.
+          pip install "jsonschema==4.26.0" "PyYAML==6.0.3" "matplotlib==3.11.2"
+          bash tools/install_scanners.sh conftest
 
       - name: Check Python syntax
-        run: python -m compileall -q src
+        run: python -m compileall -q src tools tests
 
       - name: Run tests
-        run: python -m pytest -v src/test
+        run: python -m pytest -v src/test tests
 
   # ─────────────────────────────────────────────────────────────
   # 2) SAST + Secret + SCA (chế độ thu thập: thoát 0, chỉ báo cáo)
