@@ -1,0 +1,1 @@
+{"theme": "neutral", "themeVariables": {"fontFamily": "Liberation Serif, Times New Roman, serif", "fontSize": "20px"}, "flowchart": {"htmlLabels": true, "curve": "basis"}, "sequence": {"actorFontSize": 21, "messageFontSize": 21, "noteFontSize": 19, "actorMargin": 30, "width": 120, "mirrorActors": false}}
