@@ -246,7 +246,9 @@ jobs:
           if [ -f exp/exp-e4/trivy_vuln.json ]; then
             python tests/e4_summarize.py --input exp/exp-e4 --kev summary/kev/kev.json --out summary
             mkdir -p summary/e4
-            cp exp/exp-e4/builds.tsv exp/exp-e4/sizes.tsv exp/exp-e4/meta.json exp/exp-e4/*version* summary/e4/
+            cp exp/exp-e4/*.tsv exp/exp-e4/*.txt exp/exp-e4/trivy_version.json exp/exp-e4/meta.json summary/e4/
+            # SBOM và báo cáo lỗ hổng trước/sau, nén để lưu cùng repo.
+            for f in exp/exp-e4/{syft,trivy,grype}_{vuln,fixed}.json; do gzip -9 -n -c "${f}" > "summary/e4/${f##*/}.gz"; done
           else
             echo "E4 không có kết quả" | tee summary/e4_missing.txt
           fi
@@ -260,6 +262,7 @@ jobs:
             for f in normalized_findings.json meta.json versions.json timings.tsv; do
               if [ -f "${d}/${f}" ]; then cp "${d}/${f}" "summary/samples/${id}/"; fi
             done
+            gzip -9 -n "summary/samples/${id}/normalized_findings.json"
           done
 
       - name: Upload tổng hợp
@@ -278,5 +281,5 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git switch -c "exp-data/run-${GITHUB_RUN_ID}"
           git add "${dest}"
-          git commit -q -m "data: experiment run ${GITHUB_RUN_ID}"
+          git commit -q -m "test(results): add experiment run ${GITHUB_RUN_ID}"
           git push -q origin "exp-data/run-${GITHUB_RUN_ID}"
