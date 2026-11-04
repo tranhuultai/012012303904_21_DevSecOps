@@ -113,6 +113,18 @@ Terraform trong `infra/` chỉ dùng để quét tĩnh (`terraform init -backend
 qua thư mục này); vài commit đầu từng có chuỗi giả trong `src/app/vulnerable_examples.py`, đã gỡ khỏi
 baseline.
 
+## Tài liệu bàn giao
+
+| Tài liệu | Vị trí |
+| --- | --- |
+| Báo cáo (Word) | `DOCX/` |
+| Slide thuyết trình | `PPTX/Slide_DeTai21_DevSecOps.pptx` |
+| Hướng dẫn triển khai, tái lập, dọn tài nguyên, chi phí, rủi ro còn lại | [`Extra/HUONG_DAN_TRIEN_KHAI.md`](Extra/HUONG_DAN_TRIEN_KHAI.md) |
+| Kịch bản demo và phân công trình bày | [`Extra/KICH_BAN_DEMO.md`](Extra/KICH_BAN_DEMO.md) |
+| Sơ đồ kiến trúc, luồng dữ liệu, trình tự (nguồn và ảnh) | [`Extra/so_do/`](Extra/so_do/) |
+| Phiên bản công cụ và action | [`Extra/TOOL_VERSIONS.md`](Extra/TOOL_VERSIONS.md) |
+| Dữ liệu thô, số liệu báo cáo, notebook | `Code/DevSecOps/tests/results/`, `Code/DevSecOps/tests/analysis.ipynb` |
+
 ## Cấu trúc repository
 
 ```text
