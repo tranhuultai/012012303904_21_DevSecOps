@@ -1,0 +1,96 @@
+{
+  "findings": [
+    {
+      "schema_version": "1.0",
+      "finding_id": "checkov:a149f7241fca664a",
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_24",
+      "category": "iac",
+      "severity": "HIGH",
+      "title": "Ensure no security groups allow ingress from 0.0.0.0:0 to port 22",
+      "message": "Ensure no security groups allow ingress from 0.0.0.0:0 to port 22",
+      "file": "/security_groups.tf",
+      "resource": "aws_security_group.alb",
+      "line_start": 2,
+      "line_end": 32,
+      "cve": null,
+      "fingerprint": "a149f7241fca664abc54481246c3eadedd00097dd17fb6f28041297139d362e8",
+      "status": "open",
+      "references": [
+        "https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/networking-1-port-security"
+      ],
+      "kev": false,
+      "epss": 0.0,
+      "fix_available": false,
+      "match_confidence": "high",
+      "location": {
+        "file": "/security_groups.tf",
+        "resource": "aws_security_group.alb"
+      }
+    },
+    {
+      "schema_version": "1.0",
+      "finding_id": "checkov:a149f7241fca664a",
+      "tool": "checkov",
+      "rule_id": "CKV_AWS_24",
+      "category": "iac",
+      "severity": "HIGH",
+      "title": "Ensure no security groups allow ingress from 0.0.0.0:0 to port 22",
+      "message": "Ensure no security groups allow ingress from 0.0.0.0:0 to port 22",
+      "file": "/security_groups.tf",
+      "resource": "aws_security_group.alb",
+      "line_start": 2,
+      "line_end": 32,
+      "cve": null,
+      "fingerprint": "a149f7241fca664abc54481246c3eadedd00097dd17fb6f28041297139d362e8",
+      "status": "open",
+      "references": [
+        "https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/networking-1-port-security"
+      ],
+      "kev": false,
+      "epss": 0.0,
+      "fix_available": false,
+      "match_confidence": "high",
+      "location": {
+        "file": "/security_groups.tf",
+        "resource": "aws_security_group.alb"
+      }
+    },
+    {
+      "schema_version": "1.0",
+      "finding_id": "trivy:6eef883b8053ce1f",
+      "tool": "trivy",
+      "rule_id": "AWS-0107",
+      "category": "iac",
+      "severity": "HIGH",
+      "title": "Security groups should not allow unrestricted ingress to SSH or RDP from any IP address.",
+      "message": "Security groups provide stateful filtering of ingress and egress network traffic to AWS\nresources. It is recommended that no security group allows unrestricted ingress access to\nremote server administration ports, such as SSH to port 22 and RDP to port 3389.\n",
+      "file": "infra/security_groups.tf",
+      "resource": null,
+      "line_start": null,
+      "line_end": null,
+      "cve": null,
+      "fingerprint": "6eef883b8053ce1f2831ad139ff9b94030072db738008e527f491b82a2b58c1c",
+      "status": "open",
+      "references": [
+        "https://avd.aquasec.com/misconfig/aws-0107",
+        "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/security-group-rules-reference.html",
+        "https://docs.aws.amazon.com/securityhub/latest/userguide/ec2-controls.html#ec2-13",
+        "https://docs.aws.amazon.com/securityhub/latest/userguide/ec2-controls.html#ec2-14"
+      ],
+      "kev": false,
+      "epss": 0.0,
+      "fix_available": false,
+      "match_confidence": "low",
+      "location": {
+        "file": "infra/security_groups.tf",
+        "resource": ""
+      }
+    }
+  ],
+  "exceptions": [],
+  "context": {
+    "today": "2026-11-03",
+    "policy": "g2"
+  }
+}
