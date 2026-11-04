@@ -59,7 +59,7 @@ jobs:
       - name: Cài công cụ
         run: |
           bash tools/install_scanners.sh trivy gitleaks conftest semgrep checkov
-          python -m pip install --quiet jsonschema PyYAML
+          python -m pip install --quiet "jsonschema==4.26.0" "PyYAML==6.0.3"
 
       - name: Quét tuần tự 5 lớp
         run: bash tests/run_scans.sh reports --image
@@ -148,7 +148,7 @@ jobs:
       - name: Cài Conftest và thư viện
         run: |
           bash tools/install_scanners.sh conftest
-          python -m pip install --quiet jsonschema PyYAML
+          python -m pip install --quiet "jsonschema==4.26.0" "PyYAML==6.0.3"
 
       - name: Tải báo cáo các lớp
         uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
