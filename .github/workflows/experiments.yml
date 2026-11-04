@@ -262,7 +262,8 @@ jobs:
             for f in normalized_findings.json meta.json versions.json timings.tsv; do
               if [ -f "${d}/${f}" ]; then cp "${d}/${f}" "summary/samples/${id}/"; fi
             done
-            gzip -9 -n "summary/samples/${id}/normalized_findings.json"
+            nf="summary/samples/${id}/normalized_findings.json"
+            if [ -f "${nf}" ]; then gzip -9 -n "${nf}"; fi
           done
 
       - name: Upload tổng hợp
