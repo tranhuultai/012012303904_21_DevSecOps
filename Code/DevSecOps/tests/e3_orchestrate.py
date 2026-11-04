@@ -64,14 +64,15 @@ def main() -> int:
 
     repo = os.environ["GITHUB_REPOSITORY"]
     server = os.environ.get("GITHUB_SERVER_URL", "https://github.com")
+    batch = os.environ.get("GITHUB_RUN_ID", "local")  # nhãn và khóa cache riêng cho mỗi lần điều phối
     jobs, runs = [], []
     for rep in range(1, args.reps + 1):
         ids = {}
         for mode in MODES:
             tag = f"r{rep}-{mode}"
             gh("workflow", "run", WORKFLOW, "--repo", repo, "-f", f"mode={mode}", "-f", f"ref={args.ref}",
-               "-f", f"tag={tag}")
-            ids[mode] = find_run(repo, tag)
+               "-f", f"tag={tag}", "-f", f"batch={batch}")
+            ids[mode] = find_run(repo, f"{batch}-{tag}")
         for mode, run_id in ids.items():
             conclusion = wait_run(repo, run_id)
             rows = job_rows(repo, run_id, mode, rep)
