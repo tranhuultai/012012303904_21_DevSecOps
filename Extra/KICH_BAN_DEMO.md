@@ -34,9 +34,9 @@ Tài liệu kèm theo báo cáo Đề tài 21 (Phụ lục B). Có hai phương 
 
 **1:00-3:00 (Duy).** Mở cây thư mục `Code/DevSecOps/`: `src/` (ứng dụng), `infra/` và `deploy/` (Terraform, Kubernetes), `rules/`, `policy/g0|g1|g2`. Mở `.github/workflows/ci.yml`, chỉ năm job `test`, `security-scan`, `iac`, `image`, `gate`; nhấn mạnh quyền mặc định `contents: read` và action ghim SHA. Mở `policy/g2/` và nói ba điều kiện chặn: tác động cao, phát hiện đáng tin, sửa được ngay.
 
-**3:00-5:00 (Duy).** Mở PR thay đổi sạch (nhánh `demo/clean`, mục 5). Ở tab Checks, chỉ các job chạy song song rồi đến `gate`. Mở Summary của run: chế độ delta, 0 finding mới thuộc diện chặn, kết quả PASS.
+**3:00-5:00 (Duy).** Mở PR thay đổi sạch (nhánh `demo/clean-<N>`, mục 5). Ở tab Checks, chỉ các job chạy song song rồi đến `gate`. Mở Summary của run: chế độ delta, 0 finding mới thuộc diện chặn, kết quả PASS.
 
-**5:00-7:30 (Tài).** Mở PR luồng lỗi (nhánh `demo/ssh-open`). Ở Summary: gate BLOCK, finding mới `CKV_AWS_24` (Checkov) trỏ vào `infra/security_groups.tf`, kèm cảnh báo WARN của Trivy `AWS-0107` cho cùng lỗi (Trivy xếp lỗi này vào diện cảnh báo, Checkov vào diện chặn). Nếu ruleset đã bật required check thì chỉ nút merge bị khóa. Đẩy commit sửa, chờ run mới (khoảng 1,5-2 phút; có thể cắt ghép trong video), mở Summary: PASS.
+**5:00-7:30 (Tài).** Mở PR luồng lỗi (nhánh `demo/ssh-open-<N>`). Ở Summary: gate BLOCK, finding mới `CKV_AWS_24` (Checkov) trỏ vào `infra/security_groups.tf`, kèm cảnh báo WARN của Trivy `AWS-0107` cho cùng lỗi (Trivy xếp lỗi này vào diện cảnh báo, Checkov vào diện chặn). Nếu ruleset đã bật required check thì chỉ nút merge bị khóa. Đẩy commit sửa, chờ run mới (khoảng 1,5-2 phút; có thể cắt ghép trong video), mở Summary: PASS.
 
 **7:30-8:30 (Tài).** Mở run push `main` 41700761072: job `release` in digest `ghcr.io/.../devsecops@sha256:...`; job `deploy-smoke` có bước `cosign verify` thành công và lệnh `curl /health` trả kết quả. Mở hình `tests/results/figures/e4_before_after.png`: 517 xuống 118 gói, 1.532 xuống 85 CVE (Trivy).
 
@@ -58,22 +58,24 @@ Tài liệu kèm theo báo cáo Đề tài 21 (Phụ lục B). Có hai phương 
 | 16-17 | Đánh giá giả thuyết và chi phí, bốn giải pháp đề xuất | Trần Hữu Tài | 2:00 |
 | 18 | Kết luận | Hoàng Gia Long | 0:45 |
 
-Cách chạy demo ở slide 15 để không phải chờ: PR `demo/ssh-open` đã mở và BLOCK từ trước. Lên slide 15, mở Summary BLOCK, đẩy commit sửa ngay, rồi nói slide 16 trong lúc run chạy; quay lại tab PR khi gate PASS. Thời gian còn lại dành cho hỏi đáp.
+Cách chạy demo ở slide 15 để không phải chờ: PR `demo/ssh-open-<N>` đã mở và BLOCK từ trước. Lên slide 15, mở Summary BLOCK, đẩy commit sửa ngay, rồi nói slide 16 trong lúc run chạy; quay lại tab PR khi gate PASS. Thời gian còn lại dành cho hỏi đáp.
 
 ## 5. Chuẩn bị nhánh demo
 
-Chạy từ thư mục gốc của repo.
+Chỉ một người (Trần Hữu Tài) tạo và dọn các nhánh demo. Tên nhánh có hậu tố `N` riêng cho từng đợt demo, để lệnh dọn không xóa nhầm nhánh của đợt khác. Chạy từ thư mục gốc của repo.
 
 ```bash
+N=$(date +%Y%m%d-%H%M)   # ghi lại giá trị này để dùng khi dọn nhánh
+
 # Luồng bình thường: thay đổi sạch C02 (thêm một docstring)
-git switch -c demo/clean origin/main
+git switch -c "demo/clean-$N" origin/main
 git apply Code/DevSecOps/ground_truth/patches/C02_add_docstrings.patch
 git commit -am "docs(app): add a docstring to the root endpoint"
-git push -u origin demo/clean
-gh pr create --base main --head demo/clean --title "docs(app): add a docstring to the root endpoint" --body "Demo: thay đổi sạch, gate kỳ vọng PASS."
+git push -u origin "demo/clean-$N"
+gh pr create --base main --head "demo/clean-$N" --title "docs(app): add a docstring to the root endpoint" --body "Demo: thay đổi sạch, gate kỳ vọng PASS."
 
 # Luồng lỗi: mở SSH cho 0.0.0.0/0
-git switch -c demo/ssh-open origin/main
+git switch -c "demo/ssh-open-$N" origin/main
 # Thêm khối sau vào resource "aws_security_group" "alb" trong
 # Code/DevSecOps/infra/security_groups.tf, ngay sau khối ingress đầu tiên:
 #   ingress {
@@ -84,14 +86,14 @@ git switch -c demo/ssh-open origin/main
 #     cidr_blocks = ["0.0.0.0/0"]
 #   }
 git commit -am "test(demo): open SSH to 0.0.0.0/0"
-git push -u origin demo/ssh-open
-gh pr create --base main --head demo/ssh-open --title "test(demo): open SSH to 0.0.0.0/0" --body "Demo: gate kỳ vọng BLOCK vì CKV_AWS_24."
+git push -u origin "demo/ssh-open-$N"
+gh pr create --base main --head "demo/ssh-open-$N" --title "test(demo): open SSH to 0.0.0.0/0" --body "Demo: gate kỳ vọng BLOCK vì CKV_AWS_24."
 
 # Lúc demo: sửa bằng cách hoàn tác commit lỗi
 git revert --no-edit HEAD && git push
 ```
 
-Sau buổi báo cáo: đóng hai PR demo không merge và xóa nhánh (`git push origin --delete demo/clean demo/ssh-open`).
+Sau buổi báo cáo: đóng hai PR demo không merge, rồi xóa đúng hai nhánh của đợt này với cùng giá trị `N` lúc tạo: `git push origin --delete "demo/clean-$N" "demo/ssh-open-$N"`.
 
 ## 6. Dự phòng
 

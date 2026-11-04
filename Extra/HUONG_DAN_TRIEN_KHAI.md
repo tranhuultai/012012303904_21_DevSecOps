@@ -37,7 +37,7 @@ Khi push vào `main` và gate PASS:
 1. Job `release` build image, đẩy lên GHCR, lấy digest, ký keyless bằng Cosign, đính kèm SBOM CycloneDX và provenance.
 2. Job `deploy-smoke` kiểm chữ ký, tạo cụm `kind`, triển khai manifest trong `Code/DevSecOps/deploy/` và gọi `/health`.
 
-Kiểm chữ ký thủ công (thay `<digest>` bằng digest trong log job `release`):
+Kiểm chữ ký thủ công: thay `<owner>` bằng tài khoản hoặc tổ chức sở hữu repo, `<repo>` bằng tên repo, `<digest>` bằng digest trong log job `release`. Với repo của nhóm: `<owner>` là `tranhuultai`, `<repo>` là `012012303904_21_DevSecOps`.
 
 ```bash
 cosign verify \
