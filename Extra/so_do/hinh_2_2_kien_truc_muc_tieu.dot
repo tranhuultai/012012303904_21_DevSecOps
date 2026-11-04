@@ -1,0 +1,36 @@
+digraph G {
+  rankdir=TB; newrank=true; nodesep=0.25; ranksep=0.35;
+  fontname="Liberation Serif"; fontsize=17;
+  node [shape=box, style="rounded,filled", fillcolor="#eef3fb", color="#4a6fa5", fontname="Liberation Serif", fontsize=17, margin="0.1,0.05"];
+  edge [color="#555555", fontname="Liberation Serif", fontsize=15, arrowsize=0.7];
+  subgraph cluster_gh { label="GitHub"; style="rounded,dashed"; color="#888888";
+    DEV [label="Lập trình viên\nPR / push main", fillcolor="#ffffff"];
+    RS  [label="Ruleset main\nCODEOWNERS duyệt"];
+    EXC [label="exceptions.yaml\nngoại lệ có hạn"];
+  }
+  subgraph cluster_run { label="Runner ubuntu-24.04 (mỗi job một máy ảo, token tối thiểu)"; style="rounded,dashed"; color="#888888";
+    T [label="test\npytest"];
+    S [label="security-scan\nSemgrep, Gitleaks,\nTrivy fs, Conftest"];
+    I [label="iac\nCheckov,\nTrivy config"];
+    C [label="image\nTrivy image,\nSyft, Grype"];
+    G [label="gate\nchuẩn hóa, KEV/EPSS,\ndelta, Conftest G2", fillcolor="#fff4e0", color="#c77c02"];
+    R [label="release (chỉ main)\ndigest, SBOM,\nprovenance, Cosign"];
+    Y [label="deploy-smoke\ncosign verify,\nkind, /health"];
+  }
+  KEV [label="CISA KEV\nFIRST EPSS", fillcolor="#f2f2f2", color="#777777"];
+  GHCR [label="GHCR", fillcolor="#f2f2f2", color="#777777"];
+  SIG [label="Sigstore\nFulcio, Rekor", fillcolor="#f2f2f2", color="#777777"];
+  DEV -> RS;
+  {rank=same; DEV; RS; EXC;}
+  RS -> T; RS -> S; RS -> I; RS -> C;
+  {rank=same; T; S; I; C;}
+  S -> G; I -> G; C -> G;
+  EXC -> G [style=dashed];
+  KEV -> G [style=dashed];
+  {rank=same; G; KEV;}
+  G -> R [label=" PASS/WARN"];
+  T -> R;
+  R -> GHCR; R -> SIG;
+  {rank=same; R; GHCR; SIG;}
+  R -> Y;
+}

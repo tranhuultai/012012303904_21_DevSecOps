@@ -1,0 +1,14 @@
+digraph H {
+  rankdir=LR; nodesep=0.25; ranksep=0.3; newrank=true;
+  node [shape=box, style="rounded,filled", fillcolor="#eef3fb", color="#4a6fa5", fontname="Liberation Serif", fontsize=18, margin="0.12,0.06"];
+  edge [color="#555555", fontname="Liberation Serif", fontsize=16, arrowsize=0.8];
+  DEV [label="Lập trình viên\nmở PR", fillcolor="#ffffff"];
+  CI [label="GitHub Actions\nchỉ chạy pytest"];
+  M [label="Merge vào main\n(chưa có luật bảo vệ)"];
+  DEP [label="Build image,\ntriển khai thủ công"];
+  X [label="Secret, CVE, cấu hình sai\nkhông bị kiểm tra", fillcolor="#fdecea", color="#c62828"];
+  DEV -> CI;
+  CI -> M [label="test đạt"];
+  M -> DEP;
+  X -> DEP [style=dashed, color="#c62828"];
+}

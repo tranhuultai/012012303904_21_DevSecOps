@@ -1,0 +1,14 @@
+digraph D {
+  rankdir=TB; nodesep=0.25; ranksep=0.3;
+  node [shape=box, style="rounded,filled", fillcolor="#eef3fb", color="#4a6fa5", fontname="Liberation Serif", fontsize=17, margin="0.1,0.05"];
+  edge [color="#555555", fontname="Liberation Serif", fontsize=15, arrowsize=0.7];
+  RAW [label="Báo cáo thô của job quét\nsemgrep, gitleaks, trivy,\ncheckov, conftest, grype (JSON)", shape=note, fillcolor="#ffffff"];
+  N [label="normalize_findings.py\nđưa về schema finding chung,\nmức độ theo severity_map.yaml"];
+  E [label="fetch_kev_epss.py\nenrich_findings.py\ngắn kev, epss, fix_available"];
+  D [label="delta_findings.py\n(chỉ pull request)\nbỏ finding đã có trên main"];
+  GI [label="gate_input.py\n+ exceptions.yaml, ngày đánh giá\nkiểm tra theo JSON Schema"];
+  CT [label="conftest test -p policy/g2\nmã thoát khác 0: chặn", fillcolor="#fff4e0", color="#c77c02"];
+  SUM [label="gate_report.json\npr_summary.md (Job Summary)", shape=note, fillcolor="#ffffff"];
+  RAW -> N -> E -> D -> GI -> CT -> SUM;
+  E -> GI [label=" push main", style=dashed];
+}
