@@ -1,29 +1,29 @@
-id,detect_layer,detected,detected_by,accepted_rule_ids,new_findings,cach_sua
-D01,sast,1,semgrep,rules.semgrep.python.sqli.concatenation,1,Dùng truy vấn tham số hóa
-D02,sast,1,semgrep,rules.semgrep.python.secrets.hardcoded,1,Đọc mật khẩu từ biến môi trường hoặc secret manager
-D03,sast,1,semgrep,rules.semgrep.python.exec.command-injection,1,"Bỏ shell=True, truyền đối số dạng danh sách và kiểm tra đầu vào"
-D04,sast,1,semgrep,rules.semgrep.python.file.path-traversal,1,Chuẩn hóa đường dẫn và giới hạn trong thư mục cho phép
-D05,sast,1,semgrep,rules.semgrep.python.pickle.insecure-deserialization,1,"Không unpickle dữ liệu không tin cậy, dùng JSON"
-D06,sast,1,semgrep;semgrep-registry,rules.semgrep.python.crypto.weak-hash-md5;python.lang.security.insecure-hash-algorithms-md5.insecure-hash-algorithm-md5;python.lang.security.audit.md5-used-as-password.md5-used-as-password,3,"Dùng hàm băm mật khẩu chuyên dụng (bcrypt, argon2)"
-D07,secret,1,gitleaks,generic-api-key,1,"Xóa khóa khỏi workflow, dùng GitHub Secrets và thu hồi khóa"
-D08,secret,1,gitleaks,generic-api-key,1,"Xóa token khỏi mã, dùng biến môi trường và thu hồi token"
-D09,sca,1,trivy-fs,CVE-2024-35195,6,Nâng requests lên bản đã vá
-D10,sca,1,trivy-fs,CVE-2023-45803,18,Nâng urllib3 lên bản đã vá
-D11,sca,1,trivy-fs,CVE-2024-24762,18,Nâng python-multipart lên từ 0.0.7
-D12,image,1,trivy-image,CVE-*,1439,Dùng base image slim ghim digest
-D13,dockerfile,1,checkov,CKV_DOCKER_3,2,Tạo user không đặc quyền và khai báo USER
-D14,dockerfile,1,checkov,CKV_DOCKER_4,1,"Dùng COPY thay ADD, tải tệp có kiểm checksum"
-D15,dockerfile,1,checkov,CKV_DOCKER_1,37,Bỏ sshd và EXPOSE 22
-D16,iac,1,checkov;trivy-config,CKV_AWS_24;AWS-0107,2,Giới hạn nguồn SSH trong dải nội bộ
-D17,iac,1,checkov,CKV_AWS_1;CKV_AWS_49;CKV_AWS_107;CKV_AWS_108;CKV_AWS_109;CKV_AWS_110;CKV_AWS_111;CKV_AWS_356;CKV2_AWS_40,9,Cấp quyền tối thiểu theo hành động và tài nguyên cụ thể
-D18,iac,1,checkov;trivy-config,CKV_AWS_53;CKV_AWS_54;CKV_AWS_55;CKV_AWS_56;CKV2_AWS_6;AWS-0086;AWS-0087;AWS-0091;AWS-0093,9,Bật đủ bốn tùy chọn S3 Public Access Block
-D19,iac,1,checkov;trivy-config,CKV_AWS_16;CKV_AWS_17;AWS-0080;AWS-0180,4,"Tắt publicly_accessible, bật storage_encrypted cho RDS"
-D20,iac,1,checkov,CKV_AWS_18;CKV_AWS_21,3,Bật versioning và access logging cho bucket
-D21,k8s,1,checkov;trivy-config,CKV_K8S_16;KSV-0017,2,"Bỏ privileged, đặt allowPrivilegeEscalation false"
-D22,k8s,1,checkov;trivy-config,CKV_K8S_11;CKV_K8S_13;KSV-0011;KSV-0018,4,Khai báo resources requests và limits
-D23,k8s,1,checkov;trivy-config,CKV_K8S_14;CKV_K8S_43;KSV-0013,3,Ghim image theo digest
-D24,k8s,1,trivy-config,KSV-0111,1,"Gán quyền tối thiểu, không dùng cluster-admin"
-D25,k8s,1,trivy-config,KSV-0109,2,"Chuyển mật khẩu sang Secret, không để trong ConfigMap"
-D26,workflow,1,checkov;conftest,CKV2_GHA_1;GHA-WRITE-ALL,2,Đặt permissions tối thiểu (contents: read)
-D27,workflow,1,checkov;conftest,CKV_GHA_2;GHA-SCRIPT-INJECTION,2,"Truyền dữ liệu người dùng qua biến môi trường, không chèn biểu thức vào run"
-D28,workflow,1,conftest,GHA-UNPINNED-ACTION,1,Ghim action theo SHA 40 ký tự
+id,detect_layer,detected,detected_by,accepted_rule_ids,new_findings,expected_g2,g1_full,g2_full,g2_delta,cach_sua
+D01,sast,1,semgrep,rules.semgrep.python.sqli.concatenation,1,BLOCK,BLOCK,BLOCK,BLOCK,Dùng truy vấn tham số hóa
+D02,sast,1,semgrep,rules.semgrep.python.secrets.hardcoded,1,BLOCK,BLOCK,BLOCK,BLOCK,Đọc mật khẩu từ biến môi trường hoặc secret manager
+D03,sast,1,semgrep,rules.semgrep.python.exec.command-injection,1,BLOCK,BLOCK,BLOCK,BLOCK,"Bỏ shell=True, truyền đối số dạng danh sách và kiểm tra đầu vào"
+D04,sast,1,semgrep,rules.semgrep.python.file.path-traversal,1,WARN,BLOCK,WARN,WARN,Chuẩn hóa đường dẫn và giới hạn trong thư mục cho phép
+D05,sast,1,semgrep,rules.semgrep.python.pickle.insecure-deserialization,1,BLOCK,BLOCK,BLOCK,BLOCK,"Không unpickle dữ liệu không tin cậy, dùng JSON"
+D06,sast,1,semgrep;semgrep-registry,rules.semgrep.python.crypto.weak-hash-md5;python.lang.security.insecure-hash-algorithms-md5.insecure-hash-algorithm-md5;python.lang.security.audit.md5-used-as-password.md5-used-as-password,3,WARN,BLOCK,WARN,WARN,"Dùng hàm băm mật khẩu chuyên dụng (bcrypt, argon2)"
+D07,secret,1,gitleaks,generic-api-key,1,BLOCK,BLOCK,BLOCK,BLOCK,"Xóa khóa khỏi workflow, dùng GitHub Secrets và thu hồi khóa"
+D08,secret,1,gitleaks,generic-api-key,1,BLOCK,BLOCK,BLOCK,BLOCK,"Xóa token khỏi mã, dùng biến môi trường và thu hồi token"
+D09,sca,1,trivy-fs,CVE-2024-35195,6,WARN,BLOCK,WARN,WARN,Nâng requests lên bản đã vá
+D10,sca,1,trivy-fs,CVE-2023-45803,18,WARN,BLOCK,BLOCK,BLOCK,Nâng urllib3 lên bản đã vá
+D11,sca,1,trivy-fs,CVE-2024-24762,18,BLOCK,BLOCK,BLOCK,BLOCK,Nâng python-multipart lên từ 0.0.7
+D12,image,1,trivy-image,CVE-*,1439,BLOCK,BLOCK,BLOCK,BLOCK,Dùng base image slim ghim digest
+D13,dockerfile,1,checkov,CKV_DOCKER_3,2,BLOCK,BLOCK,BLOCK,BLOCK,Tạo user không đặc quyền và khai báo USER
+D14,dockerfile,1,checkov,CKV_DOCKER_4,1,BLOCK,BLOCK,BLOCK,BLOCK,"Dùng COPY thay ADD, tải tệp có kiểm checksum"
+D15,dockerfile,1,checkov,CKV_DOCKER_1,37,BLOCK,BLOCK,BLOCK,BLOCK,Bỏ sshd và EXPOSE 22
+D16,iac,1,checkov;trivy-config,CKV_AWS_24;AWS-0107,2,BLOCK,BLOCK,BLOCK,BLOCK,Giới hạn nguồn SSH trong dải nội bộ
+D17,iac,1,checkov,CKV_AWS_1;CKV_AWS_49;CKV_AWS_107;CKV_AWS_108;CKV_AWS_109;CKV_AWS_110;CKV_AWS_111;CKV_AWS_356;CKV2_AWS_40,9,BLOCK,BLOCK,BLOCK,BLOCK,Cấp quyền tối thiểu theo hành động và tài nguyên cụ thể
+D18,iac,1,checkov;trivy-config,CKV_AWS_53;CKV_AWS_54;CKV_AWS_55;CKV_AWS_56;CKV2_AWS_6;AWS-0086;AWS-0087;AWS-0091;AWS-0093,9,BLOCK,BLOCK,BLOCK,BLOCK,Bật đủ bốn tùy chọn S3 Public Access Block
+D19,iac,1,checkov;trivy-config,CKV_AWS_16;CKV_AWS_17;AWS-0080;AWS-0180,4,BLOCK,BLOCK,BLOCK,BLOCK,"Tắt publicly_accessible, bật storage_encrypted cho RDS"
+D20,iac,1,checkov,CKV_AWS_18;CKV_AWS_21,3,WARN,BLOCK,WARN,WARN,Bật versioning và access logging cho bucket
+D21,k8s,1,checkov;trivy-config,CKV_K8S_16;KSV-0017,2,BLOCK,BLOCK,BLOCK,BLOCK,"Bỏ privileged, đặt allowPrivilegeEscalation false"
+D22,k8s,1,checkov;trivy-config,CKV_K8S_11;CKV_K8S_13;KSV-0011;KSV-0018,4,WARN,BLOCK,WARN,WARN,Khai báo resources requests và limits
+D23,k8s,1,checkov;trivy-config,CKV_K8S_14;CKV_K8S_43;KSV-0013,3,BLOCK,BLOCK,BLOCK,BLOCK,Ghim image theo digest
+D24,k8s,1,trivy-config,KSV-0111,1,BLOCK,BLOCK,BLOCK,BLOCK,"Gán quyền tối thiểu, không dùng cluster-admin"
+D25,k8s,1,trivy-config,KSV-0109,2,BLOCK,BLOCK,BLOCK,BLOCK,"Chuyển mật khẩu sang Secret, không để trong ConfigMap"
+D26,workflow,1,checkov;conftest,CKV2_GHA_1;GHA-WRITE-ALL,2,BLOCK,BLOCK,BLOCK,BLOCK,Đặt permissions tối thiểu (contents: read)
+D27,workflow,1,checkov;conftest,CKV_GHA_2;GHA-SCRIPT-INJECTION,2,BLOCK,BLOCK,BLOCK,BLOCK,"Truyền dữ liệu người dùng qua biến môi trường, không chèn biểu thức vào run"
+D28,workflow,1,conftest,GHA-UNPINNED-ACTION,1,WARN,BLOCK,WARN,WARN,Ghim action theo SHA 40 ký tự
