@@ -355,6 +355,8 @@ jobs:
   gate:
     name: gate (Conftest Rego)
     needs: [security-scan, iac, image]
+    # Vẫn chạy khi job quét lỗi để tự báo đỏ: GitHub tính job bị skip là đạt.
+    if: always()
     runs-on: ubuntu-24.04
     permissions:
       contents: read
@@ -365,6 +367,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Chặn khi job quét không thành công
+        env:
+          NEEDS_RESULTS: ${{ join(needs.*.result, ' ') }}
+        run: |
+          for r in ${NEEDS_RESULTS}; do
+            if [ "${r}" != "success" ]; then
+              echo "::error::job quét kết thúc '${r}' (${NEEDS_RESULTS}), gate chặn"
+              exit 1
+            fi
+          done
 
       - name: Tải báo cáo quét
         uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
