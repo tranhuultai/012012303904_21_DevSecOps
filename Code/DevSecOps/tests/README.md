@@ -43,16 +43,38 @@ Pipeline chạy quá 10 phút.
   chế độ full và delta), job `e4-image` build mỗi image ba lần rồi quét SBOM và lỗ hổng.
 - E3: workflow `e3-orchestrate.yml` chạy xen kẽ C1 (tuần tự, không cache), C2 (song song, không cache),
   C3 (song song, cache pip, Trivy DB, binary công cụ) trên cùng một SHA; thời gian lấy từ API jobs,
-  không tính thời gian xếp hàng. Lượt đầu của C3 là cache lạnh và được loại khi tính trung vị.
+  không tính thời gian xếp hàng. Mỗi lần điều phối có nhãn lượt chạy và khóa cache riêng, nên lượt đầu
+  của C3 luôn là cache lạnh và được loại khi tính trung vị.
 - Dữ liệu thô được lưu tại `results/raw/exp_<ngày>_<run_id>/` và `results/raw/e3_<ngày>_<run_id>/`:
   `findings_all.csv`, `decisions.csv`, `samples.csv`, `scan_runs.csv`, `consistency.json`,
-  `e4_images.csv`, `kev/`, `samples/<mẫu>/` và `runs.csv`, `jobs.csv`. Mọi tệp có URL run GitHub
-  Actions; báo cáo thô đầy đủ của từng công cụ nằm trong artifact của run (giữ 90 ngày).
+  `e4_images.csv`, `kev/`, `samples/<mẫu>/`, `e4/` (SBOM Syft, báo cáo Trivy và Grype của hai image,
+  nén gzip) và `runs.csv`, `jobs.csv`, `meta.json`. URL run nằm trong `samples.csv`, `runs.csv` và các
+  `meta.json`; báo cáo thô của từng công cụ theo mẫu nằm trong artifact của run (giữ 90 ngày).
+- `results/raw/demo_20261103_pr21/`: báo cáo gate của PR #21 khi commit lỗi bị chặn (`block/`) và sau
+  khi sửa (`pass/`), kèm `run.json` lấy từ API.
 - `analyze_results.py` (hoặc `analysis.ipynb`) sinh `results/metrics/*.csv`, `results/figures/*.png`
   và `results/metrics/so_lieu_bao_cao.csv`; số nào chưa có nguồn được ghi `CHUA_DO`.
 - Finding được tính là phát hiện đúng khi là finding mới so với baseline, có rule ID thuộc
   `accepted_rule_ids` và trỏ đúng tệp đích trong `ground_truth.csv`. Recall trình bày phân số trước,
   phần trăm sau; không dùng accuracy.
+
+## Mục 4. Ghi chú khi đọc số liệu
+
+- `e1_recall_by_tool.csv`: `new_outside_key_d`, `new_on_n`, `new_on_c` đếm theo công cụ các finding mới
+  không thuộc đáp án trên mẫu D và mọi finding mới trên N, trên C. Đây là ứng viên báo nhầm, chưa
+  triage; kết quả triage của nhóm lưu ở `results/triage/`.
+- `e1_detection_by_defect.csv` có quyết định G1/G2 của từng lỗi cạnh `expected_g2`. D10 là mẫu duy nhất
+  lệch tầng: lỗi gieo là CVE-2023-45803 (MEDIUM, kỳ vọng WARN) nhưng bản urllib3 cũ còn CVE HIGH có bản
+  vá (ví dụ CVE-2025-66418) nên G2 trả BLOCK.
+- N04 (urllib3 2.6.0) có 5 CVE HIGH theo Trivy DB 2026-11-03 nên bị G2 chặn; đây là mẫu N duy nhất bị
+  G2 chặn (`controls_blocked`).
+- Baseline là trạng thái sau khi sửa của mọi lỗi D: G2 full trả WARN với 96 cảnh báo, không chặn
+  (`E2_G2_BASELINE_FULL`). Minh chứng chặn rồi qua trên CI thật: PR #21 (`demo_20261103_pr21/`).
+- Cùng lỗi mở cổng 22, Checkov báo `CKV_AWS_24` (thuộc danh mục chặn) còn Trivy báo `AWS-0107` (chỉ
+  WARN); chính sách giữ nguyên như lúc đóng băng ở `gt-v1`.
+- `e1_scan_timing.csv`: thời gian từng bước quét trong một runner, không gồm cài công cụ;
+  `e3_jobs.csv`: thời gian từng job của E3. Bộ luật registry `p/python` của Semgrep tải lúc chạy nên
+  không ghim được phiên bản.
 
 ## Ước tính chi phí runner
 

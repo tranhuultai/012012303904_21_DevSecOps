@@ -40,8 +40,13 @@ Ghi chú: Trivy được gọi trực tiếp bằng CLI ghim phiên bản (khôn
 | Thành phần | Phiên bản | Ghi chú |
 |---|---|---|
 | Runner | ubuntu-24.04 | ghim trong `runs-on` |
-| Python (job test/scan/gate) | 3.12 | `actions/setup-python` |
-| Python (phát triển cục bộ) | >= 3.11 | theo `requirements.txt` |
+| Python (mọi job) | 3.13.18 | `actions/setup-python`, ghim trong các workflow |
+| Python (phát triển cục bộ) | 3.13 | thư viện ghim trong `requirements.txt` |
+| jsonschema, PyYAML | 4.26.0, 6.0.3 | ghim trong workflow (gate, aggregate, e3-timing) |
+| matplotlib | 3.11.2 | job test (test phân tích) |
+
+Bộ luật Semgrep registry `p/python` tải lúc chạy, không ghim được phiên bản; kết quả `semgrep-registry`
+có thể khác khi chạy lại.
 
 ## 4. Nguyên tắc cập nhật
 

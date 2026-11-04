@@ -11,8 +11,8 @@ Thư mục này chứa các chính sách kiểm soát an ninh (Security Gates) v
 | Chính sách | Mục đích | Tiêu chí chặn (BLOCK) | Tiêu chí cảnh báo (WARN) |
 |---|---|---|---|
 | **G0** | Đo nhiễu nền (Baseline) | Không bao giờ chặn (`false`) | Không |
-| **G1** | Mặc định (Naive / Strict) | Mọi finding có mức `CRITICAL`, `HIGH`, `MEDIUM` | `LOW`, `INFO` |
-| **G2** | Ngữ cảnh thông minh (Context-aware) | • `secret` (không cho phép ngoại lệ)<br>• CVE thuộc danh mục KEV (mọi mức)<br>• CVE có EPSS cao (≥ 0.10, tức xác suất khai thác ≥ 10%)<br>• SCA/Image `CRITICAL`/`HIGH` có bản vá và độ tin cậy cao<br>• Cấu hình IaC/K8s/CI thuộc danh mục kiểm soát nguy cơ cao<br>• SAST `CRITICAL`/`HIGH`<br>• Ngoại lệ hết hạn hoặc tự duyệt | • `HIGH` chưa có bản vá<br>• `MEDIUM` có bản vá<br>• CVE có EPSS trung bình (0.01 ≤ EPSS < 0.10)<br>• Ngoại lệ sắp hết hạn (≤ 7 ngày) |
+| **G1** | Mặc định (Naive / Strict) | Mọi finding có mức `CRITICAL`, `HIGH`, `MEDIUM` | Không (G1 không có luật `warn`) |
+| **G2** | Ngữ cảnh thông minh (Context-aware) | • `secret` (không cho phép ngoại lệ)<br>• CVE thuộc danh mục KEV (mọi mức)<br>• CVE có EPSS cao (≥ 0.10, tức xác suất khai thác ≥ 10%)<br>• SCA/Image `CRITICAL`/`HIGH` có bản vá và độ tin cậy cao<br>• Cấu hình IaC/K8s/Dockerfile/workflow thuộc danh mục kiểm soát nguy cơ cao (`iac_block_controls`)<br>• SAST `CRITICAL`/`HIGH`<br>• Ngoại lệ không hợp lệ (hết hạn, tự duyệt, thiếu thông tin, vượt trần)<br>Trừ secret, các điều kiện trên được miễn khi có ngoại lệ hợp lệ khớp rule ID và resource | • Mọi finding `CRITICAL`/`HIGH`/`MEDIUM` không thuộc diện chặn, kèm lý do: EPSS trung bình, chưa có bản vá hoặc chưa đủ điều kiện chặn<br>• CVE có EPSS trung bình (0.01 ≤ EPSS < 0.10)<br>• Ngoại lệ sắp hết hạn (≤ 7 ngày) |
 
 ---
 
