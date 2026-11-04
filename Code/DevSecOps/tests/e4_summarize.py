@@ -1,5 +1,6 @@
 import argparse
 import csv
+import gzip
 import json
 import statistics
 import sys
@@ -12,7 +13,10 @@ RANK = {"UNKNOWN": 0, "LOW": 1, "MEDIUM": 2, "HIGH": 3, "CRITICAL": 4}
 # E4: so image trước (Dockerfile.vuln) và sau khắc phục (Dockerfile) từ báo cáo thật:
 # kích thước, thời gian build, số gói SBOM, CVE theo mức và theo có/chưa có bản vá, CVE thuộc KEV.
 def load(path):
-    return json.loads(Path(path).read_text(encoding="utf-8"))
+    path = Path(path)
+    if not path.exists():  # bản đã commit trong results/raw được nén gzip
+        return json.loads(gzip.decompress(path.with_name(path.name + ".gz").read_bytes()))
+    return json.loads(path.read_text(encoding="utf-8"))
 
 
 def trivy_cves(report):

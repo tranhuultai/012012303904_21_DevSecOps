@@ -2,5 +2,5 @@ gia_thuyet,ket_luan,can_cu
 H1,ủng hộ,công cụ đơn lẻ cao nhất 13/28; kết hợp 28/28 (ngưỡng 14/28 và 24/28)
 H2 (full),ủng hộ,"G1 chặn nhầm 10/10 (100.0 %); G2 chặn nhầm 0/10 (0.0 %), chặn tầng BLOCK 21/21 (100.0 %)"
 H2 (delta),bác bỏ,"G1 chặn nhầm 0/10 (0.0 %); G2 chặn nhầm 0/10 (0.0 %), chặn tầng BLOCK 21/21 (100.0 %)"
-H3,chưa đủ dữ liệu,CHUA_DO
+H3,bác bỏ,"trung vị C1 99.0 s, C3 93.0 s (6.1 % nhanh hơn)"
 H4,ủng hộ,CRITICAL/HIGH có bản vá 62 → 0; kích thước 1204.1 → 179.1 MB

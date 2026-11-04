@@ -1,0 +1,1 @@
+{"conclusion":"success","createdAt":"2026-11-03T19:03:33Z","databaseId":41699668185,"displayTitle":"test(demo): gate blocks an open SSH rule, then passes after the fix","event":"pull_request","headBranch":"demo/gate-block-fix","headSha":"b6b202f217d8efdc6820b3288767f991cabf5dee","url":"https://github.com/tranhuultai/012012303904_21_DevSecOps/actions/runs/41699668185"}

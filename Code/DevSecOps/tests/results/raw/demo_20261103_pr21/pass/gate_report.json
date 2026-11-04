@@ -1,0 +1,26 @@
+{
+  "gate_version": "1.0",
+  "engine": "conftest-rego",
+  "policy_profile": "g2",
+  "decision": "PASS",
+  "passed": true,
+  "summary": {
+    "total_findings": 261,
+    "blockers": 0,
+    "warnings": 0,
+    "informational": 0,
+    "excepted": 0,
+    "expired_exceptions": 0
+  },
+  "warning_correlation": {
+    "matched_policy_warnings": 0,
+    "unmatched_policy_warnings": 0,
+    "matched_source_findings": 0
+  },
+  "blockers": [],
+  "warnings": [],
+  "informational_findings": [],
+  "excepted_findings": [],
+  "expired_exceptions": [],
+  "unused_exceptions": []
+}

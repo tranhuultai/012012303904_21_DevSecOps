@@ -49,5 +49,5 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git switch -c "exp-data/e3-${GITHUB_RUN_ID}"
           git add "${dest}"
-          git commit -q -m "data: e3 timing run ${GITHUB_RUN_ID}"
+          git commit -q -m "test(results): add E3 timing run ${GITHUB_RUN_ID}"
           git push -q origin "exp-data/e3-${GITHUB_RUN_ID}"

@@ -15,11 +15,13 @@ Rego (Conftest). Ba chính sách được so sánh trên cùng bộ findings:
 | --- | --- |
 | G0 | Chỉ báo cáo, không chặn (mốc đo nhiễu) |
 | G1 | Chặn mọi finding từ MEDIUM trở lên |
-| G2 | Chặn khi hội đủ tác động cao, phát hiện tin cậy, sửa được ngay; secret và KEV luôn chặn; còn lại cảnh báo |
+| G2 | Chặn secret, CVE thuộc KEV hoặc có EPSS ≥ 0,10, CVE CRITICAL/HIGH có bản vá, cấu hình thuộc danh mục kiểm soát tác động cao, SAST CRITICAL/HIGH; finding khác từ MEDIUM trở lên chỉ cảnh báo |
 
 Ngoại lệ (`Code/DevSecOps/security/exceptions.yaml`) bắt buộc có chủ sở hữu, người duyệt khác chủ
-sở hữu, lý do và ngày hết hạn trong trần theo mức độ (CRITICAL 7, HIGH 30, MEDIUM/LOW 90 ngày).
-Pull request được chấm theo chế độ delta (chỉ finding mới so với lần quét gần nhất trên `main`).
+sở hữu, lý do và ngày hết hạn trong trần theo mức độ (CRITICAL 7, HIGH 30, MEDIUM/LOW 90 ngày); ngoại
+lệ hợp lệ miễn được mọi luật chặn của G2 trừ secret. Pull request được chấm theo chế độ delta (chỉ
+finding mới so với lần quét gần nhất trên `main`). Job `gate` vẫn chạy và báo đỏ khi một job quét lỗi;
+`release` chỉ chạy khi `test` và `gate` đạt.
 
 | Lớp | Công cụ |
 | --- | --- |
@@ -79,6 +81,13 @@ Dữ liệu thô của mỗi lần chạy nằm ở `Code/DevSecOps/tests/result
 `e3_<ngày>_<run_id>/` (kèm URL run GitHub Actions); bảng, biểu đồ và `so_lieu_bao_cao.csv` sinh lại bằng
 `python Code/DevSecOps/tests/analyze_results.py` vào `tests/results/metrics/` và `tests/results/figures/`.
 
+## Minh chứng gate trên pull request
+
+[PR #21](https://github.com/tranhuultai/012012303904_21_DevSecOps/pull/21) thêm luật mở cổng 22 cho `0.0.0.0/0` vào `infra/security_groups.tf`: gate G2
+(chế độ delta) trả BLOCK vì `CKV_AWS_24` ([run 41699096052](https://github.com/tranhuultai/012012303904_21_DevSecOps/actions/runs/41699096052)). Commit sửa
+gỡ luật đó và gate trả PASS ([run 41699668185](https://github.com/tranhuultai/012012303904_21_DevSecOps/actions/runs/41699668185)). Báo cáo gate của hai run
+nằm ở `Code/DevSecOps/tests/results/raw/demo_20261103_pr21/`.
+
 ## Tái lập
 
 Yêu cầu: Python 3.13, Git, và các công cụ trong `Extra/TOOL_VERSIONS.md` nếu muốn quét tại máy.
@@ -100,8 +109,9 @@ python Code/DevSecOps/tests/analyze_results.py
 ```
 
 Terraform trong `infra/` chỉ dùng để quét tĩnh (`terraform init -backend=false` và `validate`), không
-`apply`. Secret trong repo chỉ là giá trị giả nằm trong patch gieo lỗi (được Gitleaks bỏ qua theo
-`.gitleaks.toml`).
+`apply`. Secret trong repo đều là giá trị giả: hiện chỉ nằm trong patch gieo lỗi (`.gitleaks.toml` bỏ
+qua thư mục này); vài commit đầu từng có chuỗi giả trong `src/app/vulnerable_examples.py`, đã gỡ khỏi
+baseline.
 
 ## Cấu trúc repository
 

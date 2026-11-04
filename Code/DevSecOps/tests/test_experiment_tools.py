@@ -193,3 +193,31 @@ def test_read_json_accepts_gzip_copy(tmp_path):
     with gzip.open(tmp_path / "normalized_findings.json.gz", "wt", encoding="utf-8") as fh:
         json.dump([{"tool": "checkov"}], fh)
     assert ce.read_json(tmp_path / "normalized_findings.json") == [{"tool": "checkov"}]
+
+
+# ---- analyze_results: cột quyết định gate, ứng viên báo nhầm, thời gian quét, bỏ lượt cache lạnh ----
+def test_analysis_gate_columns_timing_and_warm_runs():
+    import analyze_results as ar
+
+    def gt(cid, kind):
+        return {"id": cid, "type": kind, "detect_layer": "iac", "accepted_rule_ids": "CKV_AWS_24",
+                "scan_target": "infra/main.tf", "expected_g2": "BLOCK", "fix": "đóng cổng 22"}
+
+    def row(cid, rule):
+        return {"change_id": cid, "tool": "checkov", "category": "iac", "rule_id": rule, "severity": "HIGH",
+                "file": "infra/main.tf", "in_baseline": "0"}
+
+    decisions = [{"change_id": "D01", "policy": p, "mode": m, "decision": "BLOCK"}
+                 for p in ("g1", "g2") for m in ("full", "delta")]
+    per_defect, by_tool, *_ = ar.e1([row("D01", "CKV_AWS_24"), row("D01", "CKV_AWS_8"), row("N01", "CKV_AWS_23")],
+                                    [gt("D01", "defect"), gt("N01", "control")], decisions)
+    assert (per_defect[0]["detected_by"], per_defect[0]["g2_delta"]) == ("checkov", "BLOCK")
+    checkov = next(t for t in by_tool if t["tool"] == "checkov")
+    assert (checkov["new_outside_key_d"], checkov["new_on_n"], checkov["new_on_c"]) == (1, 1, 0)
+    timing = ar.e1_timing([{"change_id": "BASE", "step": "a", "seconds": "1"},
+                           {"change_id": "BASE", "step": "b", "seconds": "2"}])
+    assert timing[-1] == {"step": "tong_mot_mau", "n": 1, "median_s": 3.0, "min_s": 3.0, "max_s": 3.0}
+    jobs = [{"mode": "c3_par_cache", "rep": rep, "job": "gate", "seconds": sec, "conclusion": "success"}
+            for rep, sec in (("1", "90"), ("2", "30"))]
+    assert ar.e3_jobs(jobs) == [{"mode": "c3_par_cache", "job": "gate", "n": 1, "median_s": 30.0,
+                                 "min_s": 30.0, "max_s": 30.0}]

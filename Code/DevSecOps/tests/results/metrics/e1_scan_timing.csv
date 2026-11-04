@@ -1,0 +1,13 @@
+step,n,median_s,min_s,max_s
+semgrep_custom,47,2.21,1.36,4.52
+semgrep_registry,47,2.18,1.36,2.98
+gitleaks,47,0.5,0.28,0.57
+trivy_fs,47,5.44,3.92,7.25
+checkov_iac,47,3.87,2.76,5.07
+checkov_docker,47,2.37,1.71,3.0
+checkov_gha,47,2.46,1.77,3.15
+trivy_config,47,2.27,1.08,3.75
+conftest_wf,47,0.02,0.02,0.03
+image_build,47,18.27,15.76,35.69
+trivy_image,47,2.86,2.46,11.23
+tong_mot_mau,47,42.39,36.91,63.42

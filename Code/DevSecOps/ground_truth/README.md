@@ -75,8 +75,12 @@ Bộ dữ liệu chuẩn gồm **46 mẫu** được phân định chặt chẽ:
 | **C03** | Kiểm thử | `src/test/test_main.py` | Viết thêm unit test kiểm tra logic hàm xử lý | PASS ở cả 3 Gate |
 | **C04** | Phụ thuộc | `src/requirements.txt` | Cập nhật phiên bản thư viện sạch không chứa CVE | PASS ở cả 3 Gate |
 | **C05** | IaC | `infra/security_groups.tf` | Bổ sung ghi chú (comment) mô tả mục đích Security Group | PASS ở cả 3 Gate |
-| **C06** | IaC | `infra/iam.tf` | Bổ sung thẻ tag quản lý chi phí cho IAM Role | PASS ở cả 3 Gate |
+| **C06** | IaC | `infra/iam.tf` | Bổ sung chú thích quyền tối thiểu (chỉ dịch vụ ec2 được assume role) | PASS ở cả 3 Gate |
 | **C07** | IaC | `infra/s3.tf` | Bật tính năng mã hóa mặc định AES-256 cho bucket S3 | PASS ở cả 3 Gate |
 | **C08** | K8s | `deploy/deployment.yaml` | Bổ sung annotation phục vụ Prometheus scraping metrics | PASS ở cả 3 Gate |
-| **C09** | Image | `Code/DevSecOps/Dockerfile` | Thêm nhãn bảo mật `LABEL maintainer="Long"` | PASS ở cả 3 Gate |
+| **C09** | Image | `Code/DevSecOps/Dockerfile` | Thêm nhãn `LABEL maintainer` và `org.opencontainers.image.source` | PASS ở cả 3 Gate |
 | **C10** | CI | `lab/workflows-vuln/.github/workflows/ci-vuln.yml` | Bổ sung bước in thông báo hoàn tất vào summary | PASS ở cả 3 Gate |
+
+Đính chính sau `gt-v1`: dòng C03 trong `ground_truth.csv` ghi tệp `src/app/main.py`, lớp `secret`, công
+cụ `gitleaks`; patch thật sửa `src/test/test_main.py` như bảng trên. CSV giữ nguyên để không đổi bản đóng
+băng; mẫu C được chấm theo mọi finding mới nên sai lệch này không ảnh hưởng số liệu.
