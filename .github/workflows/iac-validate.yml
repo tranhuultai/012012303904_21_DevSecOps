@@ -121,8 +121,12 @@ jobs:
           SIGNER_IDENTITY_REGEXP: "^https://github.com/${{ github.repository }}/.github/workflows/.+"
           APP_PORT: "8001"
         run: |
-          docker pull python:3.13-slim
-          unsigned="$(docker inspect --format '{{index .RepoDigests 0}}' python:3.13-slim)"
+          # Dùng chính base image trong Dockerfile: image gốc từ Docker Hub, không có chữ ký của repo.
+          base_tag="$(awk '/^FROM/ {print $2; exit}' Code/DevSecOps/Dockerfile | cut -d@ -f1)"
+          docker pull "${base_tag}"
+          unsigned="$(docker inspect --format '{{index .RepoDigests 0}}' "${base_tag}")"
+          apt_version="$(docker run --rm --entrypoint dpkg-query "${base_tag}" -W -f '${Version}' apt)"
+          echo "::notice title=Base image hiện tại::${base_tag} -> ${unsigned} (apt ${apt_version})"
           if sudo -E env APP_IMAGE="${unsigned}" bash Code/DevSecOps/infra/scripts/ec2_bootstrap.sh; then
             echo "Lỗi: image chưa ký vẫn được chạy" >&2
             exit 1
