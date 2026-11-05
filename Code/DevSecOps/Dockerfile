@@ -13,6 +13,12 @@ FROM python:3.13.18-slim-trixie@sha256:76baad6037690d6e8c4397fbcaef17bca6f19eece
 # Ứng dụng không cần pip lúc chạy; gỡ pip hệ thống để không mang theo thư viện vendored cũ.
 RUN python -m pip uninstall --yes pip setuptools
 
+# Cập nhật gói hệ điều hành đã có bản vá bảo mật khi base image chưa kịp build lại
+# (ví dụ apt 3.0.3 -> 3.0.4, CVE-2026-109518).
+RUN apt-get update \
+    && apt-get upgrade -y --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/*
+
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PATH="/opt/venv/bin:$PATH"
