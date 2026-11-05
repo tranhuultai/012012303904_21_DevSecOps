@@ -44,7 +44,7 @@ jobs:
         run: terraform fmt -check -recursive -diff
 
       - name: terraform init (không backend, không cần tài khoản AWS)
-        run: terraform init -backend=false -input=false -lockfile=readonly
+        run: terraform init -backend=false -input=false
 
       # Lỗi được ghi thêm thành annotation để đọc ngay trên trang PR.
       - name: terraform validate
