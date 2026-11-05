@@ -8,6 +8,7 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
+from matplotlib.patches import Patch  # noqa: E402
 
 PROJECT_DIR = Path(__file__).resolve().parents[1]
 RESULTS = PROJECT_DIR / "tests" / "results"
@@ -227,8 +228,7 @@ def figures(out, by_tool, e2_rows, e3_rows, e4_rows, notes):
         ax.set_ylim(0, 112)
         style(ax, "Chính sách", "Tỷ lệ mẫu bị chặn (%)" if mode == "full" else "")
         ax.set_title(f"Chế độ {mode}", color=INK, loc="left")
-    handles = [plt.Rectangle((0, 0), 1, 1, color=BLUE),
-               plt.Rectangle((0, 0), 1, 1, facecolor=ORANGE, hatch="///", edgecolor="white")]
+    handles = [Patch(color=BLUE), Patch(facecolor=ORANGE, hatch="///", edgecolor="white")]
     fig.legend(handles, ["Chặn lỗi D (n = 28)", "Chặn nhầm thay đổi sạch C (n = 10)"], loc="lower center",
                ncol=2, frameon=False, bbox_to_anchor=(0.5, 0.02))
     fig.suptitle("E2 – Quyết định gate trên cùng bộ findings", color=INK, x=0.01, ha="left", y=1.0)
@@ -331,7 +331,7 @@ def main() -> int:
     write_csv(metrics / "e1_controls.csv", controls)
     write_csv(metrics / "e1_scan_timing.csv", timing)
     write_csv(metrics / "e2_policy_comparison.csv", [{k: v for k, v in r.items() if not k.startswith("_")} for r in e2_rows])
-    if e3_rows:
+    if e3_dir and e3_rows:
         write_csv(metrics / "e3_timing.csv", [{k: v for k, v in r.items() if not k.startswith("_")} for r in e3_rows.values()])
         write_csv(metrics / "e3_jobs.csv", e3_jobs(read_csv(e3_dir / "jobs.csv")))
     figures(figs, by_tool, e2_rows, e3_rows, e4_rows, notes_for(exp, samples, e3_meta, e4_rows))

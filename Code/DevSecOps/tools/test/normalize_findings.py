@@ -705,6 +705,7 @@ def validate_findings(findings, schema_path):
 
     try:
         import jsonschema
+        from jsonschema.validators import validator_for
     except ImportError as error:
         raise RuntimeError(
             "Schema validation requires jsonschema. Install it with: "
@@ -715,7 +716,7 @@ def validate_findings(findings, schema_path):
     if not isinstance(schema, dict):
         raise ValueError("Finding schema must be a JSON object.")
 
-    validator_class = jsonschema.validators.validator_for(schema)
+    validator_class = validator_for(schema)
     validator_class.check_schema(schema)
     validator = validator_class(schema, format_checker=jsonschema.FormatChecker())
 
