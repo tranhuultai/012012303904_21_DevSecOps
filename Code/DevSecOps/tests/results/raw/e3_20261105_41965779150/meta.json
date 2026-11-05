@@ -1,0 +1,10 @@
+{
+  "ref": "b8b07a8dc98b3364a00bee50fe824352c2339c29",
+  "reps": 6,
+  "modes": [
+    "c1_seq_nocache",
+    "c2_par_nocache",
+    "c3_par_cache"
+  ],
+  "orchestrator_run": "41965779150"
+}
