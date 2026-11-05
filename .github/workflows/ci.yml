@@ -520,6 +520,34 @@ jobs:
             cat pr_summary.md >> "$GITHUB_STEP_SUMMARY"
           fi
 
+      - name: Ghi lý do chặn thành annotation trên PR
+        if: always()
+        run: |
+          python - <<'PY'
+          import json
+          import pathlib
+
+          report = pathlib.Path("gate_report.json")
+          if not report.exists():
+              print("::warning title=Gate::Không có gate_report.json, gate dừng trước khi chấm")
+              raise SystemExit(0)
+          data = json.loads(report.read_text(encoding="utf-8"))
+          blockers = data.get("blockers", [])
+          enriched = pathlib.Path("reports/enriched_findings.json")
+          findings = json.loads(enriched.read_text(encoding="utf-8")) if enriched.exists() else []
+          if isinstance(findings, dict):
+              findings = findings.get("findings", [])
+          for item in blockers[:10]:
+              text = item.get("title") or item.get("message")
+              cve = next((w.strip(":(),") for w in text.split() if w.startswith(("CVE-", "GHSA-"))), None)
+              hit = next((f for f in findings if cve and f.get("rule_id") == cve), None)
+              if hit:
+                  detail = hit.get("message", "").split("; ")[:3]
+                  text += f" | {hit.get('category')} | {'; '.join(detail)}"
+              print(f"::error title=G2 BLOCK::{text}")
+          print(f"Quyết định: {data.get('decision')}, chặn {len(blockers)}, cảnh báo {len(data.get('warnings', []))}")
+          PY
+
       - name: Record traceable scan observation
         if: always()
         run: |
