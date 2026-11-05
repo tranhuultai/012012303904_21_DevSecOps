@@ -122,6 +122,7 @@ baseline.
 | Hướng dẫn triển khai, tái lập, dọn tài nguyên, chi phí, rủi ro còn lại | [`Extra/HUONG_DAN_TRIEN_KHAI.md`](Extra/HUONG_DAN_TRIEN_KHAI.md) |
 | Kịch bản demo và phân công trình bày | [`Extra/KICH_BAN_DEMO.md`](Extra/KICH_BAN_DEMO.md) |
 | Sơ đồ kiến trúc, luồng dữ liệu, trình tự (nguồn và ảnh) | [`Extra/so_do/`](Extra/so_do/) |
+| Tài liệu tham khảo, ánh xạ CIS và CSA CCM | [`Code/DevSecOps/REFERENCES.md`](Code/DevSecOps/REFERENCES.md) |
 | Phiên bản công cụ và action | [`Extra/TOOL_VERSIONS.md`](Extra/TOOL_VERSIONS.md) |
 | Dữ liệu thô, số liệu báo cáo, notebook | `Code/DevSecOps/tests/results/`, `Code/DevSecOps/tests/analysis.ipynb` |
 
