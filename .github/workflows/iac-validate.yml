@@ -46,11 +46,30 @@ jobs:
       - name: terraform init (không backend, không cần tài khoản AWS)
         run: terraform init -backend=false -input=false -lockfile=readonly
 
+      # Lỗi được ghi thêm thành annotation để đọc ngay trên trang PR.
       - name: terraform validate
-        run: terraform validate
+        run: |
+          set +e
+          terraform validate -no-color > "${RUNNER_TEMP}/validate.log" 2>&1
+          rc=$?
+          cat "${RUNNER_TEMP}/validate.log"
+          if [ "${rc}" -ne 0 ]; then
+            msg="$(grep -v '^[[:space:]]*$' "${RUNNER_TEMP}/validate.log" | head -60 | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')"
+            echo "::error title=terraform validate::${msg}"
+          fi
+          exit "${rc}"
 
       - name: terraform test (provider giả lập)
-        run: terraform test
+        run: |
+          set +e
+          terraform test -no-color > "${RUNNER_TEMP}/test.log" 2>&1
+          rc=$?
+          cat "${RUNNER_TEMP}/test.log"
+          if [ "${rc}" -ne 0 ]; then
+            msg="$(grep -v '^[[:space:]]*$' "${RUNNER_TEMP}/test.log" | head -80 | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')"
+            echo "::error title=terraform test::${msg}"
+          fi
+          exit "${rc}"
 
   ec2-bootstrap:
     name: ec2 bootstrap (Ubuntu 24.04)
