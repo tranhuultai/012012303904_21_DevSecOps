@@ -1,0 +1,143 @@
+name: iac-validate
+
+# Kiểm chứng hạ tầng AWS khi không có tài khoản AWS (không tạo tài nguyên, không tốn phí):
+#   1) terraform fmt, validate và test với provider giả lập;
+#   2) chạy đúng script khởi động EC2 (infra/scripts/ec2_bootstrap.sh) trên máy Ubuntu 24.04
+#      của GitHub: kiểm chữ ký image mới nhất của main rồi gọi /health; image chưa ký phải bị từ chối.
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "Code/DevSecOps/infra/**"
+      - ".github/workflows/iac-validate.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  terraform:
+    name: terraform validate + test
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: Code/DevSecOps/infra
+    env:
+      TF_VERSION: "1.9.8"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Cài Terraform (bản ghim, kiểm checksum theo tệp phát hành)
+        working-directory: ${{ runner.temp }}
+        run: |
+          base="https://releases.hashicorp.com/terraform/${TF_VERSION}"
+          zip="terraform_${TF_VERSION}_linux_amd64.zip"
+          curl -fsSLO "${base}/${zip}"
+          curl -fsSLO "${base}/terraform_${TF_VERSION}_SHA256SUMS"
+          grep "  ${zip}$" "terraform_${TF_VERSION}_SHA256SUMS" | sha256sum -c -
+          unzip -o "${zip}" terraform
+          sudo install terraform /usr/local/bin/
+          terraform version
+
+      - name: terraform fmt
+        run: terraform fmt -check -recursive -diff
+
+      - name: terraform init (không backend, không cần tài khoản AWS)
+        run: terraform init -backend=false -input=false
+
+      # Lỗi được ghi thêm thành annotation để đọc ngay trên trang PR.
+      - name: terraform validate
+        run: |
+          set +e
+          terraform validate -no-color > "${RUNNER_TEMP}/validate.log" 2>&1
+          rc=$?
+          cat "${RUNNER_TEMP}/validate.log"
+          if [ "${rc}" -ne 0 ]; then
+            msg="$(grep -v '^[[:space:]]*$' "${RUNNER_TEMP}/validate.log" | head -60 | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')"
+            echo "::error title=terraform validate::${msg}"
+          fi
+          exit "${rc}"
+
+      - name: terraform test (provider giả lập)
+        run: |
+          set +e
+          TF_VAR_db_password="$(openssl rand -hex 16)"
+          export TF_VAR_db_password
+          terraform test -no-color > "${RUNNER_TEMP}/test.log" 2>&1
+          rc=$?
+          cat "${RUNNER_TEMP}/test.log"
+          if [ "${rc}" -ne 0 ]; then
+            msg="$(grep -v '^[[:space:]]*$' "${RUNNER_TEMP}/test.log" | head -80 | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')"
+            echo "::error title=terraform test::${msg}"
+          fi
+          exit "${rc}"
+
+  ec2-bootstrap:
+    name: ec2 bootstrap (Ubuntu 24.04)
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      actions: read
+      packages: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Lấy image đã ký mới nhất của main
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          sha="$(gh run list --repo "${GITHUB_REPOSITORY}" --workflow ci.yml --branch main --event push \
+            --status success --limit 1 --json headSha -q '.[0].headSha')"
+          test -n "${sha}"
+          ref="ghcr.io/${GITHUB_REPOSITORY_OWNER}/devsecops:${sha}"
+          if docker pull "${ref}"; then
+            echo "Image công khai: EC2 tải được mà không cần đăng nhập GHCR"
+          else
+            echo "::warning::Không tải được image khi chưa đăng nhập; EC2 sẽ cần token đọc GHCR"
+            echo "${GH_TOKEN}" | docker login ghcr.io -u "${GITHUB_ACTOR}" --password-stdin
+            docker pull "${ref}"
+          fi
+          digest_ref="$(docker inspect --format '{{index .RepoDigests 0}}' "${ref}")"
+          echo "APP_IMAGE=${digest_ref}" >> "${GITHUB_ENV}"
+          echo "Image kiểm thử: ${digest_ref} (commit ${sha})"
+
+      - name: Chạy script khởi động EC2
+        env:
+          SIGNER_IDENTITY_REGEXP: "^https://github.com/${{ github.repository }}/.github/workflows/.+"
+          APP_PORT: "8000"
+        run: sudo -E bash Code/DevSecOps/infra/scripts/ec2_bootstrap.sh
+
+      - name: Kiểm thiết lập bảo mật của container
+        run: |
+          docker inspect devsecops-app --format \
+            'User={{.Config.User}} ReadOnly={{.HostConfig.ReadonlyRootfs}} CapDrop={{.HostConfig.CapDrop}} SecurityOpt={{.HostConfig.SecurityOpt}} Memory={{.HostConfig.Memory}}'
+          test "$(docker inspect devsecops-app --format '{{.Config.User}}')" = "10001:10001"
+          test "$(docker inspect devsecops-app --format '{{.HostConfig.ReadonlyRootfs}}')" = "true"
+
+      - name: Image chưa ký phải bị từ chối
+        env:
+          SIGNER_IDENTITY_REGEXP: "^https://github.com/${{ github.repository }}/.github/workflows/.+"
+          APP_PORT: "8001"
+        run: |
+          # Dùng chính base image trong Dockerfile: image gốc từ Docker Hub, không có chữ ký của repo.
+          base_tag="$(awk '/^FROM/ {print $2; exit}' Code/DevSecOps/Dockerfile | cut -d@ -f1)"
+          docker pull "${base_tag}"
+          unsigned="$(docker inspect --format '{{index .RepoDigests 0}}' "${base_tag}")"
+          apt_version="$(docker run --rm --entrypoint dpkg-query "${base_tag}" -W -f '${Version}' apt)"
+          echo "::notice title=Base image hiện tại::${base_tag} -> ${unsigned} (apt ${apt_version})"
+          if sudo -E env APP_IMAGE="${unsigned}" bash Code/DevSecOps/infra/scripts/ec2_bootstrap.sh; then
+            echo "Lỗi: image chưa ký vẫn được chạy" >&2
+            exit 1
+          fi
+          echo "Đúng: image không có chữ ký của repo bị từ chối, không chạy container"
+
+      - name: Tóm tắt
+        if: always()
+        run: |
+          {
+            echo "## Kiểm chứng triển khai EC2 (không cần tài khoản AWS)"
+            echo "- Image: \`${APP_IMAGE:-không lấy được}\`"
+            echo "- Kết quả các bước xem trong log của job này."
+          } >> "${GITHUB_STEP_SUMMARY}"
