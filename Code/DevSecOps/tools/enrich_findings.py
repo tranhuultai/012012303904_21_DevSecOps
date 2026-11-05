@@ -117,7 +117,7 @@ def match_confidence(finding, kev_ids, epss_map):
     return "low"
 
 
-def enrich(finding, kev_ids, epss_map):
+def enrich(finding, kev_ids, epss_map) -> dict:
     out = dict(finding)
     cve = finding_cve(out)
     out["kev"] = bool(cve and cve in kev_ids)
