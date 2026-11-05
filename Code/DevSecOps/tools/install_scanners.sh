@@ -11,8 +11,8 @@ fetch_tar() {
   local repo="$1" ver="$2" asset="$3" sums="$4" bin="$5"
   local base="https://github.com/${repo}/releases/download/v${ver}"
   local expected actual
-  [ -s "${tmp}/${asset}" ] || curl -fsSL --retry 3 -o "${tmp}/${asset}" "${base}/${asset}"
-  [ -s "${tmp}/${bin}.sums" ] || curl -fsSL --retry 3 -o "${tmp}/${bin}.sums" "${base}/${sums}"
+  [ -s "${tmp}/${asset}" ] || curl -fsSL --retry 5 --retry-delay 5 --retry-all-errors -o "${tmp}/${asset}" "${base}/${asset}"
+  [ -s "${tmp}/${bin}.sums" ] || curl -fsSL --retry 5 --retry-delay 5 --retry-all-errors -o "${tmp}/${bin}.sums" "${base}/${sums}"
   expected="$(awk -v n="${asset}" '($2 == n || $2 == ("*" n)) {print $1; f = 1} END {if (!f) exit 1}' "${tmp}/${bin}.sums")"
   actual="$(sha256sum "${tmp}/${asset}" | awk '{print $1}')"
   if [ "${expected}" != "${actual}" ]; then
