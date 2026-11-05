@@ -7,13 +7,8 @@ set -euo pipefail
 tmp="${TOOL_CACHE_DIR:-${RUNNER_TEMP:-/tmp}}"
 mkdir -p "${tmp}"
 
-# Tải có thử lại; nếu vẫn lỗi thì ghi mã HTTP thành annotation để biết nguyên nhân (log CI không phải lúc nào cũng xem được).
 download() {
-  local out="$1" url="$2" code
-  curl -fsSL --retry 5 --retry-delay 5 --retry-all-errors -o "${out}" "${url}" && return 0
-  code="$(curl -sSL -o /dev/null -w '%{http_code} %{url_effective}' "${url}" || true)"
-  echo "::error title=Tải công cụ thất bại::HTTP ${code} (yêu cầu ${url})"
-  return 1
+  bash "$(dirname "${BASH_SOURCE[0]}")/download_release.sh" "$1" "$2"
 }
 
 fetch_tar() {
