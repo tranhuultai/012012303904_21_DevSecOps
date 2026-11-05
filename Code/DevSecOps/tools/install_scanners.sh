@@ -7,12 +7,21 @@ set -euo pipefail
 tmp="${TOOL_CACHE_DIR:-${RUNNER_TEMP:-/tmp}}"
 mkdir -p "${tmp}"
 
+# Tải có thử lại; nếu vẫn lỗi thì ghi mã HTTP thành annotation để biết nguyên nhân (log CI không phải lúc nào cũng xem được).
+download() {
+  local out="$1" url="$2" code
+  curl -fsSL --retry 5 --retry-delay 5 --retry-all-errors -o "${out}" "${url}" && return 0
+  code="$(curl -sSL -o /dev/null -w '%{http_code} %{url_effective}' "${url}" || true)"
+  echo "::error title=Tải công cụ thất bại::HTTP ${code} (yêu cầu ${url})"
+  return 1
+}
+
 fetch_tar() {
   local repo="$1" ver="$2" asset="$3" sums="$4" bin="$5"
   local base="https://github.com/${repo}/releases/download/v${ver}"
   local expected actual
-  [ -s "${tmp}/${asset}" ] || curl -fsSL --retry 5 --retry-delay 5 --retry-all-errors -o "${tmp}/${asset}" "${base}/${asset}"
-  [ -s "${tmp}/${bin}.sums" ] || curl -fsSL --retry 5 --retry-delay 5 --retry-all-errors -o "${tmp}/${bin}.sums" "${base}/${sums}"
+  [ -s "${tmp}/${asset}" ] || download "${tmp}/${asset}" "${base}/${asset}"
+  [ -s "${tmp}/${bin}.sums" ] || download "${tmp}/${bin}.sums" "${base}/${sums}"
   expected="$(awk -v n="${asset}" '($2 == n || $2 == ("*" n)) {print $1; f = 1} END {if (!f) exit 1}' "${tmp}/${bin}.sums")"
   actual="$(sha256sum "${tmp}/${asset}" | awk '{print $1}')"
   if [ "${expected}" != "${actual}" ]; then
