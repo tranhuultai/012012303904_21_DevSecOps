@@ -21,6 +21,19 @@ mock_provider "aws" {
       json = "{\"Version\":\"2012-10-17\",\"Statement\":[]}"
     }
   }
+
+  # Provider kiểm định dạng ARN của listener, nên ARN giả phải đúng cấu trúc.
+  mock_resource "aws_lb" {
+    defaults = {
+      arn = "arn:aws:elasticloadbalancing:ap-southeast-1:123456789012:loadbalancer/app/devsecops-alb/0123456789abcdef"
+    }
+  }
+
+  mock_resource "aws_lb_target_group" {
+    defaults = {
+      arn = "arn:aws:elasticloadbalancing:ap-southeast-1:123456789012:targetgroup/devsecops-app/0123456789abcdef"
+    }
+  }
 }
 
 variables {
