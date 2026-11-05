@@ -1,6 +1,6 @@
 # Kịch bản demo và phân công trình bày
 
-Tài liệu kèm theo báo cáo Đề tài 21 (Phụ lục B). Có hai phương án: **A** quay video khoảng 11 phút, **B** thuyết trình trực tiếp 18-19 phút kèm demo. Slide: `PPTX/Slide_DeTai21_DevSecOps.pptx`, ghi chú người nói nằm trong phần Notes của từng slide.
+Tài liệu kèm theo báo cáo Đề tài 21 (Phụ lục B). Có hai phương án: **A** quay video khoảng 11 phút, **B** thuyết trình trực tiếp 18-19 phút kèm demo. Slide: `PPTX/DeTai21_DevSecOps.pptx`, ghi chú người nói nằm trong phần Notes của từng slide.
 
 ## 1. Phân công
 
@@ -48,14 +48,14 @@ Tài liệu kèm theo báo cáo Đề tài 21 (Phụ lục B). Có hai phương 
 
 | Slide | Nội dung | Người nói | Thời lượng |
 | --- | --- | --- | --- |
-| 1-3 | Mở đầu, bài toán, mục tiêu và phạm vi | Hoàng Gia Long | 2:15 |
-| 4-5 | Năm lớp kiểm tra, đánh giá rủi ro và chuỗi cung ứng | Đỗ Ngọc Duy | 2:00 |
+| 1-3 | Mở đầu, bài toán, mục tiêu | Hoàng Gia Long | 2:15 |
+| 4-5 | Năm lớp quét, đánh giá mức nguy hiểm của CVE | Đỗ Ngọc Duy | 2:00 |
 | 6 | Mô hình nghiên cứu và giả thuyết | Hoàng Gia Long | 1:00 |
 | 7-9 | Kiến trúc, luồng findings, ba chính sách gate, ngoại lệ | Đỗ Ngọc Duy | 3:00 |
 | 10-13 | Bộ lỗi gieo cài, kết quả E1, E2, E3 | Hoàng Gia Long | 3:45 |
 | 14 | E4: image trước và sau khắc phục | Trần Hữu Tài | 1:00 |
 | 15 | **Demo trực tiếp**: PR bị chặn, đẩy commit sửa, gate qua | Trần Hữu Tài | 3:00 |
-| 16-17 | Đánh giá chung, rủi ro còn lại và bốn giải pháp | Trần Hữu Tài | 2:00 |
+| 16-17 | Đánh giá giả thuyết và chi phí, bốn giải pháp đề xuất | Trần Hữu Tài | 2:00 |
 | 18 | Kết luận | Hoàng Gia Long | 0:45 |
 
 Cách chạy demo ở slide 15 để không phải chờ: PR `demo/ssh-open` đã mở và BLOCK từ trước. Lên slide 15, mở Summary BLOCK, đẩy commit sửa ngay, rồi nói slide 16 trong lúc run chạy; quay lại tab PR khi gate PASS. Thời gian còn lại dành cho hỏi đáp.
