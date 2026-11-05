@@ -56,6 +56,8 @@ jobs:
           cache-dependency-path: Code/DevSecOps/src/requirements.txt
 
       - name: Install dependencies
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           python -m pip install --upgrade "pip==26.2.2"
           pip install -r src/requirements.txt
@@ -117,12 +119,14 @@ jobs:
 
       # 2.2 Secret scanning - Gitleaks (binary ghim, kiểm checksum)
       - name: Install Gitleaks CLI
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           asset="gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
           cd "$RUNNER_TEMP"
           base="https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}"
-          curl -fsSL -o "${asset}" "${base}/${asset}"
-          curl -fsSL -o gitleaks.sums "${base}/gitleaks_${GITLEAKS_VERSION}_checksums.txt"
+          bash "$GITHUB_WORKSPACE/Code/DevSecOps/tools/download_release.sh" "${asset}" "${base}/${asset}"
+          bash "$GITHUB_WORKSPACE/Code/DevSecOps/tools/download_release.sh" gitleaks.sums "${base}/gitleaks_${GITLEAKS_VERSION}_checksums.txt"
           grep "  ${asset}$" gitleaks.sums | sha256sum -c -
           tar xzf "${asset}" gitleaks
           sudo install gitleaks /usr/local/bin/gitleaks
@@ -149,12 +153,14 @@ jobs:
 
       # 2.3 SCA - Trivy (filesystem, CLI ghim phiên bản như các job khác)
       - name: Cài Trivy (binary ghim, kiểm checksum)
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           asset="trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz"
           base="https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}"
           cd "$RUNNER_TEMP"
-          curl -fsSL -o "${asset}" "${base}/${asset}"
-          curl -fsSL -o trivy.sums "${base}/trivy_${TRIVY_VERSION}_checksums.txt"
+          bash "$GITHUB_WORKSPACE/Code/DevSecOps/tools/download_release.sh" "${asset}" "${base}/${asset}"
+          bash "$GITHUB_WORKSPACE/Code/DevSecOps/tools/download_release.sh" trivy.sums "${base}/trivy_${TRIVY_VERSION}_checksums.txt"
           grep "  ${asset}$" trivy.sums | sha256sum -c -
           tar xzf "${asset}" trivy
           sudo install trivy /usr/local/bin/trivy
@@ -174,6 +180,8 @@ jobs:
 
       # 2.4 Luật workflow tự viết (Conftest, chỉ báo cáo)
       - name: Conftest luật workflow
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           bash tools/install_scanners.sh conftest
           conftest test -p rules/conftest ../../.github/workflows lab/workflows-vuln/.github/workflows \
@@ -218,12 +226,14 @@ jobs:
         run: python tests/apply_fixture_patch.py --id "$FIXTURE_ID"
 
       - name: Cài Trivy (binary ghim, kiểm checksum theo tệp phát hành)
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           asset="trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz"
           base="https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}"
           cd "$RUNNER_TEMP"
-          curl -fsSL -o "${asset}" "${base}/${asset}"
-          curl -fsSL -o trivy.sums "${base}/trivy_${TRIVY_VERSION}_checksums.txt"
+          bash "$GITHUB_WORKSPACE/Code/DevSecOps/tools/download_release.sh" "${asset}" "${base}/${asset}"
+          bash "$GITHUB_WORKSPACE/Code/DevSecOps/tools/download_release.sh" trivy.sums "${base}/trivy_${TRIVY_VERSION}_checksums.txt"
           grep "  ${asset}$" trivy.sums | sha256sum -c -
           tar xzf "${asset}" trivy
           sudo install trivy /usr/local/bin/trivy
@@ -282,6 +292,8 @@ jobs:
         run: python tests/apply_fixture_patch.py --id "$FIXTURE_ID"
 
       - name: Cài Trivy/Syft/Grype (binary ghim, kiểm checksum theo tệp phát hành)
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           fetch() {
             local repo="$1" ver="$2" asset="$3"
@@ -289,9 +301,9 @@ jobs:
             local checksum_file="${repo##*/}_${ver}_checksums.txt"
             local expected actual
             cd "$RUNNER_TEMP"
-            curl -fsSL -o "${asset}" "${base}/${asset}"
+            bash "$GITHUB_WORKSPACE/Code/DevSecOps/tools/download_release.sh" "${asset}" "${base}/${asset}"
             test -s "${asset}"
-            curl -fsSL -o pkg.sums "${base}/${checksum_file}"
+            bash "$GITHUB_WORKSPACE/Code/DevSecOps/tools/download_release.sh" pkg.sums "${base}/${checksum_file}"
             # So sánh hash trực tiếp; không phụ thuộc cách manifest ghi tên file.
             expected="$(awk -v name="${asset}" '($2 == name || $2 == ("*" name)) {print $1; found=1} END {if (!found) exit 1}' pkg.sums)"
             actual="$(sha256sum "${asset}" | awk '{print $1}')"
@@ -401,12 +413,14 @@ jobs:
         run: python -m pip install "jsonschema==4.26.0" "PyYAML==6.0.3"
 
       - name: Cài Conftest (binary ghim, kiểm checksum)
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           asset="conftest_${CONFTEST_VERSION}_Linux_x86_64.tar.gz"
           cd "$RUNNER_TEMP"
           base="https://github.com/open-policy-agent/conftest/releases/download/v${CONFTEST_VERSION}"
-          curl -fsSL -o "${asset}" "${base}/${asset}"
-          curl -fsSL -o conftest.sums "${base}/checksums.txt"
+          bash "$GITHUB_WORKSPACE/Code/DevSecOps/tools/download_release.sh" "${asset}" "${base}/${asset}"
+          bash "$GITHUB_WORKSPACE/Code/DevSecOps/tools/download_release.sh" conftest.sums "${base}/checksums.txt"
           # grep neo cuối dòng: checksums.txt còn chứa dòng *.sbom.json.
           grep "  ${asset}$" conftest.sums | sha256sum -c -
           tar xzf "${asset}" conftest
@@ -520,6 +534,34 @@ jobs:
             cat pr_summary.md >> "$GITHUB_STEP_SUMMARY"
           fi
 
+      - name: Ghi lý do chặn thành annotation trên PR
+        if: always()
+        run: |
+          python - <<'PY'
+          import json
+          import pathlib
+
+          report = pathlib.Path("gate_report.json")
+          if not report.exists():
+              print("::warning title=Gate::Không có gate_report.json, gate dừng trước khi chấm")
+              raise SystemExit(0)
+          data = json.loads(report.read_text(encoding="utf-8"))
+          blockers = data.get("blockers", [])
+          enriched = pathlib.Path("reports/enriched_findings.json")
+          findings = json.loads(enriched.read_text(encoding="utf-8")) if enriched.exists() else []
+          if isinstance(findings, dict):
+              findings = findings.get("findings", [])
+          for item in blockers[:10]:
+              text = item.get("title") or item.get("message")
+              cve = next((w.strip(":(),") for w in text.split() if w.startswith(("CVE-", "GHSA-"))), None)
+              hit = next((f for f in findings if cve and f.get("rule_id") == cve), None)
+              if hit:
+                  detail = hit.get("message", "").split("; ")[:3]
+                  text += f" | {hit.get('category')} | {'; '.join(detail)}"
+              print(f"::error title=G2 BLOCK::{text}")
+          print(f"Quyết định: {data.get('decision')}, chặn {len(blockers)}, cảnh báo {len(data.get('warnings', []))}")
+          PY
+
       - name: Record traceable scan observation
         if: always()
         run: |
@@ -568,12 +610,14 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Cài syft + cosign (binary ghim, kiểm checksum)
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           cd "$RUNNER_TEMP"
           sbase="https://github.com/anchore/syft/releases/download/v${SYFT_VERSION}"
           syft_asset="syft_${SYFT_VERSION}_linux_amd64.tar.gz"
-          curl -fsSL -o "${syft_asset}" "${sbase}/${syft_asset}"
-          curl -fsSL -o syft.sums "${sbase}/syft_${SYFT_VERSION}_checksums.txt"
+          bash "$GITHUB_WORKSPACE/Code/DevSecOps/tools/download_release.sh" "${syft_asset}" "${sbase}/${syft_asset}"
+          bash "$GITHUB_WORKSPACE/Code/DevSecOps/tools/download_release.sh" syft.sums "${sbase}/syft_${SYFT_VERSION}_checksums.txt"
           test -s "${syft_asset}"
           expected="$(awk -v name="${syft_asset}" '($2 == name || $2 == ("*" name)) {print $1; found=1} END {if (!found) exit 1}' syft.sums)"
           actual="$(sha256sum "${syft_asset}" | awk '{print $1}')"
@@ -583,8 +627,8 @@ jobs:
           fi
           tar xzf "${syft_asset}" syft && sudo install syft /usr/local/bin/
           cbase="https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}"
-          curl -fsSL -o cosign "${cbase}/cosign-linux-amd64"
-          curl -fsSL -o cosign.sums "${cbase}/cosign_checksums.txt"
+          bash "$GITHUB_WORKSPACE/Code/DevSecOps/tools/download_release.sh" cosign "${cbase}/cosign-linux-amd64"
+          bash "$GITHUB_WORKSPACE/Code/DevSecOps/tools/download_release.sh" cosign.sums "${cbase}/cosign_checksums.txt"
           grep "  cosign-linux-amd64$" cosign.sums | sed 's#cosign-linux-amd64#cosign#' | sha256sum -c -
           sudo install cosign /usr/local/bin/
           syft version && cosign version
@@ -652,15 +696,17 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Cài cosign + kind (binary ghim)
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           cd "$RUNNER_TEMP"
           cbase="https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}"
-          curl -fsSL -o cosign "${cbase}/cosign-linux-amd64"
-          curl -fsSL -o cosign.sums "${cbase}/cosign_checksums.txt"
+          bash "$GITHUB_WORKSPACE/Code/DevSecOps/tools/download_release.sh" cosign "${cbase}/cosign-linux-amd64"
+          bash "$GITHUB_WORKSPACE/Code/DevSecOps/tools/download_release.sh" cosign.sums "${cbase}/cosign_checksums.txt"
           grep "  cosign-linux-amd64$" cosign.sums | sed 's#cosign-linux-amd64#cosign#' | sha256sum -c -
           sudo install cosign /usr/local/bin/
           # kind không phát hành tệp checksums gộp; ghim theo tag + TLS.
-          curl -fsSL -o kind "https://github.com/kubernetes-sigs/kind/releases/download/v${KIND_VERSION}/kind-linux-amd64"
+          bash "$GITHUB_WORKSPACE/Code/DevSecOps/tools/download_release.sh" kind "https://github.com/kubernetes-sigs/kind/releases/download/v${KIND_VERSION}/kind-linux-amd64"
           sudo install kind /usr/local/bin/
           cosign version && kind version
 
