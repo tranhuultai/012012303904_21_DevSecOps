@@ -117,8 +117,8 @@ baseline.
 
 | Tài liệu | Vị trí |
 | --- | --- |
-| Báo cáo (Word) | `DOCX/BaoCao_DeTai21_DevSecOps.docx` |
-| Slide thuyết trình | `PPTX/Slide_DeTai21_DevSecOps.pptx` |
+| Báo cáo (Word) | `DOCX/DeTai21_DevSecOps.docx` |
+| Slide thuyết trình | `PPTX/DeTai21_DevSecOps.pptx` |
 | Hướng dẫn triển khai, tái lập, dọn tài nguyên, chi phí, rủi ro còn lại | [`Extra/HUONG_DAN_TRIEN_KHAI.md`](Extra/HUONG_DAN_TRIEN_KHAI.md) |
 | Kịch bản demo và phân công trình bày | [`Extra/KICH_BAN_DEMO.md`](Extra/KICH_BAN_DEMO.md) |
 | Sơ đồ kiến trúc, luồng dữ liệu, trình tự (nguồn và ảnh) | [`Extra/so_do/`](Extra/so_do/) |
