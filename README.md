@@ -129,11 +129,12 @@ baseline.
 ## Cấu trúc repository
 
 ```text
-.github/                 CODEOWNERS, pull_request_template.md, workflows/ (ci, experiments, e3-timing, e3-orchestrate)
+.github/                 CODEOWNERS, pull_request_template.md, workflows/ (ci, iac-validate, experiments, e3-timing, e3-orchestrate)
 Code/DevSecOps/
 ├── src/                 ứng dụng FastAPI và unit test
 ├── Dockerfile           image ứng dụng (multi-stage, non-root, ghim digest)
-├── infra/  deploy/      Terraform AWS (chỉ quét), manifest Kubernetes
+├── infra/  deploy/      Terraform AWS: mạng, S3, IAM, RDS, EC2 sau ALB HTTPS (quét tĩnh, test giả lập,
+│                        không apply), manifest Kubernetes
 ├── lab/                 Dockerfile.vuln (E4), workflow mẫu sạch để gieo D07, D26–D28
 ├── rules/               luật phát hiện: semgrep/, conftest/ (workflow)
 ├── policy/              luật gate Rego g0/, g1/, g2/ và test

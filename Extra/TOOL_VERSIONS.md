@@ -34,6 +34,10 @@ Ghi chú: Trivy được gọi trực tiếp bằng CLI ghim phiên bản (khôn
 | Semgrep | 1.183.0 | PyPI (pip) | ghim `==1.183.0` |
 | Cosign | 3.1.3 | github.com/sigstore/cosign | sha256 theo `cosign_checksums.txt` |
 | kind | 0.33.0 | github.com/kubernetes-sigs/kind | ghim tag + TLS (không có tệp checksums gộp) |
+| Terraform (workflow `iac-validate`) | 1.9.8 | releases.hashicorp.com | sha256 theo `terraform_1.9.8_SHA256SUMS` |
+| Provider AWS cho Terraform | 5.100.0 | registry.terraform.io | ghim trong `infra/.terraform.lock.hcl` |
+
+Các tệp phát hành trên GitHub được tải qua `Code/DevSecOps/tools/download_release.sh`: dùng token của workflow trước, lỗi thì tải trực tiếp có thử lại; checksum vẫn kiểm như bảng trên.
 
 ## 3. Môi trường runtime
 

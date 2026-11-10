@@ -37,7 +37,7 @@ Khi push vào `main` và gate PASS:
 1. Job `release` build image, đẩy lên GHCR, lấy digest, ký keyless bằng Cosign, đính kèm SBOM CycloneDX và provenance.
 2. Job `deploy-smoke` kiểm chữ ký, tạo cụm `kind`, triển khai manifest trong `Code/DevSecOps/deploy/` và gọi `/health`.
 
-Kiểm chữ ký thủ công (thay `<digest>` bằng digest trong log job `release`):
+Kiểm chữ ký thủ công: thay `<owner>` bằng tài khoản hoặc tổ chức sở hữu repo, `<repo>` bằng tên repo, `<digest>` bằng digest trong log job `release`. Với repo của nhóm: `<owner>` là `tranhuultai`, `<repo>` là `012012303904_21_DevSecOps`.
 
 ```bash
 cosign verify \
@@ -151,9 +151,9 @@ Cộng lại khoảng 0,09 USD/giờ, tức dưới 0,2 USD cho một buổi th�
 
 | Rủi ro | Nguyên nhân | Mức | Hướng xử lý |
 | --- | --- | --- | --- |
-| PR bị gate chặn vẫn có thể merge | Ruleset chưa đặt `gate` là required status check; chủ repo được bỏ qua ruleset | Cao | Làm đủ bước 3 ở mục 3 |
+| Chủ repo vẫn merge được PR bị chặn | Từ 05/11/2026 `gate` đã là required status check, nhưng ruleset còn cho chủ repo quyền bỏ qua (bypass) | Trung bình | Gỡ tài khoản chủ repo khỏi Bypass list, merge qua review của thành viên khác |
 | Bỏ sót lỗi mã chưa có luật | Luật Semgrep tự viết bám lỗi đã biết; `p/python` chỉ bắt 1/6 | Trung bình | Thêm bộ luật có phiên bản, đo lại |
-| Quyết định đổi theo ngày | Dữ liệu lỗ hổng, KEV, EPSS cập nhật liên tục | Trung bình | Quét lại định kỳ, lưu ảnh chụp dữ liệu |
+| Quyết định đổi theo ngày | Dữ liệu lỗ hổng, KEV, EPSS cập nhật liên tục; ngày 05/11/2026 `CVE-2026-109518` (gói `apt`) làm gate chặn mọi PR | Trung bình | Quét lại định kỳ; Dockerfile đã thêm bước cập nhật gói bảo mật |
 | CVE chưa có bản vá | 9 CVE HIGH còn trong image, chỉ cảnh báo | Trung bình | Theo dõi bản vá, cân nhắc base distroless |
 | Lỗi tồn đọng trên baseline | 96 cảnh báo ở chế độ full | Thấp | Giảm dần theo kế hoạch, ngoại lệ có hạn |
 | Rule ID lệch giữa hai công cụ | Cùng lỗi, Checkov chặn, Trivy cảnh báo | Thấp | Ánh xạ theo loại lỗi |
