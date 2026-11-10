@@ -36,7 +36,7 @@ Tài liệu kèm theo báo cáo Đề tài 21 (Phụ lục B). Có hai phương 
 
 **3:00-5:00 (Duy).** Mở PR thay đổi sạch (nhánh `demo/clean-<N>`, mục 5). Ở tab Checks, chỉ các job chạy song song rồi đến `gate`. Mở Summary của run: chế độ delta, 0 finding mới thuộc diện chặn, kết quả PASS.
 
-**5:00-7:30 (Tài).** Mở PR luồng lỗi (nhánh `demo/ssh-open-<N>`). Ở Summary: gate BLOCK, finding mới `CKV_AWS_24` (Checkov) trỏ vào `infra/security_groups.tf`, kèm cảnh báo WARN của Trivy `AWS-0107` cho cùng lỗi (Trivy xếp lỗi này vào diện cảnh báo, Checkov vào diện chặn). Nếu ruleset đã bật required check thì chỉ nút merge bị khóa. Đẩy commit sửa, chờ run mới (khoảng 1,5-2 phút; có thể cắt ghép trong video), mở Summary: PASS.
+**5:00-7:30 (Tài).** Mở PR luồng lỗi (nhánh `demo/ssh-open-<N>`). Ở Summary: gate BLOCK, finding mới `CKV_AWS_24` (Checkov) trỏ vào `infra/security_groups.tf`, kèm cảnh báo WARN của Trivy `AWS-0107` cho cùng lỗi (Trivy xếp lỗi này vào diện cảnh báo, Checkov vào diện chặn). Ruleset của `main` đã bắt buộc check `gate (Conftest Rego)` nên nút merge bị khóa với người khác (chủ repo vẫn có quyền bypass). Workflow `iac-validate` có thể cũng đỏ vì bài kiểm tra Terraform yêu cầu security group của ALB chỉ nhận cổng 443; đó là lớp kiểm tra thứ hai bắt cùng lỗi. Đẩy commit sửa, chờ run mới (khoảng 1,5-2 phút; có thể cắt ghép trong video), mở Summary: PASS.
 
 **7:30-8:30 (Tài).** Mở run push `main` 41700761072: job `release` in digest `ghcr.io/.../devsecops@sha256:...`; job `deploy-smoke` có bước `cosign verify` thành công và lệnh `curl /health` trả kết quả. Mở hình `tests/results/figures/e4_before_after.png`: 517 xuống 118 gói, 1.532 xuống 85 CVE (Trivy).
 

@@ -5,7 +5,7 @@ digraph G {
   edge [color="#555555", fontname="Liberation Serif", fontsize=15, arrowsize=0.7];
   subgraph cluster_gh { label="GitHub"; style="rounded,dashed"; color="#888888";
     DEV [label="Lập trình viên\nPR / push main", fillcolor="#ffffff"];
-    RS  [label="Ruleset main\nCODEOWNERS duyệt"];
+    RS  [label="Ruleset main\nPR, review, check gate"];
     EXC [label="exceptions.yaml\nngoại lệ có hạn"];
   }
   subgraph cluster_run { label="Runner ubuntu-24.04 (mỗi job một máy ảo, token tối thiểu)"; style="rounded,dashed"; color="#888888";
@@ -16,6 +16,11 @@ digraph G {
     G [label="gate\nchuẩn hóa, KEV/EPSS,\ndelta, Conftest G2", fillcolor="#fff4e0", color="#c77c02"];
     R [label="release (chỉ main)\ndigest, SBOM,\nprovenance, Cosign"];
     Y [label="deploy-smoke\ncosign verify,\nkind, /health"];
+  }
+  subgraph cluster_aws { label="AWS ap-southeast-1 (dự kiến, chưa apply)"; labeljust=l; labelloc=b; style="rounded,dashed"; color="#888888";
+    ALB [label="ALB nhận từ Internet\nchỉ HTTPS (TLS 1.3)"];
+    EC2 [label="EC2 Ubuntu 24.04\nIMDSv2, ổ đĩa mã hóa,\ncosign verify rồi chạy"];
+    RDS [label="RDS PostgreSQL\nsubnet riêng, mã hóa"];
   }
   KEV [label="CISA KEV\nFIRST EPSS", fillcolor="#f2f2f2", color="#777777"];
   GHCR [label="GHCR", fillcolor="#f2f2f2", color="#777777"];
@@ -33,4 +38,8 @@ digraph G {
   R -> GHCR; R -> SIG;
   {rank=same; R; GHCR; SIG;}
   R -> Y;
+  ALB -> EC2; EC2 -> RDS;
+  GHCR -> EC2 [style=dashed, label=" image theo digest"];
+  {rank=same; Y; ALB;}
+  {rank=same; EC2; RDS;}
 }
