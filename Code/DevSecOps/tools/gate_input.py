@@ -23,8 +23,13 @@ def main() -> int:
 
     with open(a.findings, encoding="utf-8") as fh:
         findings = json.load(fh)
+    # Fail-closed: object thiếu khóa "findings" là đầu vào hỏng, không được coi là quét sạch.
     if isinstance(findings, dict):
-        findings = findings.get("findings", [])
+        if "findings" not in findings:
+            raise SystemExit(f"findings không hợp lệ: object thiếu khóa 'findings' ({a.findings})")
+        findings = findings["findings"]
+    if not isinstance(findings, list):
+        raise SystemExit(f"findings không hợp lệ: cần mảng ({a.findings})")
 
     with open(a.exceptions, encoding="utf-8") as fh:
         exceptions = yaml.safe_load(fh) or []

@@ -1,0 +1,24 @@
+sequenceDiagram
+    actor Dev as Lập trình viên
+    participant GH as GitHub (PR, ruleset)
+    participant SC as Job quét (security-scan, iac, image)
+    participant GT as Job gate
+    participant RL as release, deploy-smoke
+    Dev->>GH: Mở pull request
+    GH->>SC: Kích hoạt workflow ci.yml
+    SC-->>GT: Artifact báo cáo thô
+    GT->>GT: Chuẩn hóa, làm giàu, lọc delta, Conftest G2
+    alt Có luật deny khớp
+        GT-->>GH: Job gate đỏ (BLOCK), tóm tắt lý do
+        GH-->>Dev: Yêu cầu sửa
+        Dev->>GH: Đẩy commit sửa
+        GH->>SC: Chạy lại pipeline
+        SC-->>GT: Báo cáo mới
+        GT-->>GH: Job gate xanh (PASS hoặc WARN)
+    else Không có luật deny
+        GT-->>GH: Job gate xanh (PASS hoặc WARN)
+    end
+    Dev->>GH: CODEOWNERS duyệt, merge vào main
+    GH->>RL: Push main kích hoạt release
+    RL->>RL: Push GHCR theo digest, SBOM, provenance, ký Cosign
+    RL->>RL: cosign verify, triển khai kind, gọi /health

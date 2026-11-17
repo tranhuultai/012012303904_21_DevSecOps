@@ -1,0 +1,51 @@
+{
+  "gate_version": "1.0",
+  "engine": "conftest-rego",
+  "policy_profile": "g2",
+  "decision": "BLOCK",
+  "passed": false,
+  "summary": {
+    "total_findings": 264,
+    "blockers": 1,
+    "warnings": 1,
+    "informational": 0,
+    "excepted": 0,
+    "expired_exceptions": 0
+  },
+  "warning_correlation": {
+    "matched_policy_warnings": 0,
+    "unmatched_policy_warnings": 1,
+    "matched_source_findings": 0
+  },
+  "blockers": [
+    {
+      "finding_id": "deny:0",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G2 BLOCK cấu hình: CKV_AWS_24",
+      "message": "G2 BLOCK cấu hình: CKV_AWS_24",
+      "file": "gate_input.json",
+      "status": "open"
+    }
+  ],
+  "warnings": [
+    {
+      "finding_id": "warn:0",
+      "rule_id": "warn",
+      "severity": "HIGH",
+      "title": "WARN HIGH (chưa đủ điều kiện chặn): AWS-0107 tại infra/security_groups.tf",
+      "message": "WARN HIGH (chưa đủ điều kiện chặn): AWS-0107 tại infra/security_groups.tf",
+      "file": "gate_input.json",
+      "status": "open",
+      "policy_input_file": "gate_input.json",
+      "advisory_ids": [],
+      "affected_findings": [],
+      "policy_engine": "conftest-rego",
+      "tool": "conftest-rego"
+    }
+  ],
+  "informational_findings": [],
+  "excepted_findings": [],
+  "expired_exceptions": [],
+  "unused_exceptions": []
+}

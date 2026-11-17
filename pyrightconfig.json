@@ -1,0 +1,4 @@
+{
+  "include": ["Code/DevSecOps"],
+  "extraPaths": ["Code/DevSecOps/tools", "Code/DevSecOps/tools/test", "Code/DevSecOps/tests"]
+}

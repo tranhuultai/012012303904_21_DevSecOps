@@ -1,0 +1,11 @@
+{
+  "samples_expected": 47,
+  "samples_complete": 47,
+  "tool_versions_equal": true,
+  "trivy_db_snapshots": [
+    "2026-11-03T13:13:42.304243913Z"
+  ],
+  "commits": [
+    "b3d4e93ba1cfaeae9a602e0a59f469b2ed51ded7"
+  ]
+}

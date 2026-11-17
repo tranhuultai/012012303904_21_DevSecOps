@@ -1,0 +1,29 @@
+# Baseline sạch cho D07, D26-D28, C10, N08; lỗi chỉ được gieo bằng patch.
+# Không chạy trên GitHub (nằm ngoài .github/workflows gốc repo); giữ đường dẫn để Checkov nhận diện.
+name: lab-ci-sample
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      # Giá trị từ người dùng đi qua biến môi trường, không chèn thẳng vào lệnh shell.
+      - name: Show PR title
+        if: github.event_name == 'pull_request'
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: echo "PR title ${PR_TITLE}"
+
+      - name: Run tests
+        env:
+          APP_ENV: test
+        run: echo "running tests in ${APP_ENV}"

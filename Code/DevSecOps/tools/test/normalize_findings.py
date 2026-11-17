@@ -35,6 +35,35 @@ CVE_PATTERN = re.compile(r"^CVE-\d{4}-\d+$", re.IGNORECASE)
 # This file is expected at Code/DevSecOps/tools/test/normalize_findings.py.
 PROJECT_DIR = Path(__file__).resolve().parents[2]
 DEFAULT_SCHEMA = PROJECT_DIR / "schemas" / "finding.schema.json"
+DEFAULT_SEVERITY_MAP = PROJECT_DIR / "schemas" / "severity_map.yaml"
+
+_severity_map = None
+
+
+def load_severity_map(path=DEFAULT_SEVERITY_MAP):
+    """Đọc bảng quy đổi mức độ; trả về (mức mặc định, {rule_id: mức})."""
+    import yaml
+
+    p = Path(path)
+    if not p.is_file():
+        return "MEDIUM", {}
+    with p.open("r", encoding="utf-8") as file:
+        data = yaml.safe_load(file) or {}
+    default = str(data.get("default", "MEDIUM")).upper()
+    rules = {str(k): str(v).upper() for k, v in (data.get("rules") or {}).items()}
+    for value in [default, *rules.values()]:
+        if value not in VALID_SEVERITIES:
+            raise ValueError(f"severity_map: mức không hợp lệ {value}")
+    return default, rules
+
+
+def mapped_severity(rule_id):
+    """Mức độ cho rule không có severity gốc, theo schemas/severity_map.yaml."""
+    global _severity_map
+    if _severity_map is None:
+        _severity_map = load_severity_map()
+    default, rules = _severity_map
+    return rules.get(str(rule_id), default)
 
 
 def load_json(path):
@@ -261,7 +290,7 @@ def make_finding(
     }
 
 
-def parse_semgrep(data):
+def parse_semgrep(data, tool="semgrep"):
     """Convert a Semgrep JSON report to normalized findings."""
     if data is None:
         return []
@@ -306,7 +335,7 @@ def parse_semgrep(data):
 
         findings.append(
             make_finding(
-                tool="semgrep",
+                tool=tool,
                 rule_id=item.get("check_id"),
                 category="sast",
                 severity=severity,
@@ -365,7 +394,7 @@ def parse_gitleaks(data):
     return findings
 
 
-def parse_trivy(data):
+def parse_trivy(data, category="sca"):
     """Convert Trivy vulnerability results to normalized findings."""
     if data is None:
         return []
@@ -423,7 +452,7 @@ def parse_trivy(data):
                 make_finding(
                     tool="trivy",
                     rule_id=vuln_id,
-                    category="sca",
+                    category=category,
                     severity=vuln.get("Severity"),
                     title=(
                         vuln.get("Title")
@@ -511,9 +540,7 @@ def parse_checkov(data):
             raise ValueError(f"Checkov check at index {index} must be an object.")
 
         rule_id = item.get("check_id")
-        severity = item.get("check_severity") or item.get("severity")
-        if not severity:
-            severity = "FAILED" if (item.get("check_result") or {}).get("result") == "FAILED" else "INFO"
+        severity = item.get("check_severity") or item.get("severity") or mapped_severity(rule_id)
 
         references = item.get("guideline")
         findings.append(
@@ -535,39 +562,59 @@ def parse_checkov(data):
     return findings
 
 
-def parse_conftest_workflow(data):
-    """Normalize failures from the dedicated GitHub Actions Rego scanner."""
+def parse_conftest(data):
+    """Convert Conftest JSON output; rule ID là phần trước dấu hai chấm của thông điệp."""
     if data is None:
         return []
+
     records = data.get("results", []) if isinstance(data, dict) else data
-    require_list(records, "Conftest workflow results")
+    require_list(records, "Conftest results")
 
     findings = []
     rule_pattern = re.compile(r"\bDSEC_GHA_[A-Z0-9_]+\b", re.IGNORECASE)
     for record_index, record in enumerate(records):
         if not isinstance(record, dict):
-            raise ValueError(f"Conftest workflow result at index {record_index} must be an object.")
+            raise ValueError(f"Conftest result at index {record_index} must be an object.")
         failures = record.get("failures", []) or []
-        require_list(failures, "Conftest workflow failures")
+        require_list(failures, "Conftest failures")
         for failure in failures:
             if isinstance(failure, dict):
                 message = failure.get("msg") or failure.get("message") or ""
             else:
                 message = str(failure or "")
-            match = rule_pattern.search(message)
-            rule_id = match.group(0).upper() if match else "DSEC_GHA_UNKNOWN"
+            message = message.strip()
+            if not message:
+                continue
+
+            if ":" in message:
+                rule_id = message.split(":", 1)[0].strip() or "unknown"
+            else:
+                match = rule_pattern.search(message)
+                rule_id = match.group(0).upper() if match else "unknown"
+
+            if rule_id.startswith("DSEC_GHA_"):
+                severity = "HIGH"
+            else:
+                severity = mapped_severity(rule_id)
+
             findings.append(
                 make_finding(
                     tool="conftest",
                     rule_id=rule_id,
                     category="workflow",
-                    severity="HIGH",
+                    severity=severity,
                     title=rule_id,
                     message=message,
                     file=record.get("filename"),
+                    references=[],
                 )
             )
     return findings
+
+
+def parse_conftest_workflow(data):
+    """Normalize failures from the dedicated GitHub Actions Rego scanner."""
+    return parse_conftest(data)
 
 
 def parse_trivy_config(data):

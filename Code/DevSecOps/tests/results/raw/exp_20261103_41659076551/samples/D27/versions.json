@@ -1,0 +1,19 @@
+{
+  "semgrep": "1.183.0",
+  "gitleaks": "8.30.1",
+  "checkov": "3.3.22",
+  "conftest": "Conftest: 0.71.1\nOPA: 1.21.1",
+  "trivy": {
+    "Version": "0.76.1",
+    "VulnerabilityDB": {
+      "Version": 2,
+      "NextUpdate": "2026-11-04T13:13:42.304243562Z",
+      "UpdatedAt": "2026-11-03T13:13:42.304243913Z",
+      "DownloadedAt": "2026-11-03T15:01:47.765597716Z"
+    },
+    "CheckBundle": {
+      "Digest": "sha256:b591e9190cff4aa4e385b1a25bccfd9ecf178d3c77fd194e1410b7ce7e1df058",
+      "DownloadedAt": "2026-11-03T15:01:56.039551314Z"
+    }
+  }
+}

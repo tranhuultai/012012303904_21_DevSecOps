@@ -1,0 +1,33 @@
+# Mức độ cho finding không có severity gốc (Checkov bản mở, luật Conftest tự viết).
+# Quyết định của nhóm: khóa kiểm soát tác động cao (trùng iac_block_controls của G2) là HIGH.
+default: MEDIUM
+
+rules:
+  # Mạng và quyền truy cập đám mây
+  CKV_AWS_24: HIGH   # SSH (22) mở cho 0.0.0.0/0
+  CKV_AWS_25: HIGH   # RDP (3389) mở cho 0.0.0.0/0
+  CKV_AWS_1: HIGH    # IAM policy cho phép "*" trên "*"
+  CKV_AWS_49: HIGH
+  CKV_AWS_62: HIGH
+  CKV_AWS_63: HIGH
+  # Lưu trữ và cơ sở dữ liệu
+  CKV_AWS_53: HIGH   # S3 Public Access Block
+  CKV_AWS_54: HIGH
+  CKV_AWS_55: HIGH
+  CKV_AWS_56: HIGH
+  CKV_AWS_17: HIGH   # RDS truy cập công khai
+  CKV_AWS_16: HIGH   # RDS không mã hóa
+  # Container
+  CKV_DOCKER_1: HIGH # mở cổng 22
+  CKV_DOCKER_3: HIGH # không tạo user, chạy root
+  CKV_DOCKER_4: HIGH # ADD thay vì COPY
+  CKV_DOCKER_7: HIGH # base image dùng tag latest
+  # Kubernetes
+  CKV_K8S_16: HIGH   # container privileged
+  CKV_K8S_14: HIGH   # image tag latest hoặc rỗng
+  # Workflow GitHub Actions
+  CKV2_GHA_1: HIGH   # top-level permissions write-all
+  CKV_GHA_2: HIGH    # shell injection trong run
+  GHA-WRITE-ALL: HIGH
+  GHA-SCRIPT-INJECTION: HIGH
+  GHA-UNPINNED-ACTION: MEDIUM

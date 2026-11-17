@@ -1,4 +1,4 @@
-# Ngoại lệ gate. Trên main để rỗng; ngoại lệ demo chỉ nằm ở nhánh demo.
+# Ngoại lệ gate. Trên main để rỗng; ví dụ hợp lệ, hết hạn, tự duyệt nằm trong policy/g2/gate_test.rego.
 # Mỗi mục: id, match{rule_id, resource}, severity, reason, compensating_control,
 # owner, approved_by, created (YYYY-MM-DD), expires (YYYY-MM-DD), ticket.
 []

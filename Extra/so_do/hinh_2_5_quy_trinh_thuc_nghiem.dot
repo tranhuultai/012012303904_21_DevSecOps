@@ -1,0 +1,15 @@
+digraph E {
+  rankdir=TB; nodesep=0.25; ranksep=0.3;
+  node [shape=box, style="rounded,filled", fillcolor="#eef3fb", color="#4a6fa5", fontname="Liberation Serif", fontsize=17, margin="0.1,0.05"];
+  edge [color="#555555", arrowsize=0.7];
+  GT [label="Tag gt-v1 (03/11/2026)\nđáp án, 46 patch, H1-H4", fillcolor="#fff4e0", color="#c77c02"];
+  M [label="experiments.yml\n47 mẫu, mỗi mẫu 1 patch,\nquét 5 lớp"];
+  E4 [label="Job e4-image\n2 Dockerfile, build 3 lần,\nSyft, Trivy, Grype"];
+  O [label="e3-orchestrate.yml\n6 lượt xen kẽ\nC1, C2, C3"];
+  AG [label="Job aggregate\nConftest G0/G1/G2,\nfull và delta"];
+  RD [label="raw/exp_…_41659076551", shape=note, fillcolor="#ffffff"];
+  RE [label="raw/e3_…_41698953799", shape=note, fillcolor="#ffffff"];
+  AN [label="analyze_results.py\nbảng, biểu đồ, so_lieu_bao_cao.csv"];
+  GT -> M; GT -> E4; M -> AG; E4 -> AG; AG -> RD; O -> RE; RD -> AN; RE -> AN;
+  {rank=same; M; E4; O;}
+}

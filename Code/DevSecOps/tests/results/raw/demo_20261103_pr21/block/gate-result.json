@@ -1,0 +1,23 @@
+[
+	{
+		"filename": "gate_input.json",
+		"namespace": "main",
+		"successes": 10,
+		"warnings": [
+			{
+				"msg": "WARN HIGH (chưa đủ điều kiện chặn): AWS-0107 tại infra/security_groups.tf",
+				"metadata": {
+					"query": "data.main.warn"
+				}
+			}
+		],
+		"failures": [
+			{
+				"msg": "G2 BLOCK cấu hình: CKV_AWS_24",
+				"metadata": {
+					"query": "data.main.deny"
+				}
+			}
+		]
+	}
+]

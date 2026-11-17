@@ -1,0 +1,14 @@
+mode,job,n,median_s,min_s,max_s
+c1_seq_nocache,c1 sequential,6,99.0,95.0,122.0
+c2_par_nocache,gate,6,27.5,25.0,29.0
+c2_par_nocache,scan iac,6,54.0,46.0,57.0
+c2_par_nocache,scan image,6,55.0,42.0,61.0
+c2_par_nocache,scan sast,6,37.0,33.0,43.0
+c2_par_nocache,scan sca,6,33.0,29.0,38.0
+c2_par_nocache,scan secret,6,21.5,12.0,27.0
+c3_par_cache,gate,5,28.0,20.0,29.0
+c3_par_cache,scan iac,5,55.0,48.0,67.0
+c3_par_cache,scan image,5,50.0,42.0,62.0
+c3_par_cache,scan sast,5,36.0,32.0,43.0
+c3_par_cache,scan sca,5,30.0,25.0,36.0
+c3_par_cache,scan secret,5,19.0,10.0,32.0
