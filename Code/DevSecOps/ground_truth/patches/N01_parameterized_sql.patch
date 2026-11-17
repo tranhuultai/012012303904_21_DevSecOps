@@ -1,17 +1,14 @@
-diff --git a/Code/DevSecOps/src/app/main.py b/Code/DevSecOps/src/app/main.py
-index 41f59b4..db4387f 100644
 --- a/Code/DevSecOps/src/app/main.py
 +++ b/Code/DevSecOps/src/app/main.py
-@@ -60,4 +60,10 @@ def create_user(user: UserRequest):
+@@ -14,6 +14,11 @@
  
- @app.get("/users")
- def list_users():
--    return {"users": users_db}
-\ No newline at end of file
-+    return {"users": users_db}
+ 
+ users_db: list[dict] = []
 +
 +
 +def lookup_user_by_name(cursor, name: str):
-+    sql = "SELECT * FROM users WHERE name = ?"
-+    cursor.execute(sql, (name,))
++    cursor.execute("SELECT * FROM users WHERE name = ?", (name,))
 +    return cursor.fetchone()
+ 
+ 
+ @app.get("/")

@@ -1,0 +1,177 @@
+{
+  "experiment": "E1/E2 actual scanner and gate observations",
+  "evidence_status": "partial",
+  "baseline_run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43644143421/attempts/1",
+  "baseline_commit": "f7fc110487f2e81a1729e8317ba0457b414a0bb2",
+  "fixture_cases_expected": 38,
+  "fixture_cases_measured": 3,
+  "missing_cases": [
+    "C01",
+    "C02",
+    "C03",
+    "C04",
+    "C05",
+    "C06",
+    "C07",
+    "C08",
+    "C09",
+    "C10",
+    "D01",
+    "D02",
+    "D03",
+    "D04",
+    "D05",
+    "D06",
+    "D07",
+    "D08",
+    "D09",
+    "D10",
+    "D11",
+    "D12",
+    "D13",
+    "D14",
+    "D15",
+    "D16",
+    "D17",
+    "D18",
+    "D19",
+    "D20",
+    "D21",
+    "D22",
+    "D23",
+    "D24",
+    "D25"
+  ],
+  "negative_controls_expected": 8,
+  "negative_controls_measured": 0,
+  "negative_controls_unmeasured": [
+    "N01",
+    "N02",
+    "N03",
+    "N04",
+    "N05",
+    "N06",
+    "N07",
+    "N08"
+  ],
+  "excluded_incomplete_observations": [],
+  "negative_control_scanner_outcomes": {
+    "expected_tool_false_positive_rate": null
+  },
+  "negative_control_policy_outcomes": {
+    "g0": {
+      "false_block_rate": null
+    },
+    "g1": {
+      "false_block_rate": null
+    },
+    "g2": {
+      "false_block_rate": null
+    }
+  },
+  "scanner_outcomes": {
+    "detected": 1,
+    "missed": 2,
+    "defect_attempts": 3,
+    "clean_attempts": 0,
+    "clean_cases_with_new_findings": 0
+  },
+  "policy_metrics": {
+    "g0": {
+      "TP": 0,
+      "FN": 3,
+      "FP": 0,
+      "TN": 0,
+      "defects_measured": 3,
+      "clean_changes_measured": 0,
+      "recall_blocked_defects": 0.0,
+      "precision_blocked_defects": null,
+      "false_block_rate_on_measured_clean": null
+    },
+    "g1": {
+      "TP": 1,
+      "FN": 2,
+      "FP": 0,
+      "TN": 0,
+      "defects_measured": 3,
+      "clean_changes_measured": 0,
+      "recall_blocked_defects": 0.3333,
+      "precision_blocked_defects": 1.0,
+      "false_block_rate_on_measured_clean": null
+    },
+    "g2": {
+      "TP": 1,
+      "FN": 2,
+      "FP": 0,
+      "TN": 0,
+      "defects_measured": 3,
+      "clean_changes_measured": 0,
+      "recall_blocked_defects": 0.3333,
+      "precision_blocked_defects": 1.0,
+      "false_block_rate_on_measured_clean": null
+    }
+  },
+  "cases": [
+    {
+      "fixture_id": "D26",
+      "sample_type": "defect",
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43644396454/attempts/1",
+      "commit": "f7fc110487f2e81a1729e8317ba0457b414a0bb2",
+      "evidence_status": "complete",
+      "skipped_scans": [
+        "e4-live-image-remediation"
+      ],
+      "scanner_detected_expected_tool": false,
+      "new_findings_count": 0,
+      "policy_decisions": {
+        "g0": "PASS",
+        "g1": "BLOCK",
+        "g2": "WARN"
+      }
+    },
+    {
+      "fixture_id": "D27",
+      "sample_type": "defect",
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43644662355/attempts/1",
+      "commit": "f7fc110487f2e81a1729e8317ba0457b414a0bb2",
+      "evidence_status": "complete",
+      "skipped_scans": [
+        "e4-live-image-remediation"
+      ],
+      "scanner_detected_expected_tool": false,
+      "new_findings_count": 0,
+      "policy_decisions": {
+        "g0": "PASS",
+        "g1": "BLOCK",
+        "g2": "WARN"
+      }
+    },
+    {
+      "fixture_id": "D28",
+      "sample_type": "defect",
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43644917929/attempts/1",
+      "commit": "f7fc110487f2e81a1729e8317ba0457b414a0bb2",
+      "evidence_status": "complete",
+      "skipped_scans": [
+        "e4-live-image-remediation"
+      ],
+      "scanner_detected_expected_tool": true,
+      "new_findings_count": 1,
+      "policy_decisions": {
+        "g0": "PASS",
+        "g1": "BLOCK",
+        "g2": "BLOCK"
+      }
+    }
+  ],
+  "errors": [],
+  "limitations": [
+    "Scanner detection means a new normalized finding matching expected tool, rule/CVE, and file relative to the same-commit baseline.",
+    "Grype image findings are baseline-matched by CVE and package when available; legacy observations without package identity fall back to CVE because image-layer paths are unstable across rebuilds.",
+    "For schema v4 observations, Grype DB schema, build timestamp, source URL, and runtime version are compared with baseline; intentional image-scan skips are excluded.",
+    "Clean-change false-block counts cover Cxx fixtures; Nxx scanner false positives and gate false blocks are reported separately.",
+    "Gate outcomes use blocker details added relative to the same-commit baseline; pre-existing baseline blockers are not attributed to a fixture.",
+    "Repeat runs are counted as attempts; report the number of runs and avoid treating repeated copies of a case as independent defects.",
+    "Trivy CLI and database metadata must match the baseline; findings from runs with different database metadata are not pooled."
+  ]
+}

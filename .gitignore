@@ -43,3 +43,7 @@ Thumbs.db
 
 # Báo cáo quét là artifact CI, không commit
 reports/
+
+# Worktree/patch cục bộ của Codex; không thuộc source tree của dự án
+.codex-branch-work/
+.codex-branch-work.patch

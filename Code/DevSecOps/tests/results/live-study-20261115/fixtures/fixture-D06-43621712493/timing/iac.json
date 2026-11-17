@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "job": "iac",
+  "run_id": "43621712493",
+  "run_attempt": "1",
+  "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43621712493/attempts/1",
+  "commit": "81328c21f604279ead4e40bf918a420996f1162c",
+  "ref": "refs/heads/main",
+  "event": "workflow_dispatch",
+  "fixture_id": "D06",
+  "cache_mode": "cold",
+  "benchmark_role": "measurement",
+  "scan_execution_mode": "parallel",
+  "started_at": "2026-11-14T17:33:08Z",
+  "ended_at": "2026-11-14T17:33:48Z",
+  "duration_seconds": 40,
+  "runner_os": "Linux",
+  "runner_arch": "X64"
+}

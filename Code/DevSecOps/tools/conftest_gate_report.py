@@ -50,10 +50,12 @@ ADVISORY_PATTERN = re.compile(
     r"\b(?:CVE-\d{4}-\d+|GHSA-[0-9A-Z]{4}-[0-9A-Z]{4}-[0-9A-Z]{4})\b",
     re.IGNORECASE,
 )
+CONTROL_PATTERN = re.compile(r"\b(?:CKV[A-Z0-9_]+|AWS-\d{4}|KSV-\d{4})\b", re.I)
 SEVERITY_PATTERN = re.compile(r"\bWARN\s+(CRITICAL|HIGH|MEDIUM|LOW|INFO)\b", re.I)
 MESSAGE_FIELD_PATTERN = re.compile(
     r"(?:^|;\s*)(Package|Installed version|Fixed version):\s*([^;]+)", re.I
 )
+SEVERITY_RANK = {"INFO": 0, "LOW": 1, "MEDIUM": 2, "HIGH": 3, "CRITICAL": 4}
 
 
 def advisory_ids(value):
@@ -65,6 +67,11 @@ def finding_advisories(finding):
     """Read advisory identifiers from normalized finding fields."""
     values = (finding.get("rule_id"), finding.get("cve"), finding.get("title"), finding.get("message"))
     return set().union(*(advisory_ids(value) for value in values))
+
+
+def control_ids(value):
+    """Return scanner control IDs (Checkov, Trivy AWS, or Trivy K8s)."""
+    return {match.upper() for match in CONTROL_PATTERN.findall(str(value or ""))}
 
 
 def message_fields(message):
@@ -79,10 +86,15 @@ def correlate_warning(item, findings):
     """Attach source finding context without changing policy decisions/counts."""
     item["policy_input_file"] = item.get("file")
     ids = advisory_ids(item.get("message"))
+    controls = control_ids(item.get("message"))
     affected = []
-    if ids:
+    if ids or controls:
         for finding in findings:
-            if not isinstance(finding, dict) or not (finding_advisories(finding) & ids):
+            if not isinstance(finding, dict):
+                continue
+            same_advisory = bool(finding_advisories(finding) & ids)
+            same_control = str(finding.get("rule_id", "")).upper() in controls
+            if not (same_advisory or same_control):
                 continue
             details = {
                 key: finding.get(key)
@@ -93,6 +105,7 @@ def correlate_warning(item, findings):
             affected.append(details)
 
     item["advisory_ids"] = sorted(ids)
+    item["control_ids"] = sorted(controls)
     item["affected_findings"] = affected
     item["policy_engine"] = "conftest-rego"
     item.setdefault("tool", "conftest-rego")
@@ -103,7 +116,13 @@ def correlate_warning(item, findings):
     if severity_match:
         item["severity"] = severity_match.group(1).upper()
     elif affected:
-        item["severity"] = affected[0].get("severity", item["severity"])
+        source_severities = [
+            str(entry.get("severity", "MEDIUM")).upper()
+            for entry in affected
+            if str(entry.get("severity", "MEDIUM")).upper() in SEVERITY_RANK
+        ]
+        if source_severities:
+            item["severity"] = max(source_severities, key=SEVERITY_RANK.__getitem__)
 
     tools = sorted({entry.get("tool") for entry in affected if entry.get("tool")})
     if tools:

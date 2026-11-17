@@ -1,0 +1,19 @@
+{
+  "title": "CISA Known Exploited Vulnerabilities Catalog (reviewed subset)",
+  "source": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+  "catalogVersion": "2025-03-18",
+  "dateReleased": "2025-03-18",
+  "count": 1,
+  "vulnerabilities": [
+    {
+      "cveID": "CVE-2025-30066",
+      "vendorProject": "tj-actions",
+      "product": "changed-files",
+      "vulnerabilityName": "Supply-chain compromise of tj-actions/changed-files",
+      "dateAdded": "2025-03-18",
+      "shortDescription": "Compromised release tags exposed secrets in affected GitHub Actions workflows.",
+      "requiredAction": "Use a reviewed fixed release or immutable SHA and rotate potentially exposed secrets."
+    }
+  ]
+}
+

@@ -1,0 +1,36 @@
+{
+  "study_id": "59c401b29b5b",
+  "commit": "b79a12a6a3e8c291ac4f2050db6946d841f2116a",
+  "status": "invalid_for_E3_statistics",
+  "reason": "Workflow run-name used fixture/cache/role/commit/study only; all cold replicate keys attached to the same baseline run ID, so these are not independent observations.",
+  "duplicate_cold_entries": [
+    {
+      "key": "e3-cold-01",
+      "run_id": 43624239226,
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43624239226"
+    },
+    {
+      "key": "e3-cold-02",
+      "run_id": 43624239226,
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43624239226"
+    },
+    {
+      "key": "e3-cold-03",
+      "run_id": 43624239226,
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43624239226"
+    },
+    {
+      "key": "e3-cold-04",
+      "run_id": 43624239226,
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43624239226"
+    },
+    {
+      "key": "e3-cold-05",
+      "run_id": 43624239226,
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43624239226"
+    }
+  ],
+  "abandoned_dispatched_run_id": 43636377882,
+  "abandoned_dispatched_run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43636377882",
+  "action": "Excluded from E3 and replaced with a new study index using unique per-replicate workflow study IDs."
+}

@@ -1,11 +1,11 @@
 diff --git a/Code/DevSecOps/infra/security_groups.tf b/Code/DevSecOps/infra/security_groups.tf
-index 8786dde..0e84478 100644
 --- a/Code/DevSecOps/infra/security_groups.tf
 +++ b/Code/DevSecOps/infra/security_groups.tf
-@@ -12,6 +12,14 @@ resource "aws_security_group" "alb" {
-     cidr_blocks = ["0.0.0.0/0"]
-   }
- 
+@@ -4,4 +4,12 @@
+   description = "ALB cong khai, chi mo 443"
+   vpc_id      = aws_vpc.main.id
+-
++
 +  ingress {
 +    description = "SSH tu Internet"
 +    from_port   = 22
@@ -14,6 +14,4 @@ index 8786dde..0e84478 100644
 +    cidr_blocks = ["0.0.0.0/0"]
 +  }
 +
-   egress {
-     description = "Egress mac dinh"
-     from_port   = 0
+   ingress {

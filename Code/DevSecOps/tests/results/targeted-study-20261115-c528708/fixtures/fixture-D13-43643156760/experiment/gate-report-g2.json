@@ -1,0 +1,387 @@
+{
+  "gate_version": "1.0",
+  "engine": "conftest-rego",
+  "policy_profile": "g2",
+  "decision": "BLOCK",
+  "passed": false,
+  "summary": {
+    "total_findings": 63,
+    "blockers": 1,
+    "warnings": 2,
+    "informational": 0,
+    "excepted": 0,
+    "expired_exceptions": 0
+  },
+  "warning_correlation": {
+    "matched_policy_warnings": 2,
+    "unmatched_policy_warnings": 0,
+    "matched_source_findings": 30
+  },
+  "blockers": [
+    {
+      "finding_id": "deny:0",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G2 BLOCK cấu hình: CKV_DOCKER_3",
+      "message": "G2 BLOCK cấu hình: CKV_DOCKER_3",
+      "file": "gate_input.json",
+      "status": "open"
+    }
+  ],
+  "warnings": [
+    {
+      "finding_id": "warn:0",
+      "rule_id": "warn",
+      "severity": "HIGH",
+      "title": "WARN HIGH chưa có bản vá: CKV_DOCKER_3",
+      "message": "WARN HIGH chưa có bản vá: CKV_DOCKER_3",
+      "file": "Dockerfile:1",
+      "status": "open",
+      "policy_input_file": "gate_input.json",
+      "advisory_ids": [],
+      "control_ids": [
+        "CKV_DOCKER_3"
+      ],
+      "affected_findings": [
+        {
+          "finding_id": "checkov:4d98e3122d507382",
+          "tool": "checkov",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "Ensure that a user for the container has been created",
+          "file": "Dockerfile",
+          "line_start": 1,
+          "resource": "Dockerfile."
+        }
+      ],
+      "policy_engine": "conftest-rego",
+      "tool": "checkov",
+      "source_locations": [
+        "Dockerfile:1"
+      ]
+    },
+    {
+      "finding_id": "warn:1",
+      "rule_id": "warn",
+      "severity": "HIGH",
+      "title": "WARN IaC controls require review: AWS-0077, AWS-0090, AWS-0132, AWS-0176, AWS-0177, AWS-0178, CKV2_AWS_11, CKV2_AWS_12, CKV2_AWS_30, CKV_AWS_129, CKV_AWS_145, CKV_AWS_161, CKV_AWS_21, CKV_AWS_226, CKV_AWS_293, CKV_K8S_35, KSV-0125",
+      "message": "WARN IaC controls require review: AWS-0077, AWS-0090, AWS-0132, AWS-0176, AWS-0177, AWS-0178, CKV2_AWS_11, CKV2_AWS_12, CKV2_AWS_30, CKV_AWS_129, CKV_AWS_145, CKV_AWS_161, CKV_AWS_21, CKV_AWS_226, CKV_AWS_293, CKV_K8S_35, KSV-0125",
+      "file": "/rds.tf:26; /network.tf:5; /s3.tf:1; /s3.tf:13; /deploy/deployment.yaml:1; deploy/deployment.yaml; infra/network.tf; infra/rds.tf; infra/s3.tf",
+      "status": "open",
+      "policy_input_file": "gate_input.json",
+      "advisory_ids": [],
+      "control_ids": [
+        "AWS-0077",
+        "AWS-0090",
+        "AWS-0132",
+        "AWS-0176",
+        "AWS-0177",
+        "AWS-0178",
+        "CKV2_AWS_11",
+        "CKV2_AWS_12",
+        "CKV2_AWS_30",
+        "CKV_AWS_129",
+        "CKV_AWS_145",
+        "CKV_AWS_161",
+        "CKV_AWS_21",
+        "CKV_AWS_226",
+        "CKV_AWS_293",
+        "CKV_K8S_35",
+        "KSV-0125"
+      ],
+      "affected_findings": [
+        {
+          "finding_id": "checkov:ca6faac2c7f180f0",
+          "tool": "checkov",
+          "category": "iac",
+          "severity": "HIGH",
+          "title": "Ensure that AWS database instances have deletion protection enabled",
+          "file": "/rds.tf",
+          "line_start": 26,
+          "resource": "aws_db_instance.main"
+        },
+        {
+          "finding_id": "checkov:e5c249b1b6057966",
+          "tool": "checkov",
+          "category": "iac",
+          "severity": "HIGH",
+          "title": "Ensure that respective logs of Amazon Relational Database Service (Amazon RDS) are enabled",
+          "file": "/rds.tf",
+          "line_start": 26,
+          "resource": "aws_db_instance.main"
+        },
+        {
+          "finding_id": "checkov:20a48d2d9745f902",
+          "tool": "checkov",
+          "category": "iac",
+          "severity": "HIGH",
+          "title": "Ensure DB instance gets all minor upgrades automatically",
+          "file": "/rds.tf",
+          "line_start": 26,
+          "resource": "aws_db_instance.main"
+        },
+        {
+          "finding_id": "checkov:b4fc745afb07e82c",
+          "tool": "checkov",
+          "category": "iac",
+          "severity": "HIGH",
+          "title": "Ensure RDS database has IAM authentication enabled",
+          "file": "/rds.tf",
+          "line_start": 26,
+          "resource": "aws_db_instance.main"
+        },
+        {
+          "finding_id": "checkov:58bf1a93f936c822",
+          "tool": "checkov",
+          "category": "iac",
+          "severity": "HIGH",
+          "title": "Ensure the default security group of every VPC restricts all traffic",
+          "file": "/network.tf",
+          "line_start": 5,
+          "resource": "aws_vpc.main"
+        },
+        {
+          "finding_id": "checkov:6010c97eb06b0187",
+          "tool": "checkov",
+          "category": "iac",
+          "severity": "HIGH",
+          "title": "Ensure VPC flow logging is enabled in all VPCs",
+          "file": "/network.tf",
+          "line_start": 5,
+          "resource": "aws_vpc.main"
+        },
+        {
+          "finding_id": "checkov:90340749b5261f65",
+          "tool": "checkov",
+          "category": "iac",
+          "severity": "HIGH",
+          "title": "Ensure that S3 buckets are encrypted with KMS by default",
+          "file": "/s3.tf",
+          "line_start": 1,
+          "resource": "aws_s3_bucket.logs"
+        },
+        {
+          "finding_id": "checkov:c2b4c21d2fed605a",
+          "tool": "checkov",
+          "category": "iac",
+          "severity": "HIGH",
+          "title": "Ensure that S3 buckets are encrypted with KMS by default",
+          "file": "/s3.tf",
+          "line_start": 13,
+          "resource": "aws_s3_bucket.app"
+        },
+        {
+          "finding_id": "checkov:c4b73d346add080f",
+          "tool": "checkov",
+          "category": "iac",
+          "severity": "HIGH",
+          "title": "Ensure Postgres RDS as aws_db_instance has Query Logging enabled",
+          "file": "/rds.tf",
+          "line_start": 26,
+          "resource": "aws_db_instance.main"
+        },
+        {
+          "finding_id": "checkov:740e0c4d6c6bc6ad",
+          "tool": "checkov",
+          "category": "iac",
+          "severity": "HIGH",
+          "title": "Ensure all data stored in the S3 bucket have versioning enabled",
+          "file": "/s3.tf",
+          "line_start": 1,
+          "resource": "aws_s3_bucket.logs"
+        },
+        {
+          "finding_id": "checkov:9171126c7045b266",
+          "tool": "checkov",
+          "category": "k8s",
+          "severity": "HIGH",
+          "title": "Prefer using secrets as files over secrets as environment variables",
+          "file": "/deploy/deployment.yaml",
+          "line_start": 1,
+          "resource": "Deployment.default.devsecops-app"
+        },
+        {
+          "finding_id": "checkov:ca6faac2c7f180f0",
+          "tool": "checkov",
+          "category": "iac",
+          "severity": "HIGH",
+          "title": "Ensure that AWS database instances have deletion protection enabled",
+          "file": "/rds.tf",
+          "line_start": 26,
+          "resource": "aws_db_instance.main"
+        },
+        {
+          "finding_id": "checkov:e5c249b1b6057966",
+          "tool": "checkov",
+          "category": "iac",
+          "severity": "HIGH",
+          "title": "Ensure that respective logs of Amazon Relational Database Service (Amazon RDS) are enabled",
+          "file": "/rds.tf",
+          "line_start": 26,
+          "resource": "aws_db_instance.main"
+        },
+        {
+          "finding_id": "checkov:20a48d2d9745f902",
+          "tool": "checkov",
+          "category": "iac",
+          "severity": "HIGH",
+          "title": "Ensure DB instance gets all minor upgrades automatically",
+          "file": "/rds.tf",
+          "line_start": 26,
+          "resource": "aws_db_instance.main"
+        },
+        {
+          "finding_id": "checkov:b4fc745afb07e82c",
+          "tool": "checkov",
+          "category": "iac",
+          "severity": "HIGH",
+          "title": "Ensure RDS database has IAM authentication enabled",
+          "file": "/rds.tf",
+          "line_start": 26,
+          "resource": "aws_db_instance.main"
+        },
+        {
+          "finding_id": "checkov:58bf1a93f936c822",
+          "tool": "checkov",
+          "category": "iac",
+          "severity": "HIGH",
+          "title": "Ensure the default security group of every VPC restricts all traffic",
+          "file": "/network.tf",
+          "line_start": 5,
+          "resource": "aws_vpc.main"
+        },
+        {
+          "finding_id": "checkov:6010c97eb06b0187",
+          "tool": "checkov",
+          "category": "iac",
+          "severity": "HIGH",
+          "title": "Ensure VPC flow logging is enabled in all VPCs",
+          "file": "/network.tf",
+          "line_start": 5,
+          "resource": "aws_vpc.main"
+        },
+        {
+          "finding_id": "checkov:90340749b5261f65",
+          "tool": "checkov",
+          "category": "iac",
+          "severity": "HIGH",
+          "title": "Ensure that S3 buckets are encrypted with KMS by default",
+          "file": "/s3.tf",
+          "line_start": 1,
+          "resource": "aws_s3_bucket.logs"
+        },
+        {
+          "finding_id": "checkov:c2b4c21d2fed605a",
+          "tool": "checkov",
+          "category": "iac",
+          "severity": "HIGH",
+          "title": "Ensure that S3 buckets are encrypted with KMS by default",
+          "file": "/s3.tf",
+          "line_start": 13,
+          "resource": "aws_s3_bucket.app"
+        },
+        {
+          "finding_id": "checkov:c4b73d346add080f",
+          "tool": "checkov",
+          "category": "iac",
+          "severity": "HIGH",
+          "title": "Ensure Postgres RDS as aws_db_instance has Query Logging enabled",
+          "file": "/rds.tf",
+          "line_start": 26,
+          "resource": "aws_db_instance.main"
+        },
+        {
+          "finding_id": "checkov:740e0c4d6c6bc6ad",
+          "tool": "checkov",
+          "category": "iac",
+          "severity": "HIGH",
+          "title": "Ensure all data stored in the S3 bucket have versioning enabled",
+          "file": "/s3.tf",
+          "line_start": 1,
+          "resource": "aws_s3_bucket.logs"
+        },
+        {
+          "finding_id": "trivy:a681a2bf8a08cefd",
+          "tool": "trivy",
+          "category": "k8s",
+          "severity": "MEDIUM",
+          "title": "Restrict container images to trusted registries",
+          "file": "deploy/deployment.yaml"
+        },
+        {
+          "finding_id": "trivy:3e9c89073befd6c9",
+          "tool": "trivy",
+          "category": "iac",
+          "severity": "MEDIUM",
+          "title": "VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet \"Rejects\" for VPCs.",
+          "file": "infra/network.tf"
+        },
+        {
+          "finding_id": "trivy:097e230fbbffff5b",
+          "tool": "trivy",
+          "category": "iac",
+          "severity": "MEDIUM",
+          "title": "RDS Cluster and RDS instance should have backup retention longer than default 1 day",
+          "file": "infra/rds.tf"
+        },
+        {
+          "finding_id": "trivy:26ce7129a4606eb0",
+          "tool": "trivy",
+          "category": "iac",
+          "severity": "MEDIUM",
+          "title": "RDS IAM Database Authentication Disabled",
+          "file": "infra/rds.tf"
+        },
+        {
+          "finding_id": "trivy:1890e967b2f1250e",
+          "tool": "trivy",
+          "category": "iac",
+          "severity": "MEDIUM",
+          "title": "RDS Deletion Protection Disabled",
+          "file": "infra/rds.tf"
+        },
+        {
+          "finding_id": "trivy:5c78626abfad9b19",
+          "tool": "trivy",
+          "category": "iac",
+          "severity": "MEDIUM",
+          "title": "S3 Data should be versioned",
+          "file": "infra/s3.tf"
+        },
+        {
+          "finding_id": "trivy:2ef6903dba2bbd61",
+          "tool": "trivy",
+          "category": "iac",
+          "severity": "HIGH",
+          "title": "S3 encryption should use Customer Managed Keys",
+          "file": "infra/s3.tf"
+        },
+        {
+          "finding_id": "trivy:2ef6903dba2bbd61",
+          "tool": "trivy",
+          "category": "iac",
+          "severity": "HIGH",
+          "title": "S3 encryption should use Customer Managed Keys",
+          "file": "infra/s3.tf"
+        }
+      ],
+      "policy_engine": "conftest-rego",
+      "tool": "checkov, trivy",
+      "source_locations": [
+        "/rds.tf:26",
+        "/network.tf:5",
+        "/s3.tf:1",
+        "/s3.tf:13",
+        "/deploy/deployment.yaml:1",
+        "deploy/deployment.yaml",
+        "infra/network.tf",
+        "infra/rds.tf",
+        "infra/s3.tf"
+      ]
+    }
+  ],
+  "informational_findings": [],
+  "excepted_findings": [],
+  "expired_exceptions": [],
+  "unused_exceptions": []
+}

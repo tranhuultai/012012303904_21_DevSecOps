@@ -1,0 +1,24 @@
+{
+  "evidence_status": "traceable_single_run",
+  "run_id": "43643156760",
+  "run_attempt": "1",
+  "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43643156760/attempts/1",
+  "commit": "c528708b92a4b3184ff57d7be6984437d1b553c6",
+  "fixture_id": "D13",
+  "cache_mode": "cold",
+  "benchmark_role": "measurement",
+  "scan_execution_mode": "parallel",
+  "runner_os": "Linux",
+  "runner_arch": "X64",
+  "scan_stage_started_at": "2026-11-14T21:30:24Z",
+  "scan_stage_ended_at": "2026-11-14T21:30:56Z",
+  "job_durations_seconds": {
+    "iac": 31,
+    "image": 6,
+    "security-scan": 30
+  },
+  "scan_stage_runner_minutes": 1.117,
+  "parallel_scan_stage_critical_path_seconds": 31,
+  "serial_sum_estimate_seconds": 67,
+  "interpretation": "Observed timings for three scanner jobs in one workflow run. The max is their parallel critical-path estimate; the sum is a serial-work estimate, not a measured serial run. Repeated runs and cache-on/off comparison are still required."
+}

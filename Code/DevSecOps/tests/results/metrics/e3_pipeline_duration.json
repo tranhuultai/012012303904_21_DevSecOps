@@ -1,0 +1,338 @@
+{
+  "experiment": "E3 controlled CI duration",
+  "evidence_status": "complete",
+  "measurement_definition": {
+    "workflow_wall_seconds": "min(job.started_at) to max(job.completed_at) for one workflow_dispatch run",
+    "workflow_runner_minutes": "sum of measured durations for all completed jobs divided by 60",
+    "eligible_completion": "successful workflow, or a complete baseline observation where test/DB/scanner jobs succeeded and the only failed job was G2 gate BLOCK",
+    "scan_stage_wall_seconds": "vulnerability DB preparation start to last completion among DB preparation and the parallel security-scan, iac, and image jobs",
+    "scan_stage_runner_minutes": "sum of vulnerability DB preparation and the three scanner job durations divided by 60",
+    "cache_variable": "actions/setup-python pip cache for pytest/runtime dependencies, Semgrep, and Checkov installations",
+    "execution_mode": "parallel scanner jobs; this experiment does not claim a serial-mode comparison",
+    "warmup": "runs marked benchmark_role=warmup are excluded from all statistics"
+  },
+  "acceptance": {
+    "minimum_runs_per_profile": 5,
+    "same_commit_required": true,
+    "pinned_tool_versions_required": true,
+    "same_trivy_database_snapshot_required": true,
+    "same_grype_database_snapshot_required": true,
+    "same_commit": true,
+    "tool_versions_consistent": true,
+    "enough_repeats": true,
+    "trivy_database_snapshot_consistent": true,
+    "trivy_database_snapshot_id_consistent": true,
+    "grype_database_snapshot_consistent": true,
+    "grype_database_snapshot_id_consistent": true
+  },
+  "profiles": {
+    "cold": {
+      "N": 5,
+      "run_ids": [
+        43740564824,
+        43740783815,
+        43740991455,
+        43741199137,
+        43741402022
+      ],
+      "commits": [
+        "135606475be9d66842121135631d853a63c1e480"
+      ],
+      "tool_version_sets": 1,
+      "tool_version_fingerprints": [
+        "{\"checkov\": \"3.3.22\", \"conftest\": \"0.71.1\", \"gitleaks\": \"8.30.1\", \"grype\": \"0.120.1\", \"semgrep\": \"1.183.0\", \"syft\": \"1.54.1\", \"trivy\": \"0.76.1\"}"
+      ],
+      "trivy_db_snapshots": [
+        "{\"next_update\": \"2026-11-16 12:50:30.599817752 +0000 UTC\", \"updated_at\": \"2026-11-15 12:50:30.599818283 +0000 UTC\", \"version\": \"2\"}"
+      ],
+      "trivy_db_snapshot_ids": [
+        "20261115-v1"
+      ],
+      "grype_db_snapshots": [
+        "{\"built\": \"2026-11-15T06:19:39Z\", \"db_snapshot_id\": \"20261115-v1\", \"from\": \"https://grype.anchore.io/databases/v6/vulnerability-db_v6.1.10_2026-11-15T00:23:02Z_1794723579.tar.zst?checksum=sha256%3A96ada30f3287fd04be595a8f419df98efdf19955e7bfa28eae80ef7c5fe27eb7\", \"grype_version\": \"0.120.1\", \"schema_version\": \"v6.1.10\", \"valid\": true}"
+      ],
+      "grype_db_snapshot_ids": [
+        "20261115-v1"
+      ],
+      "grype_db_observation_count": 5,
+      "expected_baseline_gate_block_runs": 0,
+      "workflow_wall_seconds": {
+        "N": 5,
+        "median": 111.0,
+        "q1": 111.0,
+        "q3": 114.0,
+        "iqr": 3.0,
+        "p90": 115.8
+      },
+      "workflow_runner_minutes": {
+        "N": 5,
+        "median": 3.45,
+        "q1": 3.37,
+        "q3": 3.47,
+        "iqr": 0.1,
+        "p90": 3.5
+      },
+      "scan_stage_wall_seconds": {
+        "N": 5,
+        "median": 87.0,
+        "q1": 87.0,
+        "q3": 89.0,
+        "iqr": 2.0,
+        "p90": 90.2
+      },
+      "scan_stage_runner_minutes": {
+        "N": 5,
+        "median": 2.85,
+        "q1": 2.8,
+        "q3": 2.85,
+        "iqr": 0.05,
+        "p90": 2.86
+      },
+      "per_job_seconds": {
+        "Prepare Trivy and Grype vulnerability DB snapshots": {
+          "N": 5,
+          "median": 33.0,
+          "q1": 27.0,
+          "q3": 33.0,
+          "iqr": 6.0,
+          "p90": 33.0,
+          "total_runs": 5,
+          "skipped_runs": 0
+        },
+        "Run Python tests": {
+          "N": 5,
+          "median": 14.0,
+          "q1": 14.0,
+          "q3": 17.0,
+          "iqr": 3.0,
+          "p90": 17.6,
+          "total_runs": 5,
+          "skipped_runs": 0
+        },
+        "Security scans (collection mode)": {
+          "N": 5,
+          "median": 36.0,
+          "q1": 35.0,
+          "q3": 36.0,
+          "iqr": 1.0,
+          "p90": 37.2,
+          "total_runs": 5,
+          "skipped_runs": 0
+        },
+        "deploy-smoke": {
+          "N": 0,
+          "median": null,
+          "q1": null,
+          "q3": null,
+          "iqr": null,
+          "p90": null,
+          "total_runs": 5,
+          "skipped_runs": 5
+        },
+        "gate (Conftest Rego)": {
+          "N": 5,
+          "median": 21.0,
+          "q1": 18.0,
+          "q3": 22.0,
+          "iqr": 4.0,
+          "p90": 24.4,
+          "total_runs": 5,
+          "skipped_runs": 0
+        },
+        "iac": {
+          "N": 5,
+          "median": 48.0,
+          "q1": 43.0,
+          "q3": 50.0,
+          "iqr": 7.0,
+          "p90": 51.2,
+          "total_runs": 5,
+          "skipped_runs": 0
+        },
+        "image": {
+          "N": 5,
+          "median": 56.0,
+          "q1": 54.0,
+          "q3": 56.0,
+          "iqr": 2.0,
+          "p90": 58.4,
+          "total_runs": 5,
+          "skipped_runs": 0
+        },
+        "release": {
+          "N": 0,
+          "median": null,
+          "q1": null,
+          "q3": null,
+          "iqr": null,
+          "p90": null,
+          "total_runs": 5,
+          "skipped_runs": 5
+        }
+      }
+    },
+    "warm": {
+      "N": 5,
+      "run_ids": [
+        43741626095,
+        43741895637,
+        43742113653,
+        43742355765,
+        43742614427
+      ],
+      "commits": [
+        "135606475be9d66842121135631d853a63c1e480"
+      ],
+      "tool_version_sets": 1,
+      "tool_version_fingerprints": [
+        "{\"checkov\": \"3.3.22\", \"conftest\": \"0.71.1\", \"gitleaks\": \"8.30.1\", \"grype\": \"0.120.1\", \"semgrep\": \"1.183.0\", \"syft\": \"1.54.1\", \"trivy\": \"0.76.1\"}"
+      ],
+      "trivy_db_snapshots": [
+        "{\"next_update\": \"2026-11-16 12:50:30.599817752 +0000 UTC\", \"updated_at\": \"2026-11-15 12:50:30.599818283 +0000 UTC\", \"version\": \"2\"}"
+      ],
+      "trivy_db_snapshot_ids": [
+        "20261115-v1"
+      ],
+      "grype_db_snapshots": [
+        "{\"built\": \"2026-11-15T06:19:39Z\", \"db_snapshot_id\": \"20261115-v1\", \"from\": \"https://grype.anchore.io/databases/v6/vulnerability-db_v6.1.10_2026-11-15T00:23:02Z_1794723579.tar.zst?checksum=sha256%3A96ada30f3287fd04be595a8f419df98efdf19955e7bfa28eae80ef7c5fe27eb7\", \"grype_version\": \"0.120.1\", \"schema_version\": \"v6.1.10\", \"valid\": true}"
+      ],
+      "grype_db_snapshot_ids": [
+        "20261115-v1"
+      ],
+      "grype_db_observation_count": 5,
+      "expected_baseline_gate_block_runs": 0,
+      "workflow_wall_seconds": {
+        "N": 5,
+        "median": 125.0,
+        "q1": 116.0,
+        "q3": 126.0,
+        "iqr": 10.0,
+        "p90": 126.6
+      },
+      "workflow_runner_minutes": {
+        "N": 5,
+        "median": 3.63,
+        "q1": 3.53,
+        "q3": 3.67,
+        "iqr": 0.13,
+        "p90": 3.69
+      },
+      "scan_stage_wall_seconds": {
+        "N": 5,
+        "median": 97.0,
+        "q1": 97.0,
+        "q3": 106.0,
+        "iqr": 9.0,
+        "p90": 107.2
+      },
+      "scan_stage_runner_minutes": {
+        "N": 5,
+        "median": 3.02,
+        "q1": 2.77,
+        "q3": 3.08,
+        "iqr": 0.32,
+        "p90": 3.08
+      },
+      "per_job_seconds": {
+        "Prepare Trivy and Grype vulnerability DB snapshots": {
+          "N": 5,
+          "median": 30.0,
+          "q1": 28.0,
+          "q3": 32.0,
+          "iqr": 4.0,
+          "p90": 33.2,
+          "total_runs": 5,
+          "skipped_runs": 0
+        },
+        "Run Python tests": {
+          "N": 5,
+          "median": 19.0,
+          "q1": 18.0,
+          "q3": 20.0,
+          "iqr": 2.0,
+          "p90": 20.0,
+          "total_runs": 5,
+          "skipped_runs": 0
+        },
+        "Security scans (collection mode)": {
+          "N": 5,
+          "median": 33.0,
+          "q1": 32.0,
+          "q3": 34.0,
+          "iqr": 2.0,
+          "p90": 34.6,
+          "total_runs": 5,
+          "skipped_runs": 0
+        },
+        "deploy-smoke": {
+          "N": 0,
+          "median": null,
+          "q1": null,
+          "q3": null,
+          "iqr": null,
+          "p90": null,
+          "total_runs": 5,
+          "skipped_runs": 5
+        },
+        "gate (Conftest Rego)": {
+          "N": 5,
+          "median": 17.0,
+          "q1": 17.0,
+          "q3": 18.0,
+          "iqr": 1.0,
+          "p90": 22.8,
+          "total_runs": 5,
+          "skipped_runs": 0
+        },
+        "iac": {
+          "N": 5,
+          "median": 41.0,
+          "q1": 39.0,
+          "q3": 52.0,
+          "iqr": 13.0,
+          "p90": 53.8,
+          "total_runs": 5,
+          "skipped_runs": 0
+        },
+        "image": {
+          "N": 5,
+          "median": 67.0,
+          "q1": 65.0,
+          "q3": 70.0,
+          "iqr": 5.0,
+          "p90": 72.4,
+          "total_runs": 5,
+          "skipped_runs": 0
+        },
+        "release": {
+          "N": 0,
+          "median": null,
+          "q1": null,
+          "q3": null,
+          "iqr": null,
+          "p90": null,
+          "total_runs": 5,
+          "skipped_runs": 5
+        }
+      }
+    }
+  },
+  "cache_comparison": {
+    "warm_minus_cold_seconds": 14.0,
+    "warm_change_percent": 12.61,
+    "interpretation": "profile pip cache warm có wall median chậm hơn profile cold"
+  },
+  "excluded_runs": [
+    {
+      "run_id": 43740343275,
+      "reason": "warm-up run"
+    }
+  ],
+  "limitations": [
+    "Cache comparison covers pip package downloads for the test job, Semgrep, and Checkov. Separate versioned immutable Trivy and Grype vulnerability DB caches are shared by both profiles and excluded from the pip-cache variable.",
+    "GitHub-hosted runner hardware and external network conditions can vary between runs; report the observed spread.",
+    "Wall time is the measured workflow job interval for the dispatch run; release and kind deploy-smoke are skipped on workflow_dispatch.",
+    "A run with a blocked baseline gate is retained only when tests, DB preparation, and all scanner jobs succeeded and the gate is the sole failed job; other workflow failures are excluded.",
+    "A complete cache comparison requires one shared Trivy and Grype vulnerability DB snapshot across both profiles; the workflow records both snapshot keys and runtime DB metadata."
+  ]
+}

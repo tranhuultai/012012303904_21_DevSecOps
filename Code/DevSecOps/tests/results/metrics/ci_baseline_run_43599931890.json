@@ -1,0 +1,301 @@
+{
+  "schema_version": 1,
+  "evidence_status": "artifact_observed_before_local_iac_warning_policy_change",
+  "run": {
+    "run_id": "43599931890",
+    "attempt": "1",
+    "url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43599931890/attempts/1",
+    "commit": "9ca131a678017e89d804033c3d6b75e0f2c0f366",
+    "ref": "refs/heads/main",
+    "event": "push",
+    "recorded_at": "2026-11-14T13:30:47.112729Z",
+    "fixture_id": "baseline",
+    "sample_type": "repository-baseline",
+    "cache_mode": "cold",
+    "scan_execution_mode": "parallel",
+    "evidence_status": "complete"
+  },
+  "tools": {
+    "semgrep": "1.183.0",
+    "gitleaks": "8.30.1",
+    "trivy": "0.76.1",
+    "checkov": "3.3.22",
+    "syft": "1.54.1",
+    "grype": "0.120.1",
+    "conftest": "0.71.1"
+  },
+  "normalized_findings": {
+    "count": 292,
+    "by_tool": {
+      "checkov": 77,
+      "grype": 204,
+      "trivy": 11
+    },
+    "by_severity": {
+      "HIGH": 138,
+      "INFO": 65,
+      "LOW": 20,
+      "MEDIUM": 69
+    }
+  },
+  "gate": {
+    "policy": "g2",
+    "decision": "WARN",
+    "passed": true,
+    "blockers": 0,
+    "warnings": 19,
+    "warning_correlation": {
+      "matched_policy_warnings": 19,
+      "unmatched_policy_warnings": 0,
+      "matched_source_findings": 61
+    },
+    "warning_messages": [
+      {
+        "severity": "HIGH",
+        "message": "WARN HIGH chưa có bản vá: CVE-2025-69720",
+        "affected_findings": 4
+      },
+      {
+        "severity": "HIGH",
+        "message": "WARN HIGH chưa có bản vá: CVE-2026-102010",
+        "affected_findings": 3
+      },
+      {
+        "severity": "HIGH",
+        "message": "WARN HIGH chưa có bản vá: CVE-2026-119373",
+        "affected_findings": 1
+      },
+      {
+        "severity": "HIGH",
+        "message": "WARN HIGH chưa có bản vá: CVE-2026-119374",
+        "affected_findings": 1
+      },
+      {
+        "severity": "HIGH",
+        "message": "WARN HIGH chưa có bản vá: CVE-2026-119379",
+        "affected_findings": 1
+      },
+      {
+        "severity": "HIGH",
+        "message": "WARN HIGH chưa có bản vá: CVE-2026-19499",
+        "affected_findings": 2
+      },
+      {
+        "severity": "HIGH",
+        "message": "WARN HIGH chưa có bản vá: CVE-2026-5435",
+        "affected_findings": 2
+      },
+      {
+        "severity": "HIGH",
+        "message": "WARN HIGH chưa có bản vá: CVE-2026-54369",
+        "affected_findings": 1
+      },
+      {
+        "severity": "HIGH",
+        "message": "WARN HIGH chưa có bản vá: CVE-2026-54370",
+        "affected_findings": 1
+      },
+      {
+        "severity": "HIGH",
+        "message": "WARN HIGH chưa có bản vá: CVE-2026-76642",
+        "affected_findings": 9
+      },
+      {
+        "severity": "HIGH",
+        "message": "WARN HIGH chưa có bản vá: CVE-2026-78408",
+        "affected_findings": 9
+      },
+      {
+        "severity": "HIGH",
+        "message": "WARN HIGH chưa có bản vá: CVE-2026-78409",
+        "affected_findings": 9
+      },
+      {
+        "severity": "HIGH",
+        "message": "WARN HIGH chưa có bản vá: CVE-2026-78410",
+        "affected_findings": 9
+      },
+      {
+        "severity": "HIGH",
+        "message": "WARN HIGH chưa có bản vá: CVE-2026-82560",
+        "affected_findings": 1
+      },
+      {
+        "severity": "HIGH",
+        "message": "WARN HIGH chưa có bản vá: CVE-2026-84243",
+        "affected_findings": 2
+      },
+      {
+        "severity": "HIGH",
+        "message": "WARN HIGH chưa có bản vá: CVE-2026-9538",
+        "affected_findings": 1
+      },
+      {
+        "severity": "HIGH",
+        "message": "WARN HIGH chưa có bản vá: CVE-2026-95619",
+        "affected_findings": 3
+      },
+      {
+        "severity": "MEDIUM",
+        "message": "WARN MEDIUM có bản vá: CVE-2025-15367",
+        "affected_findings": 1
+      },
+      {
+        "severity": "MEDIUM",
+        "message": "WARN MEDIUM có bản vá: CVE-2026-116566",
+        "affected_findings": 1
+      }
+    ]
+  },
+  "iac": {
+    "trivy_misconfigurations": 11,
+    "trivy_by_severity": {
+      "CRITICAL": 0,
+      "HIGH": 2,
+      "MEDIUM": 6,
+      "LOW": 3,
+      "UNKNOWN": 0
+    },
+    "trivy_findings": [
+      {
+        "rule_id": "KSV-0110",
+        "severity": "LOW",
+        "title": "Workloads in the default namespace"
+      },
+      {
+        "rule_id": "KSV-0125",
+        "severity": "MEDIUM",
+        "title": "Restrict container images to trusted registries"
+      },
+      {
+        "rule_id": "AWS-0178",
+        "severity": "MEDIUM",
+        "title": "VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet \"Rejects\" for VPCs."
+      },
+      {
+        "rule_id": "AWS-0077",
+        "severity": "MEDIUM",
+        "title": "RDS Cluster and RDS instance should have backup retention longer than default 1 day"
+      },
+      {
+        "rule_id": "AWS-0133",
+        "severity": "LOW",
+        "title": "Enable Performance Insights to detect potential problems"
+      },
+      {
+        "rule_id": "AWS-0176",
+        "severity": "MEDIUM",
+        "title": "RDS IAM Database Authentication Disabled"
+      },
+      {
+        "rule_id": "AWS-0177",
+        "severity": "MEDIUM",
+        "title": "RDS Deletion Protection Disabled"
+      },
+      {
+        "rule_id": "AWS-0089",
+        "severity": "LOW",
+        "title": "S3 Bucket Logging"
+      },
+      {
+        "rule_id": "AWS-0090",
+        "severity": "MEDIUM",
+        "title": "S3 Data should be versioned"
+      },
+      {
+        "rule_id": "AWS-0132",
+        "severity": "HIGH",
+        "title": "S3 encryption should use Customer Managed Keys"
+      },
+      {
+        "rule_id": "AWS-0132",
+        "severity": "HIGH",
+        "title": "S3 encryption should use Customer Managed Keys"
+      }
+    ],
+    "checkov_reports": 5,
+    "checkov_failed": 77,
+    "checkov_passed": 425,
+    "egress_controls": {
+      "CKV_AWS_382_checkov": 0,
+      "AWS-0104_trivy": 0
+    }
+  },
+  "image": {
+    "trivy_findings": 206,
+    "trivy_by_severity": {
+      "CRITICAL": 0,
+      "HIGH": 47,
+      "MEDIUM": 89,
+      "LOW": 65,
+      "UNKNOWN": 5
+    },
+    "trivy_fixable_high_critical": 0,
+    "grype_matches": 204,
+    "grype_by_severity": {
+      "Critical": 0,
+      "High": 59,
+      "Medium": 63,
+      "Low": 17,
+      "Negligible": 49,
+      "Unknown": 16
+    },
+    "grype_fixable_high_critical": 0,
+    "scan_image_reference": "devsecops-app:scan",
+    "scan_image_id": "sha256:351ec8b0d800df359b851f16c45b07b683a48f6877d0bcb7e5e65d7eee430262"
+  },
+  "sbom": {
+    "scan_components": 2856,
+    "release_components": 2856,
+    "component_sets_match_by_purl": true,
+    "scan_image": "devsecops-app",
+    "release_image": "ghcr.io/gialong611/devsecops",
+    "release_digest": "sha256:655ac2d5f891848311013ed9b7e859f8bff78c21af1e2d567146f9df1eff04c9",
+    "scan_digest_linked": false
+  },
+  "timing": {
+    "evidence_status": "traceable_single_run",
+    "run_id": "43599931890",
+    "run_attempt": "1",
+    "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43599931890/attempts/1",
+    "commit": "9ca131a678017e89d804033c3d6b75e0f2c0f366",
+    "fixture_id": "baseline",
+    "cache_mode": "cold",
+    "benchmark_role": "measurement",
+    "scan_execution_mode": "parallel",
+    "runner_os": "Linux",
+    "runner_arch": "X64",
+    "scan_stage_started_at": "2026-11-14T13:28:35Z",
+    "scan_stage_ended_at": "2026-11-14T13:30:32Z",
+    "job_durations_seconds": {
+      "iac": 34,
+      "image": 117,
+      "security-scan": 30
+    },
+    "scan_stage_runner_minutes": 3.017,
+    "parallel_scan_stage_critical_path_seconds": 117,
+    "serial_sum_estimate_seconds": 181,
+    "interpretation": "Observed timings for three scanner jobs in one workflow run. The max is their parallel critical-path estimate; the sum is a serial-work estimate, not a measured serial run. Repeated runs and cache-on/off comparison are still required."
+  },
+  "e4": {
+    "requested": false,
+    "evidence_status": "not_requested",
+    "interpretation": "Not an E4 before/after measurement."
+  },
+  "experiment_limits": [
+    "Only one baseline observation; no live D/C/N matrix.",
+    "E1/E2 policy replay artifacts are not live scanner detection metrics.",
+    "E3 lacks repeated cold/warm runs on the same commit.",
+    "This artifact predates the local aggregated IaC warning policy."
+  ],
+  "artifact_sources": [
+    "D:\\Downloads\\experiment-baseline\\experiment\\observation.json",
+    "D:\\Downloads\\report-gate\\gate_report.json",
+    "D:\\Downloads\\report-iac\\trivy-config.json",
+    "D:\\Downloads\\report-iac\\checkov.json",
+    "D:\\Downloads\\report-image\\trivy-image.json",
+    "D:\\Downloads\\report-image\\grype-image.json",
+    "D:\\Downloads\\report-image\\sbom.cdx.json",
+    "D:\\Downloads\\sbom\\sbom.cdx.json"
+  ]
+}

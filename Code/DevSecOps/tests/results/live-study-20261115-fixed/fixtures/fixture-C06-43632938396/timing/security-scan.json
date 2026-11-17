@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "job": "security-scan",
+  "run_id": "43632938396",
+  "run_attempt": "1",
+  "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43632938396/attempts/1",
+  "commit": "b79a12a6a3e8c291ac4f2050db6946d841f2116a",
+  "ref": "refs/heads/codex/fixture-patch-refresh",
+  "event": "workflow_dispatch",
+  "fixture_id": "C06",
+  "cache_mode": "cold",
+  "benchmark_role": "measurement",
+  "scan_execution_mode": "parallel",
+  "started_at": "2026-11-14T19:35:43Z",
+  "ended_at": "2026-11-14T19:36:23Z",
+  "duration_seconds": 40,
+  "runner_os": "Linux",
+  "runner_arch": "X64"
+}

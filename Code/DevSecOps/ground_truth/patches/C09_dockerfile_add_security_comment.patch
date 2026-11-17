@@ -1,12 +1,12 @@
 --- a/Code/DevSecOps/Dockerfile
 +++ b/Code/DevSecOps/Dockerfile
-@@ -13,6 +13,9 @@
+@@ -27,6 +27,9 @@
      PYTHONUNBUFFERED=1 \
      PATH="/opt/venv/bin:$PATH"
  
 +LABEL maintainer="gialong611" \
-+      org.opencontainers.image.source="https://github.com/tranhuultai/012012303904_21_DevSecOps"
++      org.opencontainers.image.source="https://github.com/gialong611/DevSecOps_Project"
 +
  WORKDIR /app
  COPY --from=builder /opt/venv /opt/venv
- COPY src/app ./app
+ # pip chỉ cần lúc build. Bỏ package manager khỏi runtime để loại các bản vendored

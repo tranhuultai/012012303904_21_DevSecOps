@@ -1,0 +1,288 @@
+{
+  "gate_version": "1.0",
+  "engine": "conftest-rego",
+  "policy_profile": "g1",
+  "decision": "BLOCK",
+  "passed": false,
+  "summary": {
+    "total_findings": 88,
+    "blockers": 29,
+    "warnings": 0,
+    "informational": 0,
+    "excepted": 0,
+    "expired_exceptions": 0
+  },
+  "warning_correlation": {
+    "matched_policy_warnings": 0,
+    "unmatched_policy_warnings": 0,
+    "matched_source_findings": 0
+  },
+  "blockers": [
+    {
+      "finding_id": "deny:0",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: AWS-0132 tại infra/s3.tf",
+      "message": "G1 chặn HIGH: AWS-0132 tại infra/s3.tf",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:1",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CKV2_AWS_11 tại /network.tf",
+      "message": "G1 chặn HIGH: CKV2_AWS_11 tại /network.tf",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:2",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CKV2_AWS_12 tại /network.tf",
+      "message": "G1 chặn HIGH: CKV2_AWS_12 tại /network.tf",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:3",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CKV2_AWS_30 tại /rds.tf",
+      "message": "G1 chặn HIGH: CKV2_AWS_30 tại /rds.tf",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:4",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CKV2_AWS_5 tại /security_groups.tf",
+      "message": "G1 chặn HIGH: CKV2_AWS_5 tại /security_groups.tf",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:5",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CKV2_AWS_60 tại /rds.tf",
+      "message": "G1 chặn HIGH: CKV2_AWS_60 tại /rds.tf",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:6",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CKV2_AWS_61 tại /s3.tf",
+      "message": "G1 chặn HIGH: CKV2_AWS_61 tại /s3.tf",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:7",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CKV2_AWS_62 tại /s3.tf",
+      "message": "G1 chặn HIGH: CKV2_AWS_62 tại /s3.tf",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:8",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CKV_AWS_118 tại /rds.tf",
+      "message": "G1 chặn HIGH: CKV_AWS_118 tại /rds.tf",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:9",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CKV_AWS_129 tại /rds.tf",
+      "message": "G1 chặn HIGH: CKV_AWS_129 tại /rds.tf",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:10",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CKV_AWS_144 tại /s3.tf",
+      "message": "G1 chặn HIGH: CKV_AWS_144 tại /s3.tf",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:11",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CKV_AWS_145 tại /s3.tf",
+      "message": "G1 chặn HIGH: CKV_AWS_145 tại /s3.tf",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:12",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CKV_AWS_157 tại /rds.tf",
+      "message": "G1 chặn HIGH: CKV_AWS_157 tại /rds.tf",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:13",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CKV_AWS_161 tại /rds.tf",
+      "message": "G1 chặn HIGH: CKV_AWS_161 tại /rds.tf",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:14",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CKV_AWS_21 tại /s3.tf",
+      "message": "G1 chặn HIGH: CKV_AWS_21 tại /s3.tf",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:15",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CKV_AWS_226 tại /rds.tf",
+      "message": "G1 chặn HIGH: CKV_AWS_226 tại /rds.tf",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:16",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CKV_AWS_293 tại /rds.tf",
+      "message": "G1 chặn HIGH: CKV_AWS_293 tại /rds.tf",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:17",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CKV_AWS_353 tại /rds.tf",
+      "message": "G1 chặn HIGH: CKV_AWS_353 tại /rds.tf",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:18",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CKV_AWS_394 tại /network.tf",
+      "message": "G1 chặn HIGH: CKV_AWS_394 tại /network.tf",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:19",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CKV_K8S_21 tại /deploy/deployment.yaml",
+      "message": "G1 chặn HIGH: CKV_K8S_21 tại /deploy/deployment.yaml",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:20",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CKV_K8S_21 tại /deploy/service.yaml",
+      "message": "G1 chặn HIGH: CKV_K8S_21 tại /deploy/service.yaml",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:21",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CKV_K8S_21 tại /deploy/serviceaccount.yaml",
+      "message": "G1 chặn HIGH: CKV_K8S_21 tại /deploy/serviceaccount.yaml",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:22",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CKV_K8S_35 tại /deploy/deployment.yaml",
+      "message": "G1 chặn HIGH: CKV_K8S_35 tại /deploy/deployment.yaml",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:23",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn MEDIUM: AWS-0077 tại infra/rds.tf",
+      "message": "G1 chặn MEDIUM: AWS-0077 tại infra/rds.tf",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:24",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn MEDIUM: AWS-0090 tại infra/s3.tf",
+      "message": "G1 chặn MEDIUM: AWS-0090 tại infra/s3.tf",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:25",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn MEDIUM: AWS-0176 tại infra/rds.tf",
+      "message": "G1 chặn MEDIUM: AWS-0176 tại infra/rds.tf",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:26",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn MEDIUM: AWS-0177 tại infra/rds.tf",
+      "message": "G1 chặn MEDIUM: AWS-0177 tại infra/rds.tf",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:27",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn MEDIUM: AWS-0178 tại infra/network.tf",
+      "message": "G1 chặn MEDIUM: AWS-0178 tại infra/network.tf",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:28",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn MEDIUM: KSV-0125 tại deploy/deployment.yaml",
+      "message": "G1 chặn MEDIUM: KSV-0125 tại deploy/deployment.yaml",
+      "file": "gate_input.json",
+      "status": "open"
+    }
+  ],
+  "warnings": [],
+  "informational_findings": [],
+  "excepted_findings": [],
+  "expired_exceptions": [],
+  "unused_exceptions": []
+}

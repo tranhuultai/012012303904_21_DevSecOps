@@ -2,154 +2,155 @@
 
 **Tên đề tài:** Xây dựng đường ống DevSecOps phát hiện cấu hình sai và lỗ hổng trước triển khai
 
-**Câu hỏi nghiên cứu:** Những kiểm soát tự động nào nên chặn bản phát hành, và ngưỡng nào chỉ nên
-cảnh báo để không làm tê liệt quy trình phát triển?
+## Giới thiệu
 
-## Tổng quan
+Đề tài xây dựng một pipeline DevSecOps trên GitHub Actions nhằm phát hiện cấu hình sai và lỗ hổng trước khi triển khai.
 
-Pipeline GitHub Actions chạy 5 lớp kiểm tra (SAST, secret, SCA, IaC, container image), chuẩn hóa kết
-quả về một schema chung, làm giàu bằng CISA KEV và FIRST EPSS, rồi chấm bằng security gate viết bằng
-Rego (Conftest). Ba chính sách được so sánh trên cùng bộ findings:
+Pipeline gồm 5 lớp kiểm tra:
 
-| Chính sách | Hành vi |
+- SAST
+- Secret scanning
+- SCA
+- IaC scanning
+- Container image scanning
+
+Kết quả từ các công cụ được chuẩn hóa và đưa vào Security Gate. Gate quyết định `BLOCK`, `WARN` hoặc `INFO` theo các chính sách G0, G1 và G2.
+
+## Công cụ
+
+| Thành phần | Công cụ |
 | --- | --- |
-| G0 | Chỉ báo cáo, không chặn (mốc đo nhiễu) |
-| G1 | Chặn mọi finding từ MEDIUM trở lên |
-| G2 | Chặn secret, CVE thuộc KEV hoặc có EPSS ≥ 0,10, CVE CRITICAL/HIGH có bản vá, cấu hình thuộc danh mục kiểm soát tác động cao, SAST CRITICAL/HIGH; finding khác từ MEDIUM trở lên chỉ cảnh báo |
+| CI/CD | GitHub Actions |
+| SAST | Semgrep |
+| Secret scanning | Gitleaks |
+| SCA | Trivy, Grype |
+| IaC scanning | Checkov, Trivy |
+| Container image | Trivy, Syft, Grype |
+| Policy | Conftest / Rego |
+| Image signing | Cosign |
+| Deploy test | kind |
 
-Ngoại lệ (`Code/DevSecOps/security/exceptions.yaml`) bắt buộc có chủ sở hữu, người duyệt khác chủ
-sở hữu, lý do và ngày hết hạn trong trần theo mức độ (CRITICAL 7, HIGH 30, MEDIUM/LOW 90 ngày); ngoại
-lệ hợp lệ miễn được mọi luật chặn của G2 trừ secret. Pull request được chấm theo chế độ delta (chỉ
-finding mới so với lần quét gần nhất trên `main`). Job `gate` vẫn chạy và báo đỏ khi một job quét lỗi;
-`release` chỉ chạy khi `test` và `gate` đạt.
+## Thực nghiệm
 
-| Lớp | Công cụ |
-| --- | --- |
-| SAST | Semgrep (luật tự viết `rules/semgrep` và bộ luật registry `p/python`) |
-| Secret | Gitleaks |
-| SCA | Trivy (filesystem) |
-| IaC, Kubernetes, Dockerfile, workflow | Checkov, Trivy config, Conftest (`rules/conftest`) |
-| Container image | Trivy image, Syft (SBOM), Grype |
-| Gate | Conftest, OPA Rego v1 (`policy/g0`, `g1`, `g2`) |
-| Chuỗi cung ứng | Cosign keyless, GitHub attestation (SLSA provenance), GHCR theo digest |
-| Triển khai thử | kind, `cosign verify` trước khi deploy |
+Bộ dữ liệu thực nghiệm gồm:
 
-Phiên bản công cụ và SHA của GitHub Action: `Extra/TOOL_VERSIONS.md`.
+- 28 lỗi gieo cài
+- 8 mẫu đối chứng
+- 10 thay đổi sạch
+
+Các thực nghiệm:
+
+- **E1:** Đánh giá khả năng phát hiện
+- **E2:** So sánh chính sách G0, G1 và G2
+- **E3:** Đánh giá thời gian pipeline
+- **E4:** Đánh giá ảnh hưởng của việc khắc phục đến image và SBOM
+
+### Kết quả thực nghiệm live mới nhất
+
+Bộ E1–E4 được đo trên commit `135606475be9d66842121135631d853a63c1e480` và
+được lưu tại
+[`Code/DevSecOps/tests/results/metrics/live-evidence-2026-11-16/`](Code/DevSecOps/tests/results/metrics/live-evidence-2026-11-16/README.md).
+
+| Thí nghiệm | Kết quả |
+|---|---|
+| E1 – scanner | 28/28 lỗi gieo cài có finding đúng tool/rule; 0/10 thay đổi sạch và 0/8 negative control có finding theo rule đích. |
+| E2 – G1/G2 | G1: TP/FN/FP/TN = 28/0/0/10, target match 27/28, false-block N 1/8. G2: 23/0/0/15, target match 22/23, false-block N 0/8. G2 đánh WARN cho 5 lỗi được policy xếp dưới ngưỡng BLOCK. |
+| E3 – cache pip | 5 lượt mỗi profile; wall median 111s cold, 125s warm (warm +14s / 12,61%); IQR 3s/10s; tổng runner-minutes median 3,45/3,63. Scanner vẫn chạy song song. |
+| E4 – image/SBOM | Trivy 4.486 → 206 bản ghi lỗ hổng (-95,4%); CRITICAL 18 → 0; SBOM 22.943 → 2.856 thành phần (-87,6%). Cùng Python 3.13.18, Debian 13.7, amd64, Trivy 0.76.1 và DB snapshot. |
+
+Các số E4 `18 → 0 CRITICAL` lấy từ cặp raw report before/after của cùng run
+E4, không phải từ một report image đơn lẻ. Image được scan local và chưa có
+registry manifest digest; T0 KEV/EPSS là mô phỏng. E1/E2 phản ánh fixture đã
+gieo cài, E3 chỉ thay đổi pip cache; không suy rộng các kết quả này thành tỷ lệ
+production hoặc kết luận cache luôn làm chậm pipeline. Xem các giới hạn và
+đường dẫn run trong `PROJECT_COMPLETION.md` và thư mục evidence.
+
+### Gate trên PR và bảo vệ nhánh
+
+Các lượt CI trên nhánh PR chứng minh gate G2 chặn lỗi D01 và pass sau khi hoàn
+nguyên lỗi. Ruleset **Protect main** hiện active trên `main`, yêu cầu PR và sáu
+required checks:
+`Prepare Trivy and Grype vulnerability DB snapshots`, `Run Python tests`,
+`Security scans (collection mode)`, `iac`, `image`, `gate (Conftest Rego)`.
+Lượt CI cuối có sáu check pass, nhưng PR #1 merge trước thời điểm ruleset được
+tạo; cần một PR mới sau khi bật ruleset để chứng minh chặn merge thực tế. Cấu
+hình yêu cầu 0 review và không bắt buộc nhánh cập nhật trước khi merge; chi tiết ở
+[`PR_GATE_EVIDENCE.md`](Code/DevSecOps/tests/results/metrics/live-evidence-2026-11-16/PR_GATE_EVIDENCE.md).
+
+Quy trình thu thập/tổng hợp xem tại `Code/DevSecOps/tests/README.md`; tự đánh giá
+mức hoàn thiện xem tại `PROJECT_COMPLETION.md`.
 
 ## Kiến trúc pipeline
 
 ```mermaid
 flowchart LR
-    PR[Pull request / push main] --> T[test: pytest]
-    PR --> S[security-scan: Semgrep, Gitleaks, Trivy fs, Conftest workflow]
-    PR --> I[iac: Checkov terraform/k8s, dockerfile, github_actions; Trivy config]
-    PR --> C[image: build, Trivy image, Syft SBOM, Grype]
-    S --> G
-    I --> G
-    C --> G
-    subgraph G[gate]
-      V[conftest verify g0/g1/g2] --> N[chuẩn hóa findings theo schema]
-      N --> K[làm giàu KEV CISA, EPSS FIRST]
-      K --> D[PR: lọc delta so với main]
-      D --> P[Conftest G2 + ngoại lệ có hạn]
-      P --> M[gate report, tóm tắt PR]
-    end
-    T --> R[release: push GHCR theo digest, SBOM, provenance, ký Cosign]
-    P --> R
-    R --> Y[deploy-smoke: cosign verify, kind, /health]
+    A[Push / Pull Request / workflow_dispatch] --> T[Python tests]
+    A --> S[SAST: Semgrep<br/>Secret: Gitleaks<br/>SCA: Trivy]
+    A --> I[IaC: Checkov + Trivy]
+    A --> C[Container: Trivy + Syft + Grype<br/>E4 before/after]
+    S --> R[Raw JSON reports]
+    I --> R
+    C --> R
+    R --> N[Normalize findings<br/>validate schema]
+    N --> E[Enrich KEV / EPSS<br/>fix availability / confidence]
+    E --> G[Build gate input<br/>apply timed exceptions]
+    G --> P[Conftest / Rego<br/>G0, G1, G2]
+    P --> O[Gate report + PR summary<br/>traceable observation]
+    T --> Q[Release]
+    P --> Q
+    Q --> B[Build and push by digest<br/>SBOM + provenance + Cosign signature]
+    B --> D[Verify signature<br/>kind deploy smoke + /health]
 ```
 
-Ranh giới tin cậy: runner GitHub-hosted (mã và báo cáo), GHCR (image theo digest), Sigstore (Fulcio
-cấp chứng chỉ từ OIDC của workflow, Rekor lưu bản ghi chữ ký). Mỗi job chỉ xin quyền cần thiết; mọi
-action ghim SHA 40 ký tự, binary tải về được kiểm checksum.
-
-## Thực nghiệm
-
-| Mã | Câu hỏi | Workflow / script |
-| --- | --- | --- |
-| E1 | Mỗi công cụ bắt được bao nhiêu lỗi gieo cài, báo nhầm bao nhiêu | `.github/workflows/experiments.yml` (ma trận 47 mẫu) |
-| E2 | G0/G1/G2 ở chế độ full và delta chặn đúng, chặn nhầm ra sao | cùng run E1, `tests/eval_policies.py` chạy Conftest thật |
-| E3 | Cache và chạy song song rút ngắn pipeline bao nhiêu | `.github/workflows/e3-orchestrate.yml` gọi `e3-timing.yml` |
-| E4 | Image trước/sau khắc phục khác nhau thế nào (SBOM, CVE, KEV) | job `e4-image` trong `experiments.yml` |
-
-Bộ đáp án (`Code/DevSecOps/ground_truth/`): 28 lỗi gieo cài D01–D28, 8 mẫu đối chứng N01–N08,
-10 thay đổi sạch C01–C10, mỗi mẫu là một patch áp độc lập trên cùng baseline. Rule ID chấp nhận,
-tệp đích, lớp phát hiện, tầng G2 kỳ vọng và cách sửa nằm trong `ground_truth.csv`; bộ đáp án và
-giả thuyết H1–H4 (`Code/DevSecOps/tests/README.md`) được đóng băng ở tag `gt-v1` trước lần chạy chính thức.
-
-Dữ liệu thô của mỗi lần chạy nằm ở `Code/DevSecOps/tests/results/raw/exp_<ngày>_<run_id>/` và
-`e3_<ngày>_<run_id>/` (kèm URL run GitHub Actions); bảng, biểu đồ và `so_lieu_bao_cao.csv` sinh lại bằng
-`python Code/DevSecOps/tests/analyze_results.py` vào `tests/results/metrics/` và `tests/results/figures/`.
-
-## Minh chứng gate trên pull request
-
-[PR #21](https://github.com/tranhuultai/012012303904_21_DevSecOps/pull/21) thêm luật mở cổng 22 cho `0.0.0.0/0` vào `infra/security_groups.tf`: gate G2
-(chế độ delta) trả BLOCK vì `CKV_AWS_24` ([run 41699096052](https://github.com/tranhuultai/012012303904_21_DevSecOps/actions/runs/41699096052)). Commit sửa
-gỡ luật đó và gate trả PASS ([run 41699668185](https://github.com/tranhuultai/012012303904_21_DevSecOps/actions/runs/41699668185)). Báo cáo gate của hai run
-nằm ở `Code/DevSecOps/tests/results/raw/demo_20261103_pr21/`.
-
-## Tái lập
-
-Yêu cầu: Python 3.13, Git, và các công cụ trong `Extra/TOOL_VERSIONS.md` nếu muốn quét tại máy.
-
-```bash
-# Môi trường và kiểm thử
-python -m pip install -r requirements.txt
-python -m pytest -q Code/DevSecOps/src/test Code/DevSecOps/tests
-for g in g0 g1 g2; do conftest verify -p Code/DevSecOps/policy/$g; done
-conftest verify -p Code/DevSecOps/rules/conftest
-for p in Code/DevSecOps/ground_truth/patches/*.patch; do git apply --check "$p"; done
-
-# Chạy thực nghiệm trên GitHub Actions
-gh workflow run experiments.yml -f gt_ref=gt-v1
-gh workflow run e3-orchestrate.yml -f reps=6
-
-# Tạo lại bảng, biểu đồ và số liệu báo cáo từ dữ liệu thô
-python Code/DevSecOps/tests/analyze_results.py
-```
-
-Terraform trong `infra/` chỉ dùng để quét tĩnh (`terraform init -backend=false` và `validate`), không
-`apply`. Secret trong repo đều là giá trị giả: hiện chỉ nằm trong patch gieo lỗi (`.gitleaks.toml` bỏ
-qua thư mục này); vài commit đầu từng có chuỗi giả trong `src/app/vulnerable_examples.py`, đã gỡ khỏi
-baseline.
-
-## Tài liệu bàn giao
-
-| Tài liệu | Vị trí |
-| --- | --- |
-| Báo cáo (Word) | `DOCX/DeTai21_DevSecOps.docx` |
-| Slide thuyết trình | `PPTX/DeTai21_DevSecOps.pptx` |
-| Hướng dẫn triển khai, tái lập, dọn tài nguyên, chi phí, rủi ro còn lại | [`Extra/HUONG_DAN_TRIEN_KHAI.md`](Extra/HUONG_DAN_TRIEN_KHAI.md) |
-| Kịch bản demo và phân công trình bày | [`Extra/KICH_BAN_DEMO.md`](Extra/KICH_BAN_DEMO.md) |
-| Sơ đồ kiến trúc, luồng dữ liệu, trình tự (nguồn và ảnh) | [`Extra/so_do/`](Extra/so_do/) |
-| Tài liệu tham khảo, ánh xạ CIS và CSA CCM | [`Code/DevSecOps/REFERENCES.md`](Code/DevSecOps/REFERENCES.md) |
-| Phiên bản công cụ và action | [`Extra/TOOL_VERSIONS.md`](Extra/TOOL_VERSIONS.md) |
-| Dữ liệu thô, số liệu báo cáo, notebook | `Code/DevSecOps/tests/results/`, `Code/DevSecOps/tests/analysis.ipynb` |
+Job quét chạy song song; gate tổng hợp báo cáo scan, IaC và image. `BLOCK` làm
+job gate thất bại; `WARN` vẫn cho job tiếp tục và được ghi vào báo cáo. Release
+chạy sau khi unit test và gate job thành công; deploy smoke xác minh chữ ký
+trước khi triển khai thử trên `kind`. Workflow và quyền từng job được khai báo
+tại `.github/workflows/ci.yml`.
 
 ## Cấu trúc repository
 
 ```text
-.github/                 CODEOWNERS, pull_request_template.md, workflows/ (ci, iac-validate, experiments, e3-timing, e3-orchestrate)
-Code/DevSecOps/
-├── src/                 ứng dụng FastAPI và unit test
-├── Dockerfile           image ứng dụng (multi-stage, non-root, ghim digest)
-├── infra/  deploy/      Terraform AWS: mạng, S3, IAM, RDS, EC2 sau ALB HTTPS (quét tĩnh, test giả lập,
-│                        không apply), manifest Kubernetes
-├── lab/                 Dockerfile.vuln (E4), workflow mẫu sạch để gieo D07, D26–D28
-├── rules/               luật phát hiện: semgrep/, conftest/ (workflow)
-├── policy/              luật gate Rego g0/, g1/, g2/ và test
-├── security/            exceptions.yaml, kev/ (snapshot KEV/EPSS)
-├── schemas/             schema finding, gate_input, exception; severity_map.yaml
-├── tools/               chuẩn hóa, làm giàu, gate input, delta, cài công cụ
-├── ground_truth/        ground_truth.csv, patches/ (46 patch)
-└── tests/               chạy quét, tổng hợp, chấm chính sách, E3, phân tích; results/
-DOCX/  PPTX/  Extra/     báo cáo, slide, tài liệu kèm theo
+DevSecOps_Project/
+├── .github/            CODEOWNERS, pull_request_template.md, workflows/ci.yml
+├── Code/DevSecOps/     (+ pytest.ini, Dockerfile, .dockerignore khi có)
+│   ├── src/            app FastAPI: app/, test/, requirements.txt
+│   ├── infra/  deploy/ Terraform (chỉ quét); manifest Kubernetes
+│   ├── lab/            docker/Dockerfile.vuln (E4); workflows-vuln/ (mẫu để gieo D26–D28 bằng patch)
+│   ├── rules/          semgrep/, conftest/: luật PHÁT HIỆN lỗi (đầu vào của máy quét)
+│   ├── tools/  schemas/   script, tools/test/ (fixture); findings, exception, severity_map
+│   ├── policy/         g0/ g1/ g2/: luật QUYẾT ĐỊNH chặn của gate
+│   ├── security/  ground_truth/   exceptions.yaml, kev/; ground_truth.csv, patches/
+│   └── tests/          script thí nghiệm, analysis.ipynb; results/{raw,metrics,triage}/ và runs, findings, decisions .csv
+├── DOCX/  PPTX/  Extra/
+└── README.md  requirements.txt  .gitignore  .gitattributes  (+ .gitleaks.toml khi có)
 ```
 
-## Nhóm
+## Tài liệu
 
-| Thành viên | GitHub | Phụ trách chính |
-| --- | --- | --- |
-| Trần Hữu Tài | `tranhuultai` | Hạ tầng, container, chuỗi cung ứng |
-| Đỗ Ngọc Duy | `duy13-computer` | Ứng dụng, các lớp quét, workflow, chuẩn hóa |
-| Hoàng Gia Long | `gialong611` | Gate Rego, bộ đáp án, thực nghiệm, phân tích |
+- Báo cáo: `DOCX/bao_cao_do_an_DevSecOps.docx` (sinh lại bằng `python Extra/build_report_docs.py`; mặc định chỉ cập nhật DOCX)
+- Slide: `PPTX/slide_thuyet_trinh_DevSecOps.pptx` (chỉ sinh lại khi gọi script với `--with-pptx`)
+- Phiên bản công cụ và SHA action: `Extra/TOOL_VERSIONS.md`
+- Tài liệu chính sách gate: `Code/DevSecOps/policy/README.md`
+- Tài liệu bộ đáp án và ánh xạ CWE/CVE: `Code/DevSecOps/ground_truth/README.md`
+- Tài liệu tham khảo và phạm vi CSA CCM/CIS/SLSA: `Code/DevSecOps/REFERENCES.md`
+- Phân tích số liệu: `Code/DevSecOps/tests/analysis.ipynb`
+
+## Kiểm nghiệm
+
+```powershell
+# Luật gate Rego (G0, G1, G2) và luật phát hiện workflow
+powershell -ExecutionPolicy Bypass -File Code/DevSecOps/tests/run_policy_tests.ps1
+conftest verify -p Code/DevSecOps/rules/conftest
+
+# Unit test ứng dụng (chạy cùng lệnh trong CI)
+python -m pytest -v Code/DevSecOps/src/test Code/DevSecOps/tests
+
+# Thí nghiệm E1, E2, E3, E4
+python Code/DevSecOps/tests/e1_detection_effectiveness.py --policy g0
+python Code/DevSecOps/tests/e1_detection_effectiveness.py --policy g1
+python Code/DevSecOps/tests/e1_detection_effectiveness.py --policy g2
+python Code/DevSecOps/tests/e2_policy_comparison.py
+python Code/DevSecOps/tests/e3_pipeline_duration.py
+python Code/DevSecOps/tests/e4_image_remediation.py
+```

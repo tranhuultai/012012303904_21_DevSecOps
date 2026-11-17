@@ -1,0 +1,1156 @@
+{
+  "schema_version": 3,
+  "evidence_status": "complete",
+  "sample_type": "patch-fixture",
+  "fixture_id": "D13",
+  "cache_mode": "cold",
+  "benchmark_role": "measurement",
+  "scan_execution_mode": "parallel",
+  "e4_evidence_status": "not_requested",
+  "e4_requested": false,
+  "e4_raw_reports": {
+    "raw/e4/trivy-image-before.json": {
+      "present": false
+    },
+    "raw/e4/trivy-image-after.json": {
+      "present": false
+    },
+    "raw/e4/sbom-before.cdx.json": {
+      "present": false
+    },
+    "raw/e4/sbom-after.cdx.json": {
+      "present": false
+    }
+  },
+  "run_id": "43627590190",
+  "run_attempt": "1",
+  "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43627590190/attempts/1",
+  "commit": "b79a12a6a3e8c291ac4f2050db6946d841f2116a",
+  "ref": "refs/heads/codex/fixture-patch-refresh",
+  "event": "workflow_dispatch",
+  "recorded_at": "2026-11-14T18:37:52.810381Z",
+  "scan_stage_started_at": "2026-11-14T18:37:02Z",
+  "scan_stage_ended_at": "2026-11-14T18:37:38Z",
+  "policy_configured": "g2",
+  "tool_versions_configured": {
+    "semgrep": "1.183.0",
+    "gitleaks": "8.30.1",
+    "trivy": "0.76.1",
+    "checkov": "3.3.22",
+    "syft": "1.54.1",
+    "grype": "0.120.1",
+    "conftest": "0.71.1"
+  },
+  "raw_reports": {
+    "semgrep.json": {
+      "present": true,
+      "size_bytes": 1723,
+      "sha256": "dee813df8627f384279293e93ba44e2edf52093abf64c5134b7ff627c8624d0a"
+    },
+    "gitleaks.json": {
+      "present": true,
+      "size_bytes": 3,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    "trivy.json": {
+      "present": true,
+      "size_bytes": 3384,
+      "sha256": "63fc44d8deb1ee0a0201a28f9fd6e63168ebbf6dd7cf9c75499afd80ae514007"
+    },
+    "checkov.json": {
+      "present": true,
+      "size_bytes": 1055269,
+      "sha256": "9202855409ba00f616b740b22440cbe2684898d2f738c0fe73babc50680d5950"
+    },
+    "checkov.stream.json": {
+      "present": true,
+      "size_bytes": 1340417,
+      "sha256": "261e87746d540d74f6ff193ad6e0c72ef3382df17db4d4b834ae885ead450fcd"
+    },
+    "trivy-config.json": {
+      "present": true,
+      "size_bytes": 46812,
+      "sha256": "ec508d204c39f7617b362f01dacb5558bf87eb75ccb6e83e69f9a2623f24397d"
+    },
+    "grype-image.json": {
+      "present": true,
+      "size_bytes": 15,
+      "sha256": "be5e8a4d3e6916af4e8816dfcb3c4cf011cdd9695ac91eb944af5395b9441f34"
+    }
+  },
+  "normalized_findings": {
+    "count": 89,
+    "by_tool": {
+      "checkov": 77,
+      "trivy": 12
+    },
+    "by_severity": {
+      "HIGH": 80,
+      "LOW": 3,
+      "MEDIUM": 6
+    },
+    "items": [
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_394",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/network.tf",
+        "resource": "aws_availability_zones.available",
+        "fingerprint": "1553d680560e3d4f2beaca612267e6c0b66f32a20f0ec12af4293710b964dee7"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_353",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/rds.tf",
+        "resource": "aws_db_instance.main",
+        "fingerprint": "ad348be4217223a4238c8b22b4b31bcbfa67ed61966c3998d51cae37d128b574"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_157",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/rds.tf",
+        "resource": "aws_db_instance.main",
+        "fingerprint": "8fb2a1d677a5d58eb625edff29a111407c1b344b8caa1828546ace58b8591f3d"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_118",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/rds.tf",
+        "resource": "aws_db_instance.main",
+        "fingerprint": "eec95c872659c3f6c90cbb4aae290cfa18fa82de2ffe3f9dfdec07a8a2175d41"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_293",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/rds.tf",
+        "resource": "aws_db_instance.main",
+        "fingerprint": "ca6faac2c7f180f0bd8961e82ed11572317a89148c6a1011429ed4d8eb4342cb"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_129",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/rds.tf",
+        "resource": "aws_db_instance.main",
+        "fingerprint": "e5c249b1b6057966da88f18d681dd83f481432109f1a8908555a2ebd6f5f9032"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_226",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/rds.tf",
+        "resource": "aws_db_instance.main",
+        "fingerprint": "20a48d2d9745f90299b94ffca446d03b8cc8908901f0b434f0741c2c5940e481"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_161",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/rds.tf",
+        "resource": "aws_db_instance.main",
+        "fingerprint": "b4fc745afb07e82c0fea5fdc5ba786996ee0b4be2081077d1f012cad46655345"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV2_AWS_12",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/network.tf",
+        "resource": "aws_vpc.main",
+        "fingerprint": "58bf1a93f936c822cf957c7ccc5b1d2d9cfa767b2a780275841307ab9b0ec7cc"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV2_AWS_11",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/network.tf",
+        "resource": "aws_vpc.main",
+        "fingerprint": "6010c97eb06b0187ab23a43f4a91f7c67debddce90ceb7903f413ac8f03671a0"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV2_AWS_5",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/security_groups.tf",
+        "resource": "aws_security_group.alb",
+        "fingerprint": "e6a3f82dfd3adadb9130cda0b9694f1c6fb32b7261067da15e58e110e61e6b1f"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV2_AWS_5",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/security_groups.tf",
+        "resource": "aws_security_group.app",
+        "fingerprint": "d1ac87e7df34d2aecbc52fcb17a87357589f1af65b444482ce955b3c2316925f"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_145",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/s3.tf",
+        "resource": "aws_s3_bucket.logs",
+        "fingerprint": "90340749b5261f65e6ade7f3d8271d77d4e2a82075e71f98b2c56ffd5d8a642e"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_145",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/s3.tf",
+        "resource": "aws_s3_bucket.app",
+        "fingerprint": "c2b4c21d2fed605a78d58651b6c75bda2e0dfd2a789e4d61f5d495ece0899287"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV2_AWS_30",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/rds.tf",
+        "resource": "aws_db_instance.main",
+        "fingerprint": "c4b73d346add080fe6512e820b8d8ea52271c2dc6ced49cd4ea1c65ec4dcd2f9"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV2_AWS_60",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/rds.tf",
+        "resource": "aws_db_instance.main",
+        "fingerprint": "3562419574b036dd624f4e099c4e013da0a54c3c010e2434cb10b344113d6f10"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV2_AWS_62",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/s3.tf",
+        "resource": "aws_s3_bucket.logs",
+        "fingerprint": "72e8aeb8374a9fd36d39faadc2a4a1d9b9229172706c4dc1851b051c393441a8"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV2_AWS_62",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/s3.tf",
+        "resource": "aws_s3_bucket.app",
+        "fingerprint": "fdb9fb899bcc193101cc9eb01ab49510580c9c7b129d63bc376e558436c0b350"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_21",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/s3.tf",
+        "resource": "aws_s3_bucket.logs",
+        "fingerprint": "740e0c4d6c6bc6ad0925ca35b4c69bf3d200a6c8390bfbd7ef87047734d54a67"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV2_AWS_61",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/s3.tf",
+        "resource": "aws_s3_bucket.logs",
+        "fingerprint": "4ed68938ba1ad8cd81d30046507e2b286bfda6dec455bae2068b5c6753fa1960"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV2_AWS_61",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/s3.tf",
+        "resource": "aws_s3_bucket.app",
+        "fingerprint": "df671b5a0ac14b679195dce63086d7168c542c8e360b0a28b122e34dd9e8da88"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_144",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/s3.tf",
+        "resource": "aws_s3_bucket.logs",
+        "fingerprint": "bd2bf9a130f08eed6281426a92d7a9917c5d0963029d5d3f32991ad9d429fa3e"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_144",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/s3.tf",
+        "resource": "aws_s3_bucket.app",
+        "fingerprint": "0a8c59d709339016a52c76618b19bcdea413eb42e17191bfbad202b2a0548155"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_K8S_21",
+        "category": "k8s",
+        "severity": "HIGH",
+        "file": "/deploy/serviceaccount.yaml",
+        "resource": "ServiceAccount.default.devsecops-app",
+        "fingerprint": "4f0608e162f6c1e084b6e72342c91cd5b89d05e9ab6359cba088be602d605dce"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_K8S_35",
+        "category": "k8s",
+        "severity": "HIGH",
+        "file": "/deploy/deployment.yaml",
+        "resource": "Deployment.default.devsecops-app",
+        "fingerprint": "9171126c7045b266fb39514d1f629c56ff1c1380e1f8c48682dbafc0743ca5df"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_K8S_21",
+        "category": "k8s",
+        "severity": "HIGH",
+        "file": "/deploy/deployment.yaml",
+        "resource": "Deployment.default.devsecops-app",
+        "fingerprint": "298baa853a3940b6272d0785b6fbbe7ac33641ffb4ac5480eb7d18e83fd44491"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_K8S_21",
+        "category": "k8s",
+        "severity": "HIGH",
+        "file": "/deploy/service.yaml",
+        "resource": "Service.default.devsecops-app",
+        "fingerprint": "2684b043fc4a522b74740b0cc855f80c89a460881d9b9e86252c7c8ab4081b25"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_394",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/network.tf",
+        "resource": "aws_availability_zones.available",
+        "fingerprint": "1553d680560e3d4f2beaca612267e6c0b66f32a20f0ec12af4293710b964dee7"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_353",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/rds.tf",
+        "resource": "aws_db_instance.main",
+        "fingerprint": "ad348be4217223a4238c8b22b4b31bcbfa67ed61966c3998d51cae37d128b574"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_157",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/rds.tf",
+        "resource": "aws_db_instance.main",
+        "fingerprint": "8fb2a1d677a5d58eb625edff29a111407c1b344b8caa1828546ace58b8591f3d"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_118",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/rds.tf",
+        "resource": "aws_db_instance.main",
+        "fingerprint": "eec95c872659c3f6c90cbb4aae290cfa18fa82de2ffe3f9dfdec07a8a2175d41"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_293",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/rds.tf",
+        "resource": "aws_db_instance.main",
+        "fingerprint": "ca6faac2c7f180f0bd8961e82ed11572317a89148c6a1011429ed4d8eb4342cb"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_129",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/rds.tf",
+        "resource": "aws_db_instance.main",
+        "fingerprint": "e5c249b1b6057966da88f18d681dd83f481432109f1a8908555a2ebd6f5f9032"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_226",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/rds.tf",
+        "resource": "aws_db_instance.main",
+        "fingerprint": "20a48d2d9745f90299b94ffca446d03b8cc8908901f0b434f0741c2c5940e481"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_161",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/rds.tf",
+        "resource": "aws_db_instance.main",
+        "fingerprint": "b4fc745afb07e82c0fea5fdc5ba786996ee0b4be2081077d1f012cad46655345"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV2_AWS_12",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/network.tf",
+        "resource": "aws_vpc.main",
+        "fingerprint": "58bf1a93f936c822cf957c7ccc5b1d2d9cfa767b2a780275841307ab9b0ec7cc"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV2_AWS_11",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/network.tf",
+        "resource": "aws_vpc.main",
+        "fingerprint": "6010c97eb06b0187ab23a43f4a91f7c67debddce90ceb7903f413ac8f03671a0"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV2_AWS_5",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/security_groups.tf",
+        "resource": "aws_security_group.alb",
+        "fingerprint": "e6a3f82dfd3adadb9130cda0b9694f1c6fb32b7261067da15e58e110e61e6b1f"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV2_AWS_5",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/security_groups.tf",
+        "resource": "aws_security_group.app",
+        "fingerprint": "d1ac87e7df34d2aecbc52fcb17a87357589f1af65b444482ce955b3c2316925f"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_145",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/s3.tf",
+        "resource": "aws_s3_bucket.logs",
+        "fingerprint": "90340749b5261f65e6ade7f3d8271d77d4e2a82075e71f98b2c56ffd5d8a642e"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_145",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/s3.tf",
+        "resource": "aws_s3_bucket.app",
+        "fingerprint": "c2b4c21d2fed605a78d58651b6c75bda2e0dfd2a789e4d61f5d495ece0899287"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV2_AWS_30",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/rds.tf",
+        "resource": "aws_db_instance.main",
+        "fingerprint": "c4b73d346add080fe6512e820b8d8ea52271c2dc6ced49cd4ea1c65ec4dcd2f9"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV2_AWS_60",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/rds.tf",
+        "resource": "aws_db_instance.main",
+        "fingerprint": "3562419574b036dd624f4e099c4e013da0a54c3c010e2434cb10b344113d6f10"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV2_AWS_62",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/s3.tf",
+        "resource": "aws_s3_bucket.logs",
+        "fingerprint": "72e8aeb8374a9fd36d39faadc2a4a1d9b9229172706c4dc1851b051c393441a8"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV2_AWS_62",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/s3.tf",
+        "resource": "aws_s3_bucket.app",
+        "fingerprint": "fdb9fb899bcc193101cc9eb01ab49510580c9c7b129d63bc376e558436c0b350"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_21",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/s3.tf",
+        "resource": "aws_s3_bucket.logs",
+        "fingerprint": "740e0c4d6c6bc6ad0925ca35b4c69bf3d200a6c8390bfbd7ef87047734d54a67"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV2_AWS_61",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/s3.tf",
+        "resource": "aws_s3_bucket.logs",
+        "fingerprint": "4ed68938ba1ad8cd81d30046507e2b286bfda6dec455bae2068b5c6753fa1960"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV2_AWS_61",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/s3.tf",
+        "resource": "aws_s3_bucket.app",
+        "fingerprint": "df671b5a0ac14b679195dce63086d7168c542c8e360b0a28b122e34dd9e8da88"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_144",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/s3.tf",
+        "resource": "aws_s3_bucket.logs",
+        "fingerprint": "bd2bf9a130f08eed6281426a92d7a9917c5d0963029d5d3f32991ad9d429fa3e"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_144",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/s3.tf",
+        "resource": "aws_s3_bucket.app",
+        "fingerprint": "0a8c59d709339016a52c76618b19bcdea413eb42e17191bfbad202b2a0548155"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_K8S_21",
+        "category": "k8s",
+        "severity": "HIGH",
+        "file": "/deploy/serviceaccount.yaml",
+        "resource": "ServiceAccount.default.devsecops-app",
+        "fingerprint": "4f0608e162f6c1e084b6e72342c91cd5b89d05e9ab6359cba088be602d605dce"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_K8S_35",
+        "category": "k8s",
+        "severity": "HIGH",
+        "file": "/deploy/deployment.yaml",
+        "resource": "Deployment.default.devsecops-app",
+        "fingerprint": "9171126c7045b266fb39514d1f629c56ff1c1380e1f8c48682dbafc0743ca5df"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_K8S_21",
+        "category": "k8s",
+        "severity": "HIGH",
+        "file": "/deploy/deployment.yaml",
+        "resource": "Deployment.default.devsecops-app",
+        "fingerprint": "298baa853a3940b6272d0785b6fbbe7ac33641ffb4ac5480eb7d18e83fd44491"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_K8S_21",
+        "category": "k8s",
+        "severity": "HIGH",
+        "file": "/deploy/service.yaml",
+        "resource": "Service.default.devsecops-app",
+        "fingerprint": "2684b043fc4a522b74740b0cc855f80c89a460881d9b9e86252c7c8ab4081b25"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_394",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/network.tf",
+        "resource": "aws_availability_zones.available",
+        "fingerprint": "1553d680560e3d4f2beaca612267e6c0b66f32a20f0ec12af4293710b964dee7"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_353",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/rds.tf",
+        "resource": "aws_db_instance.main",
+        "fingerprint": "ad348be4217223a4238c8b22b4b31bcbfa67ed61966c3998d51cae37d128b574"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_157",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/rds.tf",
+        "resource": "aws_db_instance.main",
+        "fingerprint": "8fb2a1d677a5d58eb625edff29a111407c1b344b8caa1828546ace58b8591f3d"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_118",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/rds.tf",
+        "resource": "aws_db_instance.main",
+        "fingerprint": "eec95c872659c3f6c90cbb4aae290cfa18fa82de2ffe3f9dfdec07a8a2175d41"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_293",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/rds.tf",
+        "resource": "aws_db_instance.main",
+        "fingerprint": "ca6faac2c7f180f0bd8961e82ed11572317a89148c6a1011429ed4d8eb4342cb"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_129",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/rds.tf",
+        "resource": "aws_db_instance.main",
+        "fingerprint": "e5c249b1b6057966da88f18d681dd83f481432109f1a8908555a2ebd6f5f9032"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_226",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/rds.tf",
+        "resource": "aws_db_instance.main",
+        "fingerprint": "20a48d2d9745f90299b94ffca446d03b8cc8908901f0b434f0741c2c5940e481"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_161",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/rds.tf",
+        "resource": "aws_db_instance.main",
+        "fingerprint": "b4fc745afb07e82c0fea5fdc5ba786996ee0b4be2081077d1f012cad46655345"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV2_AWS_12",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/network.tf",
+        "resource": "aws_vpc.main",
+        "fingerprint": "58bf1a93f936c822cf957c7ccc5b1d2d9cfa767b2a780275841307ab9b0ec7cc"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV2_AWS_11",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/network.tf",
+        "resource": "aws_vpc.main",
+        "fingerprint": "6010c97eb06b0187ab23a43f4a91f7c67debddce90ceb7903f413ac8f03671a0"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV2_AWS_5",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/security_groups.tf",
+        "resource": "aws_security_group.alb",
+        "fingerprint": "e6a3f82dfd3adadb9130cda0b9694f1c6fb32b7261067da15e58e110e61e6b1f"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV2_AWS_5",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/security_groups.tf",
+        "resource": "aws_security_group.app",
+        "fingerprint": "d1ac87e7df34d2aecbc52fcb17a87357589f1af65b444482ce955b3c2316925f"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_145",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/s3.tf",
+        "resource": "aws_s3_bucket.logs",
+        "fingerprint": "90340749b5261f65e6ade7f3d8271d77d4e2a82075e71f98b2c56ffd5d8a642e"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_145",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/s3.tf",
+        "resource": "aws_s3_bucket.app",
+        "fingerprint": "c2b4c21d2fed605a78d58651b6c75bda2e0dfd2a789e4d61f5d495ece0899287"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV2_AWS_30",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/rds.tf",
+        "resource": "aws_db_instance.main",
+        "fingerprint": "c4b73d346add080fe6512e820b8d8ea52271c2dc6ced49cd4ea1c65ec4dcd2f9"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV2_AWS_60",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/rds.tf",
+        "resource": "aws_db_instance.main",
+        "fingerprint": "3562419574b036dd624f4e099c4e013da0a54c3c010e2434cb10b344113d6f10"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV2_AWS_62",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/s3.tf",
+        "resource": "aws_s3_bucket.logs",
+        "fingerprint": "72e8aeb8374a9fd36d39faadc2a4a1d9b9229172706c4dc1851b051c393441a8"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV2_AWS_62",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/s3.tf",
+        "resource": "aws_s3_bucket.app",
+        "fingerprint": "fdb9fb899bcc193101cc9eb01ab49510580c9c7b129d63bc376e558436c0b350"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_21",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/s3.tf",
+        "resource": "aws_s3_bucket.logs",
+        "fingerprint": "740e0c4d6c6bc6ad0925ca35b4c69bf3d200a6c8390bfbd7ef87047734d54a67"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV2_AWS_61",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/s3.tf",
+        "resource": "aws_s3_bucket.logs",
+        "fingerprint": "4ed68938ba1ad8cd81d30046507e2b286bfda6dec455bae2068b5c6753fa1960"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV2_AWS_61",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/s3.tf",
+        "resource": "aws_s3_bucket.app",
+        "fingerprint": "df671b5a0ac14b679195dce63086d7168c542c8e360b0a28b122e34dd9e8da88"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_144",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/s3.tf",
+        "resource": "aws_s3_bucket.logs",
+        "fingerprint": "bd2bf9a130f08eed6281426a92d7a9917c5d0963029d5d3f32991ad9d429fa3e"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_144",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/s3.tf",
+        "resource": "aws_s3_bucket.app",
+        "fingerprint": "0a8c59d709339016a52c76618b19bcdea413eb42e17191bfbad202b2a0548155"
+      },
+      {
+        "tool": "trivy",
+        "rule_id": "DS-0002",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "Dockerfile",
+        "resource": null,
+        "fingerprint": "7142df80a03625d54579cb4e46862f57f4f8ca89f5dce1bf6e166ee6452777f4"
+      },
+      {
+        "tool": "trivy",
+        "rule_id": "KSV-0110",
+        "category": "k8s",
+        "severity": "LOW",
+        "file": "deploy/deployment.yaml",
+        "resource": null,
+        "fingerprint": "c3bf6b04655229ba2a5e1c02a2e456ecc94903227f6d3fa8709a8b7074714bc4"
+      },
+      {
+        "tool": "trivy",
+        "rule_id": "KSV-0125",
+        "category": "k8s",
+        "severity": "MEDIUM",
+        "file": "deploy/deployment.yaml",
+        "resource": null,
+        "fingerprint": "a681a2bf8a08cefdadbd195c2b42071e9380d6469891ed9b171600b7fe770ca0"
+      },
+      {
+        "tool": "trivy",
+        "rule_id": "AWS-0178",
+        "category": "iac",
+        "severity": "MEDIUM",
+        "file": "infra/network.tf",
+        "resource": null,
+        "fingerprint": "3e9c89073befd6c942bc07975b09a8e1dbbb2ca220d03eb189c3da5316831063"
+      },
+      {
+        "tool": "trivy",
+        "rule_id": "AWS-0077",
+        "category": "iac",
+        "severity": "MEDIUM",
+        "file": "infra/rds.tf",
+        "resource": null,
+        "fingerprint": "097e230fbbffff5bece50c60fdd6c8aa9148b6a34592baeee92dcbad52952902"
+      },
+      {
+        "tool": "trivy",
+        "rule_id": "AWS-0133",
+        "category": "iac",
+        "severity": "LOW",
+        "file": "infra/rds.tf",
+        "resource": null,
+        "fingerprint": "2ee8475617b1342281981f2a921a751efb655796918f59220755d87f81f48edd"
+      },
+      {
+        "tool": "trivy",
+        "rule_id": "AWS-0176",
+        "category": "iac",
+        "severity": "MEDIUM",
+        "file": "infra/rds.tf",
+        "resource": null,
+        "fingerprint": "26ce7129a4606eb0d0a59f6f84a95d32384190125731047f36a6c925c82e367e"
+      },
+      {
+        "tool": "trivy",
+        "rule_id": "AWS-0177",
+        "category": "iac",
+        "severity": "MEDIUM",
+        "file": "infra/rds.tf",
+        "resource": null,
+        "fingerprint": "1890e967b2f1250e3cbd067778df039f02235f45e42f1ad07e161c8c45fcb7f1"
+      },
+      {
+        "tool": "trivy",
+        "rule_id": "AWS-0089",
+        "category": "iac",
+        "severity": "LOW",
+        "file": "infra/s3.tf",
+        "resource": null,
+        "fingerprint": "f25ab39354ecef25cc08911e095d47ae015099c4d06f8fac37d327ce9244136e"
+      },
+      {
+        "tool": "trivy",
+        "rule_id": "AWS-0090",
+        "category": "iac",
+        "severity": "MEDIUM",
+        "file": "infra/s3.tf",
+        "resource": null,
+        "fingerprint": "5c78626abfad9b1923e7da00fa70208e07ab563b0f86d638a116f6a4def6801c"
+      },
+      {
+        "tool": "trivy",
+        "rule_id": "AWS-0132",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "infra/s3.tf",
+        "resource": null,
+        "fingerprint": "2ef6903dba2bbd6134bd7107fba541dcb819bd2579241d7c24f17818e0d47403"
+      },
+      {
+        "tool": "trivy",
+        "rule_id": "AWS-0132",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "infra/s3.tf",
+        "resource": null,
+        "fingerprint": "2ef6903dba2bbd6134bd7107fba541dcb819bd2579241d7c24f17818e0d47403"
+      }
+    ]
+  },
+  "gate": {
+    "policy": "g2",
+    "decision": "WARN",
+    "summary": {
+      "total_findings": 89,
+      "blockers": 0,
+      "warnings": 1,
+      "informational": 0,
+      "excepted": 0,
+      "expired_exceptions": 0
+    }
+  },
+  "policy_runs": [
+    {
+      "policy": "g0",
+      "decision": "PASS",
+      "summary": {
+        "total_findings": 89,
+        "blockers": 0,
+        "warnings": 0,
+        "informational": 0,
+        "excepted": 0,
+        "expired_exceptions": 0
+      },
+      "blockers": []
+    },
+    {
+      "policy": "g1",
+      "decision": "BLOCK",
+      "summary": {
+        "total_findings": 89,
+        "blockers": 30,
+        "warnings": 0,
+        "informational": 0,
+        "excepted": 0,
+        "expired_exceptions": 0
+      },
+      "blockers": [
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: AWS-0132 tại infra/s3.tf",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CKV2_AWS_11 tại /network.tf",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CKV2_AWS_12 tại /network.tf",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CKV2_AWS_30 tại /rds.tf",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CKV2_AWS_5 tại /security_groups.tf",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CKV2_AWS_60 tại /rds.tf",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CKV2_AWS_61 tại /s3.tf",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CKV2_AWS_62 tại /s3.tf",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CKV_AWS_118 tại /rds.tf",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CKV_AWS_129 tại /rds.tf",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CKV_AWS_144 tại /s3.tf",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CKV_AWS_145 tại /s3.tf",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CKV_AWS_157 tại /rds.tf",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CKV_AWS_161 tại /rds.tf",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CKV_AWS_21 tại /s3.tf",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CKV_AWS_226 tại /rds.tf",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CKV_AWS_293 tại /rds.tf",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CKV_AWS_353 tại /rds.tf",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CKV_AWS_394 tại /network.tf",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CKV_K8S_21 tại /deploy/deployment.yaml",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CKV_K8S_21 tại /deploy/service.yaml",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CKV_K8S_21 tại /deploy/serviceaccount.yaml",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CKV_K8S_35 tại /deploy/deployment.yaml",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: DS-0002 tại Dockerfile",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn MEDIUM: AWS-0077 tại infra/rds.tf",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn MEDIUM: AWS-0090 tại infra/s3.tf",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn MEDIUM: AWS-0176 tại infra/rds.tf",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn MEDIUM: AWS-0177 tại infra/rds.tf",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn MEDIUM: AWS-0178 tại infra/network.tf",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn MEDIUM: KSV-0125 tại deploy/deployment.yaml",
+          "file": "gate_input.json"
+        }
+      ]
+    },
+    {
+      "policy": "g2",
+      "decision": "WARN",
+      "summary": {
+        "total_findings": 89,
+        "blockers": 0,
+        "warnings": 1,
+        "informational": 0,
+        "excepted": 0,
+        "expired_exceptions": 0
+      },
+      "blockers": []
+    }
+  ],
+  "skipped_scans": [
+    "e4-live-image-remediation",
+    "grype-image",
+    "image-build",
+    "syft-sbom",
+    "trivy-image"
+  ],
+  "timing": {
+    "evidence_status": "traceable_single_run",
+    "run_id": "43627590190",
+    "run_attempt": "1",
+    "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43627590190/attempts/1",
+    "commit": "b79a12a6a3e8c291ac4f2050db6946d841f2116a",
+    "fixture_id": "D13",
+    "cache_mode": "cold",
+    "benchmark_role": "measurement",
+    "scan_execution_mode": "parallel",
+    "runner_os": "Linux",
+    "runner_arch": "X64",
+    "scan_stage_started_at": "2026-11-14T18:37:02Z",
+    "scan_stage_ended_at": "2026-11-14T18:37:38Z",
+    "job_durations_seconds": {
+      "iac": 35,
+      "image": 5,
+      "security-scan": 29
+    },
+    "scan_stage_runner_minutes": 1.15,
+    "parallel_scan_stage_critical_path_seconds": 35,
+    "serial_sum_estimate_seconds": 69,
+    "interpretation": "Observed timings for three scanner jobs in one workflow run. The max is their parallel critical-path estimate; the sum is a serial-work estimate, not a measured serial run. Repeated runs and cache-on/off comparison are still required."
+  },
+  "trivy_runtime": {
+    "iac": {
+      "trivy_version": "0.76.1",
+      "databases": {},
+      "error": null
+    },
+    "image": {
+      "trivy_version": "0.76.1",
+      "databases": {},
+      "error": null
+    },
+    "security-scan": {
+      "trivy_version": "0.76.1",
+      "databases": {
+        "Vulnerability DB": {
+          "version": "2",
+          "updated_at": "2026-11-14 13:05:54.014761714 +0000 UTC",
+          "next_update": "2026-11-15 13:05:54.014761543 +0000 UTC"
+        }
+      },
+      "error": null
+    }
+  },
+  "issues": [],
+  "interpretation": "One patch observation only; aggregate independent runs before reporting recall. Negative controls and repeated timing comparisons are not inferred."
+}

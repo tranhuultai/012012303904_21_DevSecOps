@@ -1,0 +1,6 @@
+{
+  "skipped": [
+    "e4-live-image-remediation"
+  ],
+  "e4_reason": "E4 runs only when explicitly enabled on a baseline workflow_dispatch."
+}

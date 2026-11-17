@@ -16,12 +16,8 @@ resource "aws_security_group" "db" {
     security_groups = [aws_security_group.app.id]
   }
 
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+  # Database không khởi tạo kết nối outbound; SG vẫn cho phép response stateful.
+  egress = []
 
   tags = { Name = "${var.name_prefix}-db" }
 }

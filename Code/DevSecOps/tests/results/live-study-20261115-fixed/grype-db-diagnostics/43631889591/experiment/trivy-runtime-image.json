@@ -1,0 +1,11 @@
+{
+  "trivy_version": "0.76.1",
+  "databases": {
+    "Vulnerability DB": {
+      "version": "2",
+      "updated_at": "2026-11-14 13:05:54.014761714 +0000 UTC",
+      "next_update": "2026-11-15 13:05:54.014761543 +0000 UTC"
+    }
+  },
+  "error": null
+}

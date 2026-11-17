@@ -20,6 +20,7 @@ sys.path.insert(0, str(TOOLS_DIR / "test"))
 import normalize_findings as nf  # noqa: E402
 import enrich_findings as ef  # noqa: E402
 import conftest_gate_report as cgr  # noqa: E402
+import e4_image_remediation as e4  # noqa: E402
 from generate_pr_summary import build_summary  # noqa: E402
 
 
@@ -129,6 +130,29 @@ def test_parse_checkov_none_and_bad():
         nf.parse_checkov({"results": {"failed_checks": "not-a-list"}})
 
 
+def test_parse_conftest_workflow_custom_d26_d27_rules():
+    report = {
+        "results": [
+            {
+                "filename": "../../.github/workflows/ci.yml",
+                "failures": [
+                    {"msg": "DSEC_GHA_002: workflow-level permissions write-all"},
+                    {"msg": "DSEC_GHA_003: untrusted github.event interpolation"},
+                ],
+            }
+        ]
+    }
+
+    findings = nf.parse_conftest_workflow(report)
+
+    assert [finding["rule_id"] for finding in findings] == [
+        "DSEC_GHA_002", "DSEC_GHA_003"
+    ]
+    assert all(finding["tool"] == "conftest" for finding in findings)
+    assert all(finding["category"] == "workflow" for finding in findings)
+    assert all(finding["severity"] == "HIGH" for finding in findings)
+
+
 # ────────────────────────────────────────────────────────────
 # normalize_findings: parser Trivy config
 # ────────────────────────────────────────────────────────────
@@ -146,6 +170,12 @@ TRIVY_CONFIG = {
                     "References": ["https://avd.aquasec.com/ksv-0109"],
                 },
                 {
+                    "ID": "KSV-0111",
+                    "Status": "FAILED",
+                    "Severity": "CRITICAL",
+                    "Title": "Cluster-admin binding",
+                },
+                {
                     "ID": "KSV-0001",
                     "Status": "PASSED",
                     "Severity": "LOW",
@@ -158,12 +188,14 @@ TRIVY_CONFIG = {
 
 def test_parse_trivy_config_only_failed():
     findings = nf.parse_trivy_config(TRIVY_CONFIG)
-    assert len(findings) == 1
+    assert len(findings) == 2
     f = findings[0]
     assert f["rule_id"] == "KSV-0109"
     assert f["category"] == "k8s"
     assert f["severity"] == "HIGH"
     assert f["tool"] == "trivy"
+    assert findings[1]["rule_id"] == "KSV-0111"
+    assert findings[1]["severity"] == "CRITICAL"
 
 
 def test_parse_trivy_config_none():
@@ -248,9 +280,18 @@ def test_enrich_kev_and_epss():
 def test_enrich_confidence_iac_control():
     kev_ids = set()
     epss_map = {}
-    f = {"rule_id": "CKV_AWS_24", "category": "iac", "severity": "HIGH", "file": "a.tf"}
-    out = ef.enrich(f, kev_ids, epss_map)
-    assert out["match_confidence"] == "high"
+    g2_policy = (TESTS_DIR.parent / "policy" / "g2" / "gate.rego").read_text(encoding="utf-8")
+    controls = (
+        ("CKV_AWS_24", "HIGH"),
+        ("CKV_AWS_382", "HIGH"),
+        ("AWS-0104", "CRITICAL"),
+    )
+    for rule_id, severity in controls:
+        f = {"rule_id": rule_id, "category": "iac", "severity": severity, "file": "a.tf"}
+        out = ef.enrich(f, kev_ids, epss_map)
+        assert out["match_confidence"] == "high"
+        assert rule_id in ef.IAC_BLOCK_CONTROLS
+        assert f'"{rule_id}"' in g2_policy
     f2 = {"rule_id": "CKV_AWS_21", "category": "iac", "severity": "MEDIUM", "file": "a.tf"}
     assert ef.enrich(f2, kev_ids, epss_map)["match_confidence"] == "low"
 
@@ -295,3 +336,59 @@ def test_pr_summary_from_gate_report():
     md = build_summary(findings, report, title="T")
     assert "**Decision: BLOCK**" in md
     assert "| HIGH | 1 |" in md
+
+
+# ────────────────────────────────────────────────────────────
+# E4 helpers
+# ────────────────────────────────────────────────────────────
+
+def test_e4_dockerfile_checks_real_files():
+    before = TESTS_DIR.parent / "lab" / "docker" / "Dockerfile.vuln"
+    after = TESTS_DIR.parent / "Dockerfile"
+    if not before.is_file() or not after.is_file():
+        pytest.skip("thiếu Dockerfile so sánh")
+    b = e4.dockerfile_checks(before)
+    a = e4.dockerfile_checks(after)
+    assert b["non_root_user"] is False
+    assert b["no_add_remote"] is False
+    assert b["no_sshd_or_port22"] is False
+    assert b["multi_stage"] is False
+    assert a["non_root_user"] is True
+    assert a["no_add_remote"] is True
+    assert a["no_sshd_or_port22"] is True
+    assert a["multi_stage"] is True
+
+
+def test_runtime_dockerfile_enforces_debian_apt_and_zlib_security_floors():
+    dockerfile = (TESTS_DIR.parent / "Dockerfile").read_text(encoding="utf-8")
+    assert "https://deb.debian.org/" in dockerfile
+    assert "Acquire::Retries=0" in dockerfile
+    assert "--only-upgrade apt zlib1g" in dockerfile
+    assert '"3.0.4"' in dockerfile
+    assert '"1:1.3.dfsg+really1.3.1-1+deb13u1"' in dockerfile
+    assert "/usr/local/lib/python3.13/site-packages/pip" in dockerfile
+    assert "/opt/venv/lib/python3.13/site-packages/pip" in dockerfile
+
+
+def test_runtime_framework_dependencies_are_pinned_to_fixed_versions():
+    requirements = (TESTS_DIR.parent / "src" / "requirements.txt").read_text(encoding="utf-8")
+    assert "fastapi==0.162.7" in requirements
+    assert "starlette==1.10.0" in requirements
+
+
+def test_e4_g2_sca_decision_rules():
+    assert e4.g2_sca_decision("LOW", True, 0.0, False, "low") == "BLOCK"  # KEV
+    assert e4.g2_sca_decision("LOW", False, 0.2, False, "low") == "BLOCK"  # EPSS cao
+    assert e4.g2_sca_decision("HIGH", False, 0.0, True, "high") == "BLOCK"
+    assert e4.g2_sca_decision("HIGH", False, 0.0, False, "high") == "WARN"
+    assert e4.g2_sca_decision("MEDIUM", False, 0.0, True, "high") == "WARN"
+
+
+def test_e4_drift_with_committed_kev_subset_and_empty_epss():
+    # This mirrors the committed KEV subset. Empty EPSS means no score was
+    # measured; the T0 values in e4_image_remediation are explicitly synthetic.
+    kev_ids = {"CVE-2025-30066"}
+    epss = {}
+    drift = e4.db_drift_analysis(kev_ids, epss)
+    changed = {c["cve"] for c in drift["changed_decisions"]}
+    assert changed == {"CVE-2024-35195", "CVE-2023-45803"}

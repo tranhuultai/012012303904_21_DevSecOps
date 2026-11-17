@@ -1,8 +1,6 @@
-diff --git a/Code/DevSecOps/Dockerfile b/Code/DevSecOps/Dockerfile
-index 580c3fb..bd394ba 100644
 --- a/Code/DevSecOps/Dockerfile
 +++ b/Code/DevSecOps/Dockerfile
-@@ -14,6 +14,10 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
+@@ -28,6 +28,10 @@
      PATH="/opt/venv/bin:$PATH"
  
  WORKDIR /app
@@ -11,5 +9,5 @@ index 580c3fb..bd394ba 100644
 +    && rm -rf /var/lib/apt/lists/*
 +EXPOSE 22
  COPY --from=builder /opt/venv /opt/venv
- COPY src/app ./app
- 
+ # pip chỉ cần lúc build. Bỏ package manager khỏi runtime để loại các bản vendored
+ # msgpack/urllib3/setuptools đi kèm và giảm bề mặt tấn công của image phát hành.

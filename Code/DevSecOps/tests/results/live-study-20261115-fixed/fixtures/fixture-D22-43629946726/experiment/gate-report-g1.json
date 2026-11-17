@@ -1,0 +1,774 @@
+{
+  "gate_version": "1.0",
+  "engine": "conftest-rego",
+  "policy_profile": "g1",
+  "decision": "BLOCK",
+  "passed": false,
+  "summary": {
+    "total_findings": 298,
+    "blockers": 83,
+    "warnings": 0,
+    "informational": 0,
+    "excepted": 0,
+    "expired_exceptions": 0
+  },
+  "warning_correlation": {
+    "matched_policy_warnings": 0,
+    "unmatched_policy_warnings": 0,
+    "matched_source_findings": 0
+  },
+  "blockers": [
+    {
+      "finding_id": "deny:0",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: AWS-0132 tại infra/s3.tf",
+      "message": "G1 chặn HIGH: AWS-0132 tại infra/s3.tf",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:1",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CKV2_AWS_11 tại /network.tf",
+      "message": "G1 chặn HIGH: CKV2_AWS_11 tại /network.tf",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:2",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CKV2_AWS_12 tại /network.tf",
+      "message": "G1 chặn HIGH: CKV2_AWS_12 tại /network.tf",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:3",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CKV2_AWS_30 tại /rds.tf",
+      "message": "G1 chặn HIGH: CKV2_AWS_30 tại /rds.tf",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:4",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CKV2_AWS_5 tại /security_groups.tf",
+      "message": "G1 chặn HIGH: CKV2_AWS_5 tại /security_groups.tf",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:5",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CKV2_AWS_60 tại /rds.tf",
+      "message": "G1 chặn HIGH: CKV2_AWS_60 tại /rds.tf",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:6",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CKV2_AWS_61 tại /s3.tf",
+      "message": "G1 chặn HIGH: CKV2_AWS_61 tại /s3.tf",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:7",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CKV2_AWS_62 tại /s3.tf",
+      "message": "G1 chặn HIGH: CKV2_AWS_62 tại /s3.tf",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:8",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CKV_AWS_118 tại /rds.tf",
+      "message": "G1 chặn HIGH: CKV_AWS_118 tại /rds.tf",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:9",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CKV_AWS_129 tại /rds.tf",
+      "message": "G1 chặn HIGH: CKV_AWS_129 tại /rds.tf",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:10",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CKV_AWS_144 tại /s3.tf",
+      "message": "G1 chặn HIGH: CKV_AWS_144 tại /s3.tf",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:11",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CKV_AWS_145 tại /s3.tf",
+      "message": "G1 chặn HIGH: CKV_AWS_145 tại /s3.tf",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:12",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CKV_AWS_157 tại /rds.tf",
+      "message": "G1 chặn HIGH: CKV_AWS_157 tại /rds.tf",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:13",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CKV_AWS_161 tại /rds.tf",
+      "message": "G1 chặn HIGH: CKV_AWS_161 tại /rds.tf",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:14",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CKV_AWS_21 tại /s3.tf",
+      "message": "G1 chặn HIGH: CKV_AWS_21 tại /s3.tf",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:15",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CKV_AWS_226 tại /rds.tf",
+      "message": "G1 chặn HIGH: CKV_AWS_226 tại /rds.tf",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:16",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CKV_AWS_293 tại /rds.tf",
+      "message": "G1 chặn HIGH: CKV_AWS_293 tại /rds.tf",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:17",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CKV_AWS_353 tại /rds.tf",
+      "message": "G1 chặn HIGH: CKV_AWS_353 tại /rds.tf",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:18",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CKV_AWS_394 tại /network.tf",
+      "message": "G1 chặn HIGH: CKV_AWS_394 tại /network.tf",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:19",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CKV_K8S_11 tại /deploy/deployment.yaml",
+      "message": "G1 chặn HIGH: CKV_K8S_11 tại /deploy/deployment.yaml",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:20",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CKV_K8S_13 tại /deploy/deployment.yaml",
+      "message": "G1 chặn HIGH: CKV_K8S_13 tại /deploy/deployment.yaml",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:21",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CKV_K8S_21 tại /deploy/deployment.yaml",
+      "message": "G1 chặn HIGH: CKV_K8S_21 tại /deploy/deployment.yaml",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:22",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CKV_K8S_21 tại /deploy/service.yaml",
+      "message": "G1 chặn HIGH: CKV_K8S_21 tại /deploy/service.yaml",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:23",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CKV_K8S_21 tại /deploy/serviceaccount.yaml",
+      "message": "G1 chặn HIGH: CKV_K8S_21 tại /deploy/serviceaccount.yaml",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:24",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CKV_K8S_35 tại /deploy/deployment.yaml",
+      "message": "G1 chặn HIGH: CKV_K8S_35 tại /deploy/deployment.yaml",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:25",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CVE-2025-69720 tại /var/lib/dpkg/info/libncursesw6:amd64.md5sums",
+      "message": "G1 chặn HIGH: CVE-2025-69720 tại /var/lib/dpkg/info/libncursesw6:amd64.md5sums",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:26",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CVE-2025-69720 tại /var/lib/dpkg/status",
+      "message": "G1 chặn HIGH: CVE-2025-69720 tại /var/lib/dpkg/status",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:27",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CVE-2026-102010 tại /var/lib/dpkg/status",
+      "message": "G1 chặn HIGH: CVE-2026-102010 tại /var/lib/dpkg/status",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:28",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CVE-2026-119373 tại /var/lib/dpkg/status",
+      "message": "G1 chặn HIGH: CVE-2026-119373 tại /var/lib/dpkg/status",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:29",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CVE-2026-119374 tại /var/lib/dpkg/status",
+      "message": "G1 chặn HIGH: CVE-2026-119374 tại /var/lib/dpkg/status",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:30",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CVE-2026-119379 tại /var/lib/dpkg/status",
+      "message": "G1 chặn HIGH: CVE-2026-119379 tại /var/lib/dpkg/status",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:31",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CVE-2026-19499 tại /var/lib/dpkg/status",
+      "message": "G1 chặn HIGH: CVE-2026-19499 tại /var/lib/dpkg/status",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:32",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CVE-2026-5435 tại /var/lib/dpkg/status",
+      "message": "G1 chặn HIGH: CVE-2026-5435 tại /var/lib/dpkg/status",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:33",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CVE-2026-54369 tại /var/lib/dpkg/status",
+      "message": "G1 chặn HIGH: CVE-2026-54369 tại /var/lib/dpkg/status",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:34",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CVE-2026-54370 tại /var/lib/dpkg/status",
+      "message": "G1 chặn HIGH: CVE-2026-54370 tại /var/lib/dpkg/status",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:35",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CVE-2026-76642 tại /var/lib/dpkg/status",
+      "message": "G1 chặn HIGH: CVE-2026-76642 tại /var/lib/dpkg/status",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:36",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CVE-2026-78408 tại /var/lib/dpkg/status",
+      "message": "G1 chặn HIGH: CVE-2026-78408 tại /var/lib/dpkg/status",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:37",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CVE-2026-78409 tại /var/lib/dpkg/status",
+      "message": "G1 chặn HIGH: CVE-2026-78409 tại /var/lib/dpkg/status",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:38",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CVE-2026-78410 tại /var/lib/dpkg/status",
+      "message": "G1 chặn HIGH: CVE-2026-78410 tại /var/lib/dpkg/status",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:39",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CVE-2026-82560 tại /var/lib/dpkg/info/perl-base.list",
+      "message": "G1 chặn HIGH: CVE-2026-82560 tại /var/lib/dpkg/info/perl-base.list",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:40",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CVE-2026-84243 tại /var/lib/dpkg/status",
+      "message": "G1 chặn HIGH: CVE-2026-84243 tại /var/lib/dpkg/status",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:41",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CVE-2026-9538 tại /var/lib/dpkg/info/perl-base.list",
+      "message": "G1 chặn HIGH: CVE-2026-9538 tại /var/lib/dpkg/info/perl-base.list",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:42",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn HIGH: CVE-2026-95619 tại /var/lib/dpkg/status",
+      "message": "G1 chặn HIGH: CVE-2026-95619 tại /var/lib/dpkg/status",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:43",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn MEDIUM: AWS-0077 tại infra/rds.tf",
+      "message": "G1 chặn MEDIUM: AWS-0077 tại infra/rds.tf",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:44",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn MEDIUM: AWS-0090 tại infra/s3.tf",
+      "message": "G1 chặn MEDIUM: AWS-0090 tại infra/s3.tf",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:45",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn MEDIUM: AWS-0176 tại infra/rds.tf",
+      "message": "G1 chặn MEDIUM: AWS-0176 tại infra/rds.tf",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:46",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn MEDIUM: AWS-0177 tại infra/rds.tf",
+      "message": "G1 chặn MEDIUM: AWS-0177 tại infra/rds.tf",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:47",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn MEDIUM: AWS-0178 tại infra/network.tf",
+      "message": "G1 chặn MEDIUM: AWS-0178 tại infra/network.tf",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:48",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn MEDIUM: CVE-2025-15367 tại /usr/local/bin/python3.13",
+      "message": "G1 chặn MEDIUM: CVE-2025-15367 tại /usr/local/bin/python3.13",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:49",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn MEDIUM: CVE-2025-6141 tại /var/lib/dpkg/info/libncursesw6:amd64.md5sums",
+      "message": "G1 chặn MEDIUM: CVE-2025-6141 tại /var/lib/dpkg/info/libncursesw6:amd64.md5sums",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:50",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn MEDIUM: CVE-2025-6141 tại /var/lib/dpkg/status",
+      "message": "G1 chặn MEDIUM: CVE-2025-6141 tại /var/lib/dpkg/status",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:51",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn MEDIUM: CVE-2026-114690 tại /var/lib/dpkg/status",
+      "message": "G1 chặn MEDIUM: CVE-2026-114690 tại /var/lib/dpkg/status",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:52",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn MEDIUM: CVE-2026-114691 tại /var/lib/dpkg/status",
+      "message": "G1 chặn MEDIUM: CVE-2026-114691 tại /var/lib/dpkg/status",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:53",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn MEDIUM: CVE-2026-115819 tại /var/lib/dpkg/status",
+      "message": "G1 chặn MEDIUM: CVE-2026-115819 tại /var/lib/dpkg/status",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:54",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn MEDIUM: CVE-2026-116566 tại /usr/local/bin/python3.13",
+      "message": "G1 chặn MEDIUM: CVE-2026-116566 tại /usr/local/bin/python3.13",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:55",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn MEDIUM: CVE-2026-119371 tại /var/lib/dpkg/status",
+      "message": "G1 chặn MEDIUM: CVE-2026-119371 tại /var/lib/dpkg/status",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:56",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn MEDIUM: CVE-2026-119372 tại /var/lib/dpkg/status",
+      "message": "G1 chặn MEDIUM: CVE-2026-119372 tại /var/lib/dpkg/status",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:57",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn MEDIUM: CVE-2026-119375 tại /var/lib/dpkg/status",
+      "message": "G1 chặn MEDIUM: CVE-2026-119375 tại /var/lib/dpkg/status",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:58",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn MEDIUM: CVE-2026-119376 tại /var/lib/dpkg/status",
+      "message": "G1 chặn MEDIUM: CVE-2026-119376 tại /var/lib/dpkg/status",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:59",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn MEDIUM: CVE-2026-119378 tại /var/lib/dpkg/status",
+      "message": "G1 chặn MEDIUM: CVE-2026-119378 tại /var/lib/dpkg/status",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:60",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn MEDIUM: CVE-2026-119591 tại /var/lib/dpkg/status",
+      "message": "G1 chặn MEDIUM: CVE-2026-119591 tại /var/lib/dpkg/status",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:61",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn MEDIUM: CVE-2026-15059 tại /var/lib/dpkg/status",
+      "message": "G1 chặn MEDIUM: CVE-2026-15059 tại /var/lib/dpkg/status",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:62",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn MEDIUM: CVE-2026-15534 tại /var/lib/dpkg/info/perl-base.list",
+      "message": "G1 chặn MEDIUM: CVE-2026-15534 tại /var/lib/dpkg/info/perl-base.list",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:63",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn MEDIUM: CVE-2026-16742 tại /var/lib/dpkg/status",
+      "message": "G1 chặn MEDIUM: CVE-2026-16742 tại /var/lib/dpkg/status",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:64",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn MEDIUM: CVE-2026-18374 tại /var/lib/dpkg/status",
+      "message": "G1 chặn MEDIUM: CVE-2026-18374 tại /var/lib/dpkg/status",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:65",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn MEDIUM: CVE-2026-18477 tại /var/lib/dpkg/status",
+      "message": "G1 chặn MEDIUM: CVE-2026-18477 tại /var/lib/dpkg/status",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:66",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn MEDIUM: CVE-2026-18508 tại /var/lib/dpkg/status",
+      "message": "G1 chặn MEDIUM: CVE-2026-18508 tại /var/lib/dpkg/status",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:67",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn MEDIUM: CVE-2026-19542 tại /var/lib/dpkg/status",
+      "message": "G1 chặn MEDIUM: CVE-2026-19542 tại /var/lib/dpkg/status",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:68",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn MEDIUM: CVE-2026-3184 tại /var/lib/dpkg/status",
+      "message": "G1 chặn MEDIUM: CVE-2026-3184 tại /var/lib/dpkg/status",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:69",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn MEDIUM: CVE-2026-42250 tại /var/lib/dpkg/status",
+      "message": "G1 chặn MEDIUM: CVE-2026-42250 tại /var/lib/dpkg/status",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:70",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn MEDIUM: CVE-2026-50812 tại /var/lib/dpkg/status",
+      "message": "G1 chặn MEDIUM: CVE-2026-50812 tại /var/lib/dpkg/status",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:71",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn MEDIUM: CVE-2026-50813 tại /var/lib/dpkg/status",
+      "message": "G1 chặn MEDIUM: CVE-2026-50813 tại /var/lib/dpkg/status",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:72",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn MEDIUM: CVE-2026-54371 tại /var/lib/dpkg/status",
+      "message": "G1 chặn MEDIUM: CVE-2026-54371 tại /var/lib/dpkg/status",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:73",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn MEDIUM: CVE-2026-54411 tại /var/lib/dpkg/status",
+      "message": "G1 chặn MEDIUM: CVE-2026-54411 tại /var/lib/dpkg/status",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:74",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn MEDIUM: CVE-2026-5704 tại /var/lib/dpkg/status",
+      "message": "G1 chặn MEDIUM: CVE-2026-5704 tại /var/lib/dpkg/status",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:75",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn MEDIUM: CVE-2026-6238 tại /var/lib/dpkg/status",
+      "message": "G1 chặn MEDIUM: CVE-2026-6238 tại /var/lib/dpkg/status",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:76",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn MEDIUM: CVE-2026-6791 tại /var/lib/dpkg/status",
+      "message": "G1 chặn MEDIUM: CVE-2026-6791 tại /var/lib/dpkg/status",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:77",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn MEDIUM: CVE-2026-77117 tại /var/lib/dpkg/status",
+      "message": "G1 chặn MEDIUM: CVE-2026-77117 tại /var/lib/dpkg/status",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:78",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn MEDIUM: CVE-2026-80489 tại /var/lib/dpkg/status",
+      "message": "G1 chặn MEDIUM: CVE-2026-80489 tại /var/lib/dpkg/status",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:79",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn MEDIUM: CVE-2026-8674 tại /var/lib/dpkg/status",
+      "message": "G1 chặn MEDIUM: CVE-2026-8674 tại /var/lib/dpkg/status",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:80",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn MEDIUM: CVE-2026-86805 tại /var/lib/dpkg/status",
+      "message": "G1 chặn MEDIUM: CVE-2026-86805 tại /var/lib/dpkg/status",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:81",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn MEDIUM: CVE-2026-89092 tại /var/lib/dpkg/status",
+      "message": "G1 chặn MEDIUM: CVE-2026-89092 tại /var/lib/dpkg/status",
+      "file": "gate_input.json",
+      "status": "open"
+    },
+    {
+      "finding_id": "deny:82",
+      "rule_id": "deny",
+      "severity": "CRITICAL",
+      "title": "G1 chặn MEDIUM: KSV-0125 tại deploy/deployment.yaml",
+      "message": "G1 chặn MEDIUM: KSV-0125 tại deploy/deployment.yaml",
+      "file": "gate_input.json",
+      "status": "open"
+    }
+  ],
+  "warnings": [],
+  "informational_findings": [],
+  "excepted_findings": [],
+  "expired_exceptions": [],
+  "unused_exceptions": []
+}

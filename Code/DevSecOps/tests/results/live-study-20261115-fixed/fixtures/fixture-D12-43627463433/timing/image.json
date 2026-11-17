@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "job": "image",
+  "run_id": "43627463433",
+  "run_attempt": "1",
+  "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43627463433/attempts/1",
+  "commit": "b79a12a6a3e8c291ac4f2050db6946d841f2116a",
+  "ref": "refs/heads/codex/fixture-patch-refresh",
+  "event": "workflow_dispatch",
+  "fixture_id": "D12",
+  "cache_mode": "cold",
+  "benchmark_role": "measurement",
+  "scan_execution_mode": "parallel",
+  "started_at": "2026-11-14T18:35:42Z",
+  "ended_at": "2026-11-14T18:35:47Z",
+  "duration_seconds": 5,
+  "runner_os": "Linux",
+  "runner_arch": "X64"
+}

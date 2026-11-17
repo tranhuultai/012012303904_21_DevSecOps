@@ -1,0 +1,419 @@
+{
+  "schema_version": 1,
+  "evidence_status": "artifact_confirms_aggregated_iac_warning_policy",
+  "run": {
+    "run_id": "43606451482",
+    "attempt": "1",
+    "url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43606451482/attempts/1",
+    "commit": "ff6f7c437655a59c1ee96cce89d47a5fed253ef3",
+    "ref": "refs/heads/main",
+    "event": "push",
+    "recorded_at": "2026-11-14T14:46:58.837102Z",
+    "fixture_id": "baseline",
+    "sample_type": "repository-baseline",
+    "cache_mode": "cold",
+    "scan_execution_mode": "parallel",
+    "evidence_status": "complete"
+  },
+  "tools": {
+    "semgrep": "1.183.0",
+    "gitleaks": "8.30.1",
+    "trivy": "0.76.1",
+    "checkov": "3.3.22",
+    "syft": "1.54.1",
+    "grype": "0.120.1",
+    "conftest": "0.71.1"
+  },
+  "normalized_findings": {
+    "count": 292,
+    "by_tool": {
+      "checkov": 77,
+      "grype": 204,
+      "trivy": 11
+    },
+    "by_severity": {
+      "HIGH": 138,
+      "INFO": 65,
+      "LOW": 20,
+      "MEDIUM": 69
+    }
+  },
+  "gate": {
+    "policy": "g2",
+    "decision": "WARN",
+    "passed": true,
+    "blockers": 0,
+    "warnings": 20,
+    "warning_correlation": {
+      "matched_policy_warnings": 20,
+      "unmatched_policy_warnings": 0,
+      "matched_source_findings": 101
+    },
+    "warning_severity_counts": {
+      "HIGH": 18,
+      "MEDIUM": 2
+    },
+    "iac_aggregate_warning": {
+      "count": 1,
+      "message": "WARN IaC controls require review: AWS-0077, AWS-0090, AWS-0132, AWS-0176, AWS-0177, AWS-0178, CKV2_AWS_11, CKV2_AWS_12, CKV2_AWS_30, CKV_AWS_129, CKV_AWS_145, CKV_AWS_161, CKV_AWS_21, CKV_AWS_226, CKV_AWS_293, CKV_K8S_35, KSV-0125",
+      "affected_findings": 40,
+      "control_ids": [
+        "AWS-0077",
+        "AWS-0090",
+        "AWS-0132",
+        "AWS-0176",
+        "AWS-0177",
+        "AWS-0178",
+        "CKV2_AWS_11",
+        "CKV2_AWS_12",
+        "CKV2_AWS_30",
+        "CKV_AWS_129",
+        "CKV_AWS_145",
+        "CKV_AWS_161",
+        "CKV_AWS_21",
+        "CKV_AWS_226",
+        "CKV_AWS_293",
+        "CKV_K8S_35",
+        "KSV-0125"
+      ]
+    },
+    "warning_messages": [
+      {
+        "severity": "HIGH",
+        "message": "WARN HIGH chưa có bản vá: CVE-2025-69720",
+        "affected_findings": 4
+      },
+      {
+        "severity": "HIGH",
+        "message": "WARN HIGH chưa có bản vá: CVE-2026-102010",
+        "affected_findings": 3
+      },
+      {
+        "severity": "HIGH",
+        "message": "WARN HIGH chưa có bản vá: CVE-2026-119373",
+        "affected_findings": 1
+      },
+      {
+        "severity": "HIGH",
+        "message": "WARN HIGH chưa có bản vá: CVE-2026-119374",
+        "affected_findings": 1
+      },
+      {
+        "severity": "HIGH",
+        "message": "WARN HIGH chưa có bản vá: CVE-2026-119379",
+        "affected_findings": 1
+      },
+      {
+        "severity": "HIGH",
+        "message": "WARN HIGH chưa có bản vá: CVE-2026-19499",
+        "affected_findings": 2
+      },
+      {
+        "severity": "HIGH",
+        "message": "WARN HIGH chưa có bản vá: CVE-2026-5435",
+        "affected_findings": 2
+      },
+      {
+        "severity": "HIGH",
+        "message": "WARN HIGH chưa có bản vá: CVE-2026-54369",
+        "affected_findings": 1
+      },
+      {
+        "severity": "HIGH",
+        "message": "WARN HIGH chưa có bản vá: CVE-2026-54370",
+        "affected_findings": 1
+      },
+      {
+        "severity": "HIGH",
+        "message": "WARN HIGH chưa có bản vá: CVE-2026-76642",
+        "affected_findings": 9
+      },
+      {
+        "severity": "HIGH",
+        "message": "WARN HIGH chưa có bản vá: CVE-2026-78408",
+        "affected_findings": 9
+      },
+      {
+        "severity": "HIGH",
+        "message": "WARN HIGH chưa có bản vá: CVE-2026-78409",
+        "affected_findings": 9
+      },
+      {
+        "severity": "HIGH",
+        "message": "WARN HIGH chưa có bản vá: CVE-2026-78410",
+        "affected_findings": 9
+      },
+      {
+        "severity": "HIGH",
+        "message": "WARN HIGH chưa có bản vá: CVE-2026-82560",
+        "affected_findings": 1
+      },
+      {
+        "severity": "HIGH",
+        "message": "WARN HIGH chưa có bản vá: CVE-2026-84243",
+        "affected_findings": 2
+      },
+      {
+        "severity": "HIGH",
+        "message": "WARN HIGH chưa có bản vá: CVE-2026-9538",
+        "affected_findings": 1
+      },
+      {
+        "severity": "HIGH",
+        "message": "WARN HIGH chưa có bản vá: CVE-2026-95619",
+        "affected_findings": 3
+      },
+      {
+        "severity": "HIGH",
+        "message": "WARN IaC controls require review: AWS-0077, AWS-0090, AWS-0132, AWS-0176, AWS-0177, AWS-0178, CKV2_AWS_11, CKV2_AWS_12, CKV2_AWS_30, CKV_AWS_129, CKV_AWS_145, CKV_AWS_161, CKV_AWS_21, CKV_AWS_226, CKV_AWS_293, CKV_K8S_35, KSV-0125",
+        "affected_findings": 40
+      },
+      {
+        "severity": "MEDIUM",
+        "message": "WARN MEDIUM có bản vá: CVE-2025-15367",
+        "affected_findings": 1
+      },
+      {
+        "severity": "MEDIUM",
+        "message": "WARN MEDIUM có bản vá: CVE-2026-116566",
+        "affected_findings": 1
+      }
+    ]
+  },
+  "scanners": {
+    "semgrep_findings": 0,
+    "gitleaks_findings": 0,
+    "trivy_sca_findings": 0
+  },
+  "iac": {
+    "trivy_misconfigurations": 11,
+    "trivy_by_severity": {
+      "CRITICAL": 0,
+      "HIGH": 2,
+      "MEDIUM": 6,
+      "LOW": 3,
+      "UNKNOWN": 0
+    },
+    "trivy_findings": [
+      {
+        "rule_id": "KSV-0110",
+        "severity": "LOW",
+        "title": "Workloads in the default namespace"
+      },
+      {
+        "rule_id": "KSV-0125",
+        "severity": "MEDIUM",
+        "title": "Restrict container images to trusted registries"
+      },
+      {
+        "rule_id": "AWS-0178",
+        "severity": "MEDIUM",
+        "title": "VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet \"Rejects\" for VPCs."
+      },
+      {
+        "rule_id": "AWS-0077",
+        "severity": "MEDIUM",
+        "title": "RDS Cluster and RDS instance should have backup retention longer than default 1 day"
+      },
+      {
+        "rule_id": "AWS-0133",
+        "severity": "LOW",
+        "title": "Enable Performance Insights to detect potential problems"
+      },
+      {
+        "rule_id": "AWS-0176",
+        "severity": "MEDIUM",
+        "title": "RDS IAM Database Authentication Disabled"
+      },
+      {
+        "rule_id": "AWS-0177",
+        "severity": "MEDIUM",
+        "title": "RDS Deletion Protection Disabled"
+      },
+      {
+        "rule_id": "AWS-0089",
+        "severity": "LOW",
+        "title": "S3 Bucket Logging"
+      },
+      {
+        "rule_id": "AWS-0090",
+        "severity": "MEDIUM",
+        "title": "S3 Data should be versioned"
+      },
+      {
+        "rule_id": "AWS-0132",
+        "severity": "HIGH",
+        "title": "S3 encryption should use Customer Managed Keys"
+      },
+      {
+        "rule_id": "AWS-0132",
+        "severity": "HIGH",
+        "title": "S3 encryption should use Customer Managed Keys"
+      }
+    ],
+    "checkov_reports": 5,
+    "checkov_failed": 77,
+    "checkov_passed": 425,
+    "egress_controls": {
+      "CKV_AWS_382_checkov": 0,
+      "AWS_0104_trivy": 0
+    }
+  },
+  "image": {
+    "trivy_findings": 206,
+    "trivy_by_severity": {
+      "CRITICAL": 0,
+      "HIGH": 47,
+      "MEDIUM": 89,
+      "LOW": 65,
+      "UNKNOWN": 5
+    },
+    "trivy_fixable_high_critical": 0,
+    "grype_matches": 204,
+    "grype_by_severity": {
+      "Critical": 0,
+      "High": 59,
+      "Medium": 63,
+      "Low": 17,
+      "Negligible": 49,
+      "Unknown": 16
+    },
+    "grype_fixable_high_critical": 0,
+    "scan_image_reference": "devsecops-app:scan",
+    "scan_image_id": "sha256:19c1890a8d1f9a667cd3ef773606155103f40f6195acd4c6d1a755ce6bb37f45"
+  },
+  "sbom": {
+    "scan_components": 2856,
+    "release_components": 2856,
+    "component_sets_match_by_purl": true,
+    "scan_image": "devsecops-app",
+    "release_image": "ghcr.io/gialong611/devsecops",
+    "release_digest": "sha256:ca8c642b7949c97182e645effee49384413c4d9fdc31b511d3e650d1997de68a",
+    "scan_digest_linked": false
+  },
+  "timing": {
+    "evidence_status": "traceable_single_run",
+    "run_id": "43606451482",
+    "run_attempt": "1",
+    "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43606451482/attempts/1",
+    "commit": "ff6f7c437655a59c1ee96cce89d47a5fed253ef3",
+    "fixture_id": "baseline",
+    "cache_mode": "cold",
+    "benchmark_role": "measurement",
+    "scan_execution_mode": "parallel",
+    "runner_os": "Linux",
+    "runner_arch": "X64",
+    "scan_stage_started_at": "2026-11-14T14:44:49Z",
+    "scan_stage_ended_at": "2026-11-14T14:46:44Z",
+    "job_durations_seconds": {
+      "iac": 41,
+      "image": 114,
+      "security-scan": 29
+    },
+    "scan_stage_runner_minutes": 3.067,
+    "parallel_scan_stage_critical_path_seconds": 114,
+    "serial_sum_estimate_seconds": 184,
+    "interpretation": "Observed timings for three scanner jobs in one workflow run. The max is their parallel critical-path estimate; the sum is a serial-work estimate, not a measured serial run. Repeated runs and cache-on/off comparison are still required."
+  },
+  "e4": {
+    "requested": false,
+    "evidence_status": "not_requested",
+    "interpretation": "Not an E4 before/after measurement."
+  },
+  "experiment_limits": [
+    "Only the baseline fixture was observed; no live D/C/N matrix.",
+    "E1/E2 policy comparison is not present in this push observation.",
+    "E3 has one cold measurement, not repeated cold/warm runs.",
+    "E4 was not requested; scan and release image references remain different."
+  ],
+  "raw_report_checksums": {
+    "semgrep.json": {
+      "present": true,
+      "size_bytes": 1724,
+      "sha256": "3d33e5f1113723ea83187df61a200e1fae9c10e87c29a547498dee90052dfc86"
+    },
+    "gitleaks.json": {
+      "present": true,
+      "size_bytes": 3,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    "trivy.json": {
+      "present": true,
+      "size_bytes": 3384,
+      "sha256": "58200c94cf49f308c7f2507c1e9b69714488ef4c6353994ef5cffc00a37791c9"
+    },
+    "checkov.json": {
+      "present": true,
+      "size_bytes": 1055269,
+      "sha256": "41aa37e02bf8623893a90ef0ea830d104fd621cc10f8da2672b3b9496b6749a2"
+    },
+    "checkov.stream.json": {
+      "present": true,
+      "size_bytes": 1340417,
+      "sha256": "676af3bd46495d39ec544ac781877ee552054688a6505b35fec67172750a8d58"
+    },
+    "trivy-config.json": {
+      "present": true,
+      "size_bytes": 45671,
+      "sha256": "e7fdd63bd5fdf1001187bf5a1784d5ce25622b7a5a41b24cd58161d4c6ef1180"
+    },
+    "grype-image.json": {
+      "present": true,
+      "size_bytes": 940798,
+      "sha256": "ec4da0a787c84645666039ecf9c35b882e70014cb2c4cc7adfdcd4cea105ab3a"
+    }
+  },
+  "artifact_sources": [
+    "D:\\Downloads\\experiment-baseline\\experiment\\observation.json",
+    "D:\\Downloads\\report-gate\\gate_report.json",
+    "D:\\Downloads\\report-iac\\trivy-config.json",
+    "D:\\Downloads\\report-iac\\checkov.json",
+    "D:\\Downloads\\report-image\\trivy-image.json",
+    "D:\\Downloads\\report-image\\grype-image.json",
+    "D:\\Downloads\\report-image\\sbom.cdx.json",
+    "D:\\Downloads\\sbom\\sbom.cdx.json"
+  ],
+  "action_run": {
+    "run_number": 19,
+    "run_id": "43606451482",
+    "status": "completed",
+    "conclusion": "success",
+    "event": "push",
+    "url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43606451482",
+    "jobs": [
+      {
+        "name": "Run Python tests",
+        "conclusion": "success"
+      },
+      {
+        "name": "Security scans (collection mode)",
+        "conclusion": "success"
+      },
+      {
+        "name": "iac",
+        "conclusion": "success"
+      },
+      {
+        "name": "image",
+        "conclusion": "success"
+      },
+      {
+        "name": "gate (Conftest Rego)",
+        "conclusion": "success"
+      },
+      {
+        "name": "release",
+        "conclusion": "success"
+      },
+      {
+        "name": "deploy-smoke",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "branch_protection": {
+    "status": "not_verified",
+    "read_attempt": "GitHub API returned 403 Resource not accessible by integration",
+    "pr_block_pass_evidence": "not_present"
+  }
+}

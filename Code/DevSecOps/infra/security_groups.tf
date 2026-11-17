@@ -1,4 +1,4 @@
-# ALB công khai: chỉ nhận 443 từ Internet (N03), egress mặc định (N04).
+# ALB công khai chỉ nhận 443 từ Internet; chỉ gửi tiếp tới app port trong VPC.
 resource "aws_security_group" "alb" {
   name        = "${var.name_prefix}-alb"
   description = "ALB cong khai, chi mo 443"
@@ -13,11 +13,11 @@ resource "aws_security_group" "alb" {
   }
 
   egress {
-    description = "Egress mac dinh"
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    description = "Forward toi app port trong VPC"
+    from_port   = var.app_port
+    to_port     = var.app_port
+    protocol    = "tcp"
+    cidr_blocks = [var.vpc_cidr]
   }
 
   tags = { Name = "${var.name_prefix}-alb" }
@@ -38,10 +38,11 @@ resource "aws_security_group" "app" {
   }
 
   egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    description = "Chi ket noi PostgreSQL trong VPC"
+    from_port   = 5432
+    to_port     = 5432
+    protocol    = "tcp"
+    cidr_blocks = [var.vpc_cidr]
   }
 
   tags = { Name = "${var.name_prefix}-app" }

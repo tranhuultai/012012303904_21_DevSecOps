@@ -1,0 +1,1456 @@
+{
+  "gate_version": "1.0",
+  "engine": "conftest-rego",
+  "policy_profile": "g2",
+  "decision": "WARN",
+  "passed": true,
+  "summary": {
+    "total_findings": 266,
+    "blockers": 0,
+    "warnings": 20,
+    "informational": 0,
+    "excepted": 0,
+    "expired_exceptions": 0
+  },
+  "warning_correlation": {
+    "matched_policy_warnings": 20,
+    "unmatched_policy_warnings": 0,
+    "matched_source_findings": 90
+  },
+  "blockers": [],
+  "warnings": [
+    {
+      "finding_id": "warn:0",
+      "rule_id": "warn",
+      "severity": "HIGH",
+      "title": "WARN HIGH chưa có bản vá: CVE-2025-69720",
+      "message": "WARN HIGH chưa có bản vá: CVE-2025-69720",
+      "file": "/var/lib/dpkg/info/libncursesw6:amd64.md5sums; /usr/share/doc/libtinfo6/copyright; /usr/share/doc/ncurses-base/copyright; /usr/share/doc/ncurses-bin/copyright",
+      "status": "open",
+      "policy_input_file": "gate_input.json",
+      "advisory_ids": [
+        "CVE-2025-69720"
+      ],
+      "control_ids": [],
+      "affected_findings": [
+        {
+          "finding_id": "grype:cf9cdd4682b46020",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2025-69720",
+          "file": "/var/lib/dpkg/info/libncursesw6:amd64.md5sums",
+          "resource": "libncursesw6",
+          "package": "libncursesw6",
+          "installed_version": "6.5+20250216-2"
+        },
+        {
+          "finding_id": "grype:cbd0d4a72eff5789",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2025-69720",
+          "file": "/usr/share/doc/libtinfo6/copyright",
+          "resource": "libtinfo6",
+          "package": "libtinfo6",
+          "installed_version": "6.5+20250216-2"
+        },
+        {
+          "finding_id": "grype:40b283860e25b791",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2025-69720",
+          "file": "/usr/share/doc/ncurses-base/copyright",
+          "resource": "ncurses-base",
+          "package": "ncurses-base",
+          "installed_version": "6.5+20250216-2"
+        },
+        {
+          "finding_id": "grype:2d77c0490654841a",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2025-69720",
+          "file": "/usr/share/doc/ncurses-bin/copyright",
+          "resource": "ncurses-bin",
+          "package": "ncurses-bin",
+          "installed_version": "6.5+20250216-2"
+        }
+      ],
+      "policy_engine": "conftest-rego",
+      "tool": "grype",
+      "source_locations": [
+        "/var/lib/dpkg/info/libncursesw6:amd64.md5sums",
+        "/usr/share/doc/libtinfo6/copyright",
+        "/usr/share/doc/ncurses-base/copyright",
+        "/usr/share/doc/ncurses-bin/copyright"
+      ]
+    },
+    {
+      "finding_id": "warn:1",
+      "rule_id": "warn",
+      "severity": "HIGH",
+      "title": "WARN HIGH chưa có bản vá: CVE-2026-102010",
+      "message": "WARN HIGH chưa có bản vá: CVE-2026-102010",
+      "file": "/usr/share/doc/gcc-14-base/copyright",
+      "status": "open",
+      "policy_input_file": "gate_input.json",
+      "advisory_ids": [
+        "CVE-2026-102010"
+      ],
+      "control_ids": [],
+      "affected_findings": [
+        {
+          "finding_id": "grype:412202f563c4ccbf",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-102010",
+          "file": "/usr/share/doc/gcc-14-base/copyright",
+          "resource": "gcc-14-base",
+          "package": "gcc-14-base",
+          "installed_version": "14.2.0-19"
+        },
+        {
+          "finding_id": "grype:efc77dc9f1e5c106",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-102010",
+          "file": "/usr/share/doc/gcc-14-base/copyright",
+          "resource": "libgcc-s1",
+          "package": "libgcc-s1",
+          "installed_version": "14.2.0-19"
+        },
+        {
+          "finding_id": "grype:9ad53ce58c03758a",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-102010",
+          "file": "/usr/share/doc/gcc-14-base/copyright",
+          "resource": "libstdc++6",
+          "package": "libstdc++6",
+          "installed_version": "14.2.0-19"
+        }
+      ],
+      "policy_engine": "conftest-rego",
+      "tool": "grype",
+      "source_locations": [
+        "/usr/share/doc/gcc-14-base/copyright"
+      ]
+    },
+    {
+      "finding_id": "warn:2",
+      "rule_id": "warn",
+      "severity": "HIGH",
+      "title": "WARN HIGH chưa có bản vá: CVE-2026-119373",
+      "message": "WARN HIGH chưa có bản vá: CVE-2026-119373",
+      "file": "/usr/share/doc/libsqlite3-0/copyright",
+      "status": "open",
+      "policy_input_file": "gate_input.json",
+      "advisory_ids": [
+        "CVE-2026-119373"
+      ],
+      "control_ids": [],
+      "affected_findings": [
+        {
+          "finding_id": "grype:82ca9e8db8d77593",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-119373",
+          "file": "/usr/share/doc/libsqlite3-0/copyright",
+          "resource": "libsqlite3-0",
+          "package": "libsqlite3-0",
+          "installed_version": "3.46.1-7+deb13u2"
+        }
+      ],
+      "policy_engine": "conftest-rego",
+      "tool": "grype",
+      "source_locations": [
+        "/usr/share/doc/libsqlite3-0/copyright"
+      ]
+    },
+    {
+      "finding_id": "warn:3",
+      "rule_id": "warn",
+      "severity": "HIGH",
+      "title": "WARN HIGH chưa có bản vá: CVE-2026-119374",
+      "message": "WARN HIGH chưa có bản vá: CVE-2026-119374",
+      "file": "/usr/share/doc/libsqlite3-0/copyright",
+      "status": "open",
+      "policy_input_file": "gate_input.json",
+      "advisory_ids": [
+        "CVE-2026-119374"
+      ],
+      "control_ids": [],
+      "affected_findings": [
+        {
+          "finding_id": "grype:aac0b2962cd57d16",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-119374",
+          "file": "/usr/share/doc/libsqlite3-0/copyright",
+          "resource": "libsqlite3-0",
+          "package": "libsqlite3-0",
+          "installed_version": "3.46.1-7+deb13u2"
+        }
+      ],
+      "policy_engine": "conftest-rego",
+      "tool": "grype",
+      "source_locations": [
+        "/usr/share/doc/libsqlite3-0/copyright"
+      ]
+    },
+    {
+      "finding_id": "warn:4",
+      "rule_id": "warn",
+      "severity": "HIGH",
+      "title": "WARN HIGH chưa có bản vá: CVE-2026-119379",
+      "message": "WARN HIGH chưa có bản vá: CVE-2026-119379",
+      "file": "/usr/share/doc/libsqlite3-0/copyright",
+      "status": "open",
+      "policy_input_file": "gate_input.json",
+      "advisory_ids": [
+        "CVE-2026-119379"
+      ],
+      "control_ids": [],
+      "affected_findings": [
+        {
+          "finding_id": "grype:d08e8650da441f7c",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-119379",
+          "file": "/usr/share/doc/libsqlite3-0/copyright",
+          "resource": "libsqlite3-0",
+          "package": "libsqlite3-0",
+          "installed_version": "3.46.1-7+deb13u2"
+        }
+      ],
+      "policy_engine": "conftest-rego",
+      "tool": "grype",
+      "source_locations": [
+        "/usr/share/doc/libsqlite3-0/copyright"
+      ]
+    },
+    {
+      "finding_id": "warn:5",
+      "rule_id": "warn",
+      "severity": "HIGH",
+      "title": "WARN HIGH chưa có bản vá: CVE-2026-19499",
+      "message": "WARN HIGH chưa có bản vá: CVE-2026-19499",
+      "file": "/usr/share/doc/libc-bin/copyright; /usr/share/doc/libc6/copyright",
+      "status": "open",
+      "policy_input_file": "gate_input.json",
+      "advisory_ids": [
+        "CVE-2026-19499"
+      ],
+      "control_ids": [],
+      "affected_findings": [
+        {
+          "finding_id": "grype:41b9ca3e32680969",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-19499",
+          "file": "/usr/share/doc/libc-bin/copyright",
+          "resource": "libc-bin",
+          "package": "libc-bin",
+          "installed_version": "2.41-12+deb13u4"
+        },
+        {
+          "finding_id": "grype:f6e666f94c777744",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-19499",
+          "file": "/usr/share/doc/libc6/copyright",
+          "resource": "libc6",
+          "package": "libc6",
+          "installed_version": "2.41-12+deb13u4"
+        }
+      ],
+      "policy_engine": "conftest-rego",
+      "tool": "grype",
+      "source_locations": [
+        "/usr/share/doc/libc-bin/copyright",
+        "/usr/share/doc/libc6/copyright"
+      ]
+    },
+    {
+      "finding_id": "warn:6",
+      "rule_id": "warn",
+      "severity": "HIGH",
+      "title": "WARN HIGH chưa có bản vá: CVE-2026-5435",
+      "message": "WARN HIGH chưa có bản vá: CVE-2026-5435",
+      "file": "/usr/share/doc/libc-bin/copyright; /usr/share/doc/libc6/copyright",
+      "status": "open",
+      "policy_input_file": "gate_input.json",
+      "advisory_ids": [
+        "CVE-2026-5435"
+      ],
+      "control_ids": [],
+      "affected_findings": [
+        {
+          "finding_id": "grype:320bdfe1ae87a96b",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-5435",
+          "file": "/usr/share/doc/libc-bin/copyright",
+          "resource": "libc-bin",
+          "package": "libc-bin",
+          "installed_version": "2.41-12+deb13u4"
+        },
+        {
+          "finding_id": "grype:ce484e665cf5d2ae",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-5435",
+          "file": "/usr/share/doc/libc6/copyright",
+          "resource": "libc6",
+          "package": "libc6",
+          "installed_version": "2.41-12+deb13u4"
+        }
+      ],
+      "policy_engine": "conftest-rego",
+      "tool": "grype",
+      "source_locations": [
+        "/usr/share/doc/libc-bin/copyright",
+        "/usr/share/doc/libc6/copyright"
+      ]
+    },
+    {
+      "finding_id": "warn:7",
+      "rule_id": "warn",
+      "severity": "HIGH",
+      "title": "WARN HIGH chưa có bản vá: CVE-2026-54369",
+      "message": "WARN HIGH chưa có bản vá: CVE-2026-54369",
+      "file": "/usr/share/doc/libacl1/copyright",
+      "status": "open",
+      "policy_input_file": "gate_input.json",
+      "advisory_ids": [
+        "CVE-2026-54369"
+      ],
+      "control_ids": [],
+      "affected_findings": [
+        {
+          "finding_id": "grype:dbc0281c9e49aca1",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-54369",
+          "file": "/usr/share/doc/libacl1/copyright",
+          "resource": "libacl1",
+          "package": "libacl1",
+          "installed_version": "2.3.2-2+b1"
+        }
+      ],
+      "policy_engine": "conftest-rego",
+      "tool": "grype",
+      "source_locations": [
+        "/usr/share/doc/libacl1/copyright"
+      ]
+    },
+    {
+      "finding_id": "warn:8",
+      "rule_id": "warn",
+      "severity": "HIGH",
+      "title": "WARN HIGH chưa có bản vá: CVE-2026-54370",
+      "message": "WARN HIGH chưa có bản vá: CVE-2026-54370",
+      "file": "/usr/share/doc/libacl1/copyright",
+      "status": "open",
+      "policy_input_file": "gate_input.json",
+      "advisory_ids": [
+        "CVE-2026-54370"
+      ],
+      "control_ids": [],
+      "affected_findings": [
+        {
+          "finding_id": "grype:cef09ecc4358952e",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-54370",
+          "file": "/usr/share/doc/libacl1/copyright",
+          "resource": "libacl1",
+          "package": "libacl1",
+          "installed_version": "2.3.2-2+b1"
+        }
+      ],
+      "policy_engine": "conftest-rego",
+      "tool": "grype",
+      "source_locations": [
+        "/usr/share/doc/libacl1/copyright"
+      ]
+    },
+    {
+      "finding_id": "warn:9",
+      "rule_id": "warn",
+      "severity": "HIGH",
+      "title": "WARN HIGH chưa có bản vá: CVE-2026-76642",
+      "message": "WARN HIGH chưa có bản vá: CVE-2026-76642",
+      "file": "/usr/share/doc/bsdutils/copyright; /usr/share/doc/libblkid1/copyright; /usr/share/doc/liblastlog2-2/copyright; /usr/share/doc/libmount1/copyright; /usr/share/doc/libsmartcols1/copyright; /usr/share/doc/libuuid1/copyright; /usr/share/doc/login/copyright; /usr/share/doc/mount/copyright; /usr/share/doc/util-linux/copyright",
+      "status": "open",
+      "policy_input_file": "gate_input.json",
+      "advisory_ids": [
+        "CVE-2026-76642"
+      ],
+      "control_ids": [],
+      "affected_findings": [
+        {
+          "finding_id": "grype:2b71d2b21a935500",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-76642",
+          "file": "/usr/share/doc/bsdutils/copyright",
+          "resource": "bsdutils",
+          "package": "bsdutils",
+          "installed_version": "1:2.41.5-0+deb13u1"
+        },
+        {
+          "finding_id": "grype:a6279fffd3357091",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-76642",
+          "file": "/usr/share/doc/libblkid1/copyright",
+          "resource": "libblkid1",
+          "package": "libblkid1",
+          "installed_version": "2.41.5-0+deb13u1"
+        },
+        {
+          "finding_id": "grype:b27e4b9aa46c13e8",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-76642",
+          "file": "/usr/share/doc/liblastlog2-2/copyright",
+          "resource": "liblastlog2-2",
+          "package": "liblastlog2-2",
+          "installed_version": "2.41.5-0+deb13u1"
+        },
+        {
+          "finding_id": "grype:dd5367654a945f5d",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-76642",
+          "file": "/usr/share/doc/libmount1/copyright",
+          "resource": "libmount1",
+          "package": "libmount1",
+          "installed_version": "2.41.5-0+deb13u1"
+        },
+        {
+          "finding_id": "grype:8bf590853cc3fa0c",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-76642",
+          "file": "/usr/share/doc/libsmartcols1/copyright",
+          "resource": "libsmartcols1",
+          "package": "libsmartcols1",
+          "installed_version": "2.41.5-0+deb13u1"
+        },
+        {
+          "finding_id": "grype:735875f9071e9832",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-76642",
+          "file": "/usr/share/doc/libuuid1/copyright",
+          "resource": "libuuid1",
+          "package": "libuuid1",
+          "installed_version": "2.41.5-0+deb13u1"
+        },
+        {
+          "finding_id": "grype:91bb9ad10bf44de9",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-76642",
+          "file": "/usr/share/doc/login/copyright",
+          "resource": "login",
+          "package": "login",
+          "installed_version": "1:4.16.0-2+really2.41.5-0+deb13u1"
+        },
+        {
+          "finding_id": "grype:f8171787645089c7",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-76642",
+          "file": "/usr/share/doc/mount/copyright",
+          "resource": "mount",
+          "package": "mount",
+          "installed_version": "2.41.5-0+deb13u1"
+        },
+        {
+          "finding_id": "grype:416649a39d117913",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-76642",
+          "file": "/usr/share/doc/util-linux/copyright",
+          "resource": "util-linux",
+          "package": "util-linux",
+          "installed_version": "2.41.5-0+deb13u1"
+        }
+      ],
+      "policy_engine": "conftest-rego",
+      "tool": "grype",
+      "source_locations": [
+        "/usr/share/doc/bsdutils/copyright",
+        "/usr/share/doc/libblkid1/copyright",
+        "/usr/share/doc/liblastlog2-2/copyright",
+        "/usr/share/doc/libmount1/copyright",
+        "/usr/share/doc/libsmartcols1/copyright",
+        "/usr/share/doc/libuuid1/copyright",
+        "/usr/share/doc/login/copyright",
+        "/usr/share/doc/mount/copyright",
+        "/usr/share/doc/util-linux/copyright"
+      ]
+    },
+    {
+      "finding_id": "warn:10",
+      "rule_id": "warn",
+      "severity": "HIGH",
+      "title": "WARN HIGH chưa có bản vá: CVE-2026-78408",
+      "message": "WARN HIGH chưa có bản vá: CVE-2026-78408",
+      "file": "/usr/share/doc/bsdutils/copyright; /usr/share/doc/libblkid1/copyright; /usr/share/doc/liblastlog2-2/copyright; /usr/share/doc/libmount1/copyright; /usr/share/doc/libsmartcols1/copyright; /usr/share/doc/libuuid1/copyright; /usr/share/doc/login/copyright; /usr/share/doc/mount/copyright; /usr/share/doc/util-linux/copyright",
+      "status": "open",
+      "policy_input_file": "gate_input.json",
+      "advisory_ids": [
+        "CVE-2026-78408"
+      ],
+      "control_ids": [],
+      "affected_findings": [
+        {
+          "finding_id": "grype:b01383d47e1f15b4",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-78408",
+          "file": "/usr/share/doc/bsdutils/copyright",
+          "resource": "bsdutils",
+          "package": "bsdutils",
+          "installed_version": "1:2.41.5-0+deb13u1"
+        },
+        {
+          "finding_id": "grype:15357ed51543f9f7",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-78408",
+          "file": "/usr/share/doc/libblkid1/copyright",
+          "resource": "libblkid1",
+          "package": "libblkid1",
+          "installed_version": "2.41.5-0+deb13u1"
+        },
+        {
+          "finding_id": "grype:7ef9ed8bfe314f23",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-78408",
+          "file": "/usr/share/doc/liblastlog2-2/copyright",
+          "resource": "liblastlog2-2",
+          "package": "liblastlog2-2",
+          "installed_version": "2.41.5-0+deb13u1"
+        },
+        {
+          "finding_id": "grype:9ea927f9de19fefc",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-78408",
+          "file": "/usr/share/doc/libmount1/copyright",
+          "resource": "libmount1",
+          "package": "libmount1",
+          "installed_version": "2.41.5-0+deb13u1"
+        },
+        {
+          "finding_id": "grype:a5442957cd04c015",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-78408",
+          "file": "/usr/share/doc/libsmartcols1/copyright",
+          "resource": "libsmartcols1",
+          "package": "libsmartcols1",
+          "installed_version": "2.41.5-0+deb13u1"
+        },
+        {
+          "finding_id": "grype:7086af65518c4e75",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-78408",
+          "file": "/usr/share/doc/libuuid1/copyright",
+          "resource": "libuuid1",
+          "package": "libuuid1",
+          "installed_version": "2.41.5-0+deb13u1"
+        },
+        {
+          "finding_id": "grype:f2fa87ec6e0c617a",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-78408",
+          "file": "/usr/share/doc/login/copyright",
+          "resource": "login",
+          "package": "login",
+          "installed_version": "1:4.16.0-2+really2.41.5-0+deb13u1"
+        },
+        {
+          "finding_id": "grype:a074719b994cd2d5",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-78408",
+          "file": "/usr/share/doc/mount/copyright",
+          "resource": "mount",
+          "package": "mount",
+          "installed_version": "2.41.5-0+deb13u1"
+        },
+        {
+          "finding_id": "grype:e2ac915158b8c02f",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-78408",
+          "file": "/usr/share/doc/util-linux/copyright",
+          "resource": "util-linux",
+          "package": "util-linux",
+          "installed_version": "2.41.5-0+deb13u1"
+        }
+      ],
+      "policy_engine": "conftest-rego",
+      "tool": "grype",
+      "source_locations": [
+        "/usr/share/doc/bsdutils/copyright",
+        "/usr/share/doc/libblkid1/copyright",
+        "/usr/share/doc/liblastlog2-2/copyright",
+        "/usr/share/doc/libmount1/copyright",
+        "/usr/share/doc/libsmartcols1/copyright",
+        "/usr/share/doc/libuuid1/copyright",
+        "/usr/share/doc/login/copyright",
+        "/usr/share/doc/mount/copyright",
+        "/usr/share/doc/util-linux/copyright"
+      ]
+    },
+    {
+      "finding_id": "warn:11",
+      "rule_id": "warn",
+      "severity": "HIGH",
+      "title": "WARN HIGH chưa có bản vá: CVE-2026-78409",
+      "message": "WARN HIGH chưa có bản vá: CVE-2026-78409",
+      "file": "/usr/share/doc/bsdutils/copyright; /usr/share/doc/libblkid1/copyright; /usr/share/doc/liblastlog2-2/copyright; /usr/share/doc/libmount1/copyright; /usr/share/doc/libsmartcols1/copyright; /usr/share/doc/libuuid1/copyright; /usr/share/doc/login/copyright; /usr/share/doc/mount/copyright; /usr/share/doc/util-linux/copyright",
+      "status": "open",
+      "policy_input_file": "gate_input.json",
+      "advisory_ids": [
+        "CVE-2026-78409"
+      ],
+      "control_ids": [],
+      "affected_findings": [
+        {
+          "finding_id": "grype:d75371fd5690abe4",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-78409",
+          "file": "/usr/share/doc/bsdutils/copyright",
+          "resource": "bsdutils",
+          "package": "bsdutils",
+          "installed_version": "1:2.41.5-0+deb13u1"
+        },
+        {
+          "finding_id": "grype:41e7a9abb17c6697",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-78409",
+          "file": "/usr/share/doc/libblkid1/copyright",
+          "resource": "libblkid1",
+          "package": "libblkid1",
+          "installed_version": "2.41.5-0+deb13u1"
+        },
+        {
+          "finding_id": "grype:780e932e4c494505",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-78409",
+          "file": "/usr/share/doc/liblastlog2-2/copyright",
+          "resource": "liblastlog2-2",
+          "package": "liblastlog2-2",
+          "installed_version": "2.41.5-0+deb13u1"
+        },
+        {
+          "finding_id": "grype:eb4cfc31e9c8469a",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-78409",
+          "file": "/usr/share/doc/libmount1/copyright",
+          "resource": "libmount1",
+          "package": "libmount1",
+          "installed_version": "2.41.5-0+deb13u1"
+        },
+        {
+          "finding_id": "grype:aa2ccc651b33af5c",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-78409",
+          "file": "/usr/share/doc/libsmartcols1/copyright",
+          "resource": "libsmartcols1",
+          "package": "libsmartcols1",
+          "installed_version": "2.41.5-0+deb13u1"
+        },
+        {
+          "finding_id": "grype:bf3f19a60c938f40",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-78409",
+          "file": "/usr/share/doc/libuuid1/copyright",
+          "resource": "libuuid1",
+          "package": "libuuid1",
+          "installed_version": "2.41.5-0+deb13u1"
+        },
+        {
+          "finding_id": "grype:f02d286a40995593",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-78409",
+          "file": "/usr/share/doc/login/copyright",
+          "resource": "login",
+          "package": "login",
+          "installed_version": "1:4.16.0-2+really2.41.5-0+deb13u1"
+        },
+        {
+          "finding_id": "grype:c35d65482323b1e9",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-78409",
+          "file": "/usr/share/doc/mount/copyright",
+          "resource": "mount",
+          "package": "mount",
+          "installed_version": "2.41.5-0+deb13u1"
+        },
+        {
+          "finding_id": "grype:d4ad188d3e4d4ea2",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-78409",
+          "file": "/usr/share/doc/util-linux/copyright",
+          "resource": "util-linux",
+          "package": "util-linux",
+          "installed_version": "2.41.5-0+deb13u1"
+        }
+      ],
+      "policy_engine": "conftest-rego",
+      "tool": "grype",
+      "source_locations": [
+        "/usr/share/doc/bsdutils/copyright",
+        "/usr/share/doc/libblkid1/copyright",
+        "/usr/share/doc/liblastlog2-2/copyright",
+        "/usr/share/doc/libmount1/copyright",
+        "/usr/share/doc/libsmartcols1/copyright",
+        "/usr/share/doc/libuuid1/copyright",
+        "/usr/share/doc/login/copyright",
+        "/usr/share/doc/mount/copyright",
+        "/usr/share/doc/util-linux/copyright"
+      ]
+    },
+    {
+      "finding_id": "warn:12",
+      "rule_id": "warn",
+      "severity": "HIGH",
+      "title": "WARN HIGH chưa có bản vá: CVE-2026-78410",
+      "message": "WARN HIGH chưa có bản vá: CVE-2026-78410",
+      "file": "/usr/share/doc/bsdutils/copyright; /usr/share/doc/libblkid1/copyright; /usr/share/doc/liblastlog2-2/copyright; /usr/share/doc/libmount1/copyright; /usr/share/doc/libsmartcols1/copyright; /usr/share/doc/libuuid1/copyright; /usr/share/doc/login/copyright; /usr/share/doc/mount/copyright; /usr/share/doc/util-linux/copyright",
+      "status": "open",
+      "policy_input_file": "gate_input.json",
+      "advisory_ids": [
+        "CVE-2026-78410"
+      ],
+      "control_ids": [],
+      "affected_findings": [
+        {
+          "finding_id": "grype:c3525cc58ddc18e1",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-78410",
+          "file": "/usr/share/doc/bsdutils/copyright",
+          "resource": "bsdutils",
+          "package": "bsdutils",
+          "installed_version": "1:2.41.5-0+deb13u1"
+        },
+        {
+          "finding_id": "grype:838cd2d18858a41a",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-78410",
+          "file": "/usr/share/doc/libblkid1/copyright",
+          "resource": "libblkid1",
+          "package": "libblkid1",
+          "installed_version": "2.41.5-0+deb13u1"
+        },
+        {
+          "finding_id": "grype:9e15a8e4691a69a6",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-78410",
+          "file": "/usr/share/doc/liblastlog2-2/copyright",
+          "resource": "liblastlog2-2",
+          "package": "liblastlog2-2",
+          "installed_version": "2.41.5-0+deb13u1"
+        },
+        {
+          "finding_id": "grype:7ff5cfb2becaf226",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-78410",
+          "file": "/usr/share/doc/libmount1/copyright",
+          "resource": "libmount1",
+          "package": "libmount1",
+          "installed_version": "2.41.5-0+deb13u1"
+        },
+        {
+          "finding_id": "grype:12c18efc77e4468e",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-78410",
+          "file": "/usr/share/doc/libsmartcols1/copyright",
+          "resource": "libsmartcols1",
+          "package": "libsmartcols1",
+          "installed_version": "2.41.5-0+deb13u1"
+        },
+        {
+          "finding_id": "grype:22d8793bac404d1a",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-78410",
+          "file": "/usr/share/doc/libuuid1/copyright",
+          "resource": "libuuid1",
+          "package": "libuuid1",
+          "installed_version": "2.41.5-0+deb13u1"
+        },
+        {
+          "finding_id": "grype:2bd129c36bf36ed3",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-78410",
+          "file": "/usr/share/doc/login/copyright",
+          "resource": "login",
+          "package": "login",
+          "installed_version": "1:4.16.0-2+really2.41.5-0+deb13u1"
+        },
+        {
+          "finding_id": "grype:e05aee9e5a52856b",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-78410",
+          "file": "/usr/share/doc/mount/copyright",
+          "resource": "mount",
+          "package": "mount",
+          "installed_version": "2.41.5-0+deb13u1"
+        },
+        {
+          "finding_id": "grype:1b3a510b8dee5dfb",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-78410",
+          "file": "/usr/share/doc/util-linux/copyright",
+          "resource": "util-linux",
+          "package": "util-linux",
+          "installed_version": "2.41.5-0+deb13u1"
+        }
+      ],
+      "policy_engine": "conftest-rego",
+      "tool": "grype",
+      "source_locations": [
+        "/usr/share/doc/bsdutils/copyright",
+        "/usr/share/doc/libblkid1/copyright",
+        "/usr/share/doc/liblastlog2-2/copyright",
+        "/usr/share/doc/libmount1/copyright",
+        "/usr/share/doc/libsmartcols1/copyright",
+        "/usr/share/doc/libuuid1/copyright",
+        "/usr/share/doc/login/copyright",
+        "/usr/share/doc/mount/copyright",
+        "/usr/share/doc/util-linux/copyright"
+      ]
+    },
+    {
+      "finding_id": "warn:13",
+      "rule_id": "warn",
+      "severity": "HIGH",
+      "title": "WARN HIGH chưa có bản vá: CVE-2026-82560",
+      "message": "WARN HIGH chưa có bản vá: CVE-2026-82560",
+      "file": "/var/lib/dpkg/info/perl-base.list",
+      "status": "open",
+      "policy_input_file": "gate_input.json",
+      "advisory_ids": [
+        "CVE-2026-82560"
+      ],
+      "control_ids": [],
+      "affected_findings": [
+        {
+          "finding_id": "grype:c79f27e61d788be8",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-82560",
+          "file": "/var/lib/dpkg/info/perl-base.list",
+          "resource": "perl-base",
+          "package": "perl-base",
+          "installed_version": "5.40.1-6+deb13u1"
+        }
+      ],
+      "policy_engine": "conftest-rego",
+      "tool": "grype",
+      "source_locations": [
+        "/var/lib/dpkg/info/perl-base.list"
+      ]
+    },
+    {
+      "finding_id": "warn:14",
+      "rule_id": "warn",
+      "severity": "HIGH",
+      "title": "WARN HIGH chưa có bản vá: CVE-2026-84243",
+      "message": "WARN HIGH chưa có bản vá: CVE-2026-84243",
+      "file": "/usr/share/doc/libc-bin/copyright; /usr/share/doc/libc6/copyright",
+      "status": "open",
+      "policy_input_file": "gate_input.json",
+      "advisory_ids": [
+        "CVE-2026-84243"
+      ],
+      "control_ids": [],
+      "affected_findings": [
+        {
+          "finding_id": "grype:8bc01529f253995f",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-84243",
+          "file": "/usr/share/doc/libc-bin/copyright",
+          "resource": "libc-bin",
+          "package": "libc-bin",
+          "installed_version": "2.41-12+deb13u4"
+        },
+        {
+          "finding_id": "grype:5b88a906fe752d65",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-84243",
+          "file": "/usr/share/doc/libc6/copyright",
+          "resource": "libc6",
+          "package": "libc6",
+          "installed_version": "2.41-12+deb13u4"
+        }
+      ],
+      "policy_engine": "conftest-rego",
+      "tool": "grype",
+      "source_locations": [
+        "/usr/share/doc/libc-bin/copyright",
+        "/usr/share/doc/libc6/copyright"
+      ]
+    },
+    {
+      "finding_id": "warn:15",
+      "rule_id": "warn",
+      "severity": "HIGH",
+      "title": "WARN HIGH chưa có bản vá: CVE-2026-9538",
+      "message": "WARN HIGH chưa có bản vá: CVE-2026-9538",
+      "file": "/var/lib/dpkg/info/perl-base.list",
+      "status": "open",
+      "policy_input_file": "gate_input.json",
+      "advisory_ids": [
+        "CVE-2026-9538"
+      ],
+      "control_ids": [],
+      "affected_findings": [
+        {
+          "finding_id": "grype:26ef4c0d5c9de92a",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-9538",
+          "file": "/var/lib/dpkg/info/perl-base.list",
+          "resource": "perl-base",
+          "package": "perl-base",
+          "installed_version": "5.40.1-6+deb13u1"
+        }
+      ],
+      "policy_engine": "conftest-rego",
+      "tool": "grype",
+      "source_locations": [
+        "/var/lib/dpkg/info/perl-base.list"
+      ]
+    },
+    {
+      "finding_id": "warn:16",
+      "rule_id": "warn",
+      "severity": "HIGH",
+      "title": "WARN HIGH chưa có bản vá: CVE-2026-95619",
+      "message": "WARN HIGH chưa có bản vá: CVE-2026-95619",
+      "file": "/usr/share/doc/gcc-14-base/copyright",
+      "status": "open",
+      "policy_input_file": "gate_input.json",
+      "advisory_ids": [
+        "CVE-2026-95619"
+      ],
+      "control_ids": [],
+      "affected_findings": [
+        {
+          "finding_id": "grype:7416cd9f1b60e7d4",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-95619",
+          "file": "/usr/share/doc/gcc-14-base/copyright",
+          "resource": "gcc-14-base",
+          "package": "gcc-14-base",
+          "installed_version": "14.2.0-19"
+        },
+        {
+          "finding_id": "grype:d81a0a7e98156d96",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-95619",
+          "file": "/usr/share/doc/gcc-14-base/copyright",
+          "resource": "libgcc-s1",
+          "package": "libgcc-s1",
+          "installed_version": "14.2.0-19"
+        },
+        {
+          "finding_id": "grype:e040253894299fea",
+          "tool": "grype",
+          "category": "image",
+          "severity": "HIGH",
+          "title": "CVE-2026-95619",
+          "file": "/usr/share/doc/gcc-14-base/copyright",
+          "resource": "libstdc++6",
+          "package": "libstdc++6",
+          "installed_version": "14.2.0-19"
+        }
+      ],
+      "policy_engine": "conftest-rego",
+      "tool": "grype",
+      "source_locations": [
+        "/usr/share/doc/gcc-14-base/copyright"
+      ]
+    },
+    {
+      "finding_id": "warn:17",
+      "rule_id": "warn",
+      "severity": "HIGH",
+      "title": "WARN IaC controls require review: AWS-0077, AWS-0090, AWS-0132, AWS-0176, AWS-0177, AWS-0178, CKV2_AWS_11, CKV2_AWS_12, CKV2_AWS_30, CKV_AWS_129, CKV_AWS_145, CKV_AWS_161, CKV_AWS_21, CKV_AWS_226, CKV_AWS_293, CKV_K8S_35, KSV-0125",
+      "message": "WARN IaC controls require review: AWS-0077, AWS-0090, AWS-0132, AWS-0176, AWS-0177, AWS-0178, CKV2_AWS_11, CKV2_AWS_12, CKV2_AWS_30, CKV_AWS_129, CKV_AWS_145, CKV_AWS_161, CKV_AWS_21, CKV_AWS_226, CKV_AWS_293, CKV_K8S_35, KSV-0125",
+      "file": "/rds.tf:26; /network.tf:5; /s3.tf:1; /s3.tf:13; /deploy/deployment.yaml:1; deploy/deployment.yaml; infra/network.tf; infra/rds.tf; infra/s3.tf",
+      "status": "open",
+      "policy_input_file": "gate_input.json",
+      "advisory_ids": [],
+      "control_ids": [
+        "AWS-0077",
+        "AWS-0090",
+        "AWS-0132",
+        "AWS-0176",
+        "AWS-0177",
+        "AWS-0178",
+        "CKV2_AWS_11",
+        "CKV2_AWS_12",
+        "CKV2_AWS_30",
+        "CKV_AWS_129",
+        "CKV_AWS_145",
+        "CKV_AWS_161",
+        "CKV_AWS_21",
+        "CKV_AWS_226",
+        "CKV_AWS_293",
+        "CKV_K8S_35",
+        "KSV-0125"
+      ],
+      "affected_findings": [
+        {
+          "finding_id": "checkov:ca6faac2c7f180f0",
+          "tool": "checkov",
+          "category": "iac",
+          "severity": "HIGH",
+          "title": "Ensure that AWS database instances have deletion protection enabled",
+          "file": "/rds.tf",
+          "line_start": 26,
+          "resource": "aws_db_instance.main"
+        },
+        {
+          "finding_id": "checkov:e5c249b1b6057966",
+          "tool": "checkov",
+          "category": "iac",
+          "severity": "HIGH",
+          "title": "Ensure that respective logs of Amazon Relational Database Service (Amazon RDS) are enabled",
+          "file": "/rds.tf",
+          "line_start": 26,
+          "resource": "aws_db_instance.main"
+        },
+        {
+          "finding_id": "checkov:20a48d2d9745f902",
+          "tool": "checkov",
+          "category": "iac",
+          "severity": "HIGH",
+          "title": "Ensure DB instance gets all minor upgrades automatically",
+          "file": "/rds.tf",
+          "line_start": 26,
+          "resource": "aws_db_instance.main"
+        },
+        {
+          "finding_id": "checkov:b4fc745afb07e82c",
+          "tool": "checkov",
+          "category": "iac",
+          "severity": "HIGH",
+          "title": "Ensure RDS database has IAM authentication enabled",
+          "file": "/rds.tf",
+          "line_start": 26,
+          "resource": "aws_db_instance.main"
+        },
+        {
+          "finding_id": "checkov:58bf1a93f936c822",
+          "tool": "checkov",
+          "category": "iac",
+          "severity": "HIGH",
+          "title": "Ensure the default security group of every VPC restricts all traffic",
+          "file": "/network.tf",
+          "line_start": 5,
+          "resource": "aws_vpc.main"
+        },
+        {
+          "finding_id": "checkov:6010c97eb06b0187",
+          "tool": "checkov",
+          "category": "iac",
+          "severity": "HIGH",
+          "title": "Ensure VPC flow logging is enabled in all VPCs",
+          "file": "/network.tf",
+          "line_start": 5,
+          "resource": "aws_vpc.main"
+        },
+        {
+          "finding_id": "checkov:90340749b5261f65",
+          "tool": "checkov",
+          "category": "iac",
+          "severity": "HIGH",
+          "title": "Ensure that S3 buckets are encrypted with KMS by default",
+          "file": "/s3.tf",
+          "line_start": 1,
+          "resource": "aws_s3_bucket.logs"
+        },
+        {
+          "finding_id": "checkov:c2b4c21d2fed605a",
+          "tool": "checkov",
+          "category": "iac",
+          "severity": "HIGH",
+          "title": "Ensure that S3 buckets are encrypted with KMS by default",
+          "file": "/s3.tf",
+          "line_start": 13,
+          "resource": "aws_s3_bucket.app"
+        },
+        {
+          "finding_id": "checkov:c4b73d346add080f",
+          "tool": "checkov",
+          "category": "iac",
+          "severity": "HIGH",
+          "title": "Ensure Postgres RDS as aws_db_instance has Query Logging enabled",
+          "file": "/rds.tf",
+          "line_start": 26,
+          "resource": "aws_db_instance.main"
+        },
+        {
+          "finding_id": "checkov:740e0c4d6c6bc6ad",
+          "tool": "checkov",
+          "category": "iac",
+          "severity": "HIGH",
+          "title": "Ensure all data stored in the S3 bucket have versioning enabled",
+          "file": "/s3.tf",
+          "line_start": 1,
+          "resource": "aws_s3_bucket.logs"
+        },
+        {
+          "finding_id": "checkov:9171126c7045b266",
+          "tool": "checkov",
+          "category": "k8s",
+          "severity": "HIGH",
+          "title": "Prefer using secrets as files over secrets as environment variables",
+          "file": "/deploy/deployment.yaml",
+          "line_start": 1,
+          "resource": "Deployment.default.devsecops-app"
+        },
+        {
+          "finding_id": "checkov:ca6faac2c7f180f0",
+          "tool": "checkov",
+          "category": "iac",
+          "severity": "HIGH",
+          "title": "Ensure that AWS database instances have deletion protection enabled",
+          "file": "/rds.tf",
+          "line_start": 26,
+          "resource": "aws_db_instance.main"
+        },
+        {
+          "finding_id": "checkov:e5c249b1b6057966",
+          "tool": "checkov",
+          "category": "iac",
+          "severity": "HIGH",
+          "title": "Ensure that respective logs of Amazon Relational Database Service (Amazon RDS) are enabled",
+          "file": "/rds.tf",
+          "line_start": 26,
+          "resource": "aws_db_instance.main"
+        },
+        {
+          "finding_id": "checkov:20a48d2d9745f902",
+          "tool": "checkov",
+          "category": "iac",
+          "severity": "HIGH",
+          "title": "Ensure DB instance gets all minor upgrades automatically",
+          "file": "/rds.tf",
+          "line_start": 26,
+          "resource": "aws_db_instance.main"
+        },
+        {
+          "finding_id": "checkov:b4fc745afb07e82c",
+          "tool": "checkov",
+          "category": "iac",
+          "severity": "HIGH",
+          "title": "Ensure RDS database has IAM authentication enabled",
+          "file": "/rds.tf",
+          "line_start": 26,
+          "resource": "aws_db_instance.main"
+        },
+        {
+          "finding_id": "checkov:58bf1a93f936c822",
+          "tool": "checkov",
+          "category": "iac",
+          "severity": "HIGH",
+          "title": "Ensure the default security group of every VPC restricts all traffic",
+          "file": "/network.tf",
+          "line_start": 5,
+          "resource": "aws_vpc.main"
+        },
+        {
+          "finding_id": "checkov:6010c97eb06b0187",
+          "tool": "checkov",
+          "category": "iac",
+          "severity": "HIGH",
+          "title": "Ensure VPC flow logging is enabled in all VPCs",
+          "file": "/network.tf",
+          "line_start": 5,
+          "resource": "aws_vpc.main"
+        },
+        {
+          "finding_id": "checkov:90340749b5261f65",
+          "tool": "checkov",
+          "category": "iac",
+          "severity": "HIGH",
+          "title": "Ensure that S3 buckets are encrypted with KMS by default",
+          "file": "/s3.tf",
+          "line_start": 1,
+          "resource": "aws_s3_bucket.logs"
+        },
+        {
+          "finding_id": "checkov:c2b4c21d2fed605a",
+          "tool": "checkov",
+          "category": "iac",
+          "severity": "HIGH",
+          "title": "Ensure that S3 buckets are encrypted with KMS by default",
+          "file": "/s3.tf",
+          "line_start": 13,
+          "resource": "aws_s3_bucket.app"
+        },
+        {
+          "finding_id": "checkov:c4b73d346add080f",
+          "tool": "checkov",
+          "category": "iac",
+          "severity": "HIGH",
+          "title": "Ensure Postgres RDS as aws_db_instance has Query Logging enabled",
+          "file": "/rds.tf",
+          "line_start": 26,
+          "resource": "aws_db_instance.main"
+        },
+        {
+          "finding_id": "checkov:740e0c4d6c6bc6ad",
+          "tool": "checkov",
+          "category": "iac",
+          "severity": "HIGH",
+          "title": "Ensure all data stored in the S3 bucket have versioning enabled",
+          "file": "/s3.tf",
+          "line_start": 1,
+          "resource": "aws_s3_bucket.logs"
+        },
+        {
+          "finding_id": "trivy:a681a2bf8a08cefd",
+          "tool": "trivy",
+          "category": "k8s",
+          "severity": "MEDIUM",
+          "title": "Restrict container images to trusted registries",
+          "file": "deploy/deployment.yaml"
+        },
+        {
+          "finding_id": "trivy:3e9c89073befd6c9",
+          "tool": "trivy",
+          "category": "iac",
+          "severity": "MEDIUM",
+          "title": "VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet \"Rejects\" for VPCs.",
+          "file": "infra/network.tf"
+        },
+        {
+          "finding_id": "trivy:097e230fbbffff5b",
+          "tool": "trivy",
+          "category": "iac",
+          "severity": "MEDIUM",
+          "title": "RDS Cluster and RDS instance should have backup retention longer than default 1 day",
+          "file": "infra/rds.tf"
+        },
+        {
+          "finding_id": "trivy:26ce7129a4606eb0",
+          "tool": "trivy",
+          "category": "iac",
+          "severity": "MEDIUM",
+          "title": "RDS IAM Database Authentication Disabled",
+          "file": "infra/rds.tf"
+        },
+        {
+          "finding_id": "trivy:1890e967b2f1250e",
+          "tool": "trivy",
+          "category": "iac",
+          "severity": "MEDIUM",
+          "title": "RDS Deletion Protection Disabled",
+          "file": "infra/rds.tf"
+        },
+        {
+          "finding_id": "trivy:5c78626abfad9b19",
+          "tool": "trivy",
+          "category": "iac",
+          "severity": "MEDIUM",
+          "title": "S3 Data should be versioned",
+          "file": "infra/s3.tf"
+        },
+        {
+          "finding_id": "trivy:2ef6903dba2bbd61",
+          "tool": "trivy",
+          "category": "iac",
+          "severity": "HIGH",
+          "title": "S3 encryption should use Customer Managed Keys",
+          "file": "infra/s3.tf"
+        },
+        {
+          "finding_id": "trivy:2ef6903dba2bbd61",
+          "tool": "trivy",
+          "category": "iac",
+          "severity": "HIGH",
+          "title": "S3 encryption should use Customer Managed Keys",
+          "file": "infra/s3.tf"
+        }
+      ],
+      "policy_engine": "conftest-rego",
+      "tool": "checkov, trivy",
+      "source_locations": [
+        "/rds.tf:26",
+        "/network.tf:5",
+        "/s3.tf:1",
+        "/s3.tf:13",
+        "/deploy/deployment.yaml:1",
+        "deploy/deployment.yaml",
+        "infra/network.tf",
+        "infra/rds.tf",
+        "infra/s3.tf"
+      ]
+    },
+    {
+      "finding_id": "warn:18",
+      "rule_id": "warn",
+      "severity": "MEDIUM",
+      "title": "WARN MEDIUM có bản vá: CVE-2025-15367",
+      "message": "WARN MEDIUM có bản vá: CVE-2025-15367",
+      "file": "/usr/local/bin/python3.13",
+      "status": "open",
+      "policy_input_file": "gate_input.json",
+      "advisory_ids": [
+        "CVE-2025-15367"
+      ],
+      "control_ids": [],
+      "affected_findings": [
+        {
+          "finding_id": "grype:0687124b692f72e2",
+          "tool": "grype",
+          "category": "image",
+          "severity": "MEDIUM",
+          "title": "CVE-2025-15367",
+          "file": "/usr/local/bin/python3.13",
+          "resource": "python",
+          "package": "python",
+          "installed_version": "3.13.18",
+          "fixed_version": "3.15.0a6"
+        }
+      ],
+      "policy_engine": "conftest-rego",
+      "tool": "grype",
+      "source_locations": [
+        "/usr/local/bin/python3.13"
+      ]
+    },
+    {
+      "finding_id": "warn:19",
+      "rule_id": "warn",
+      "severity": "MEDIUM",
+      "title": "WARN MEDIUM có bản vá: CVE-2026-116566",
+      "message": "WARN MEDIUM có bản vá: CVE-2026-116566",
+      "file": "/usr/local/bin/python3.13",
+      "status": "open",
+      "policy_input_file": "gate_input.json",
+      "advisory_ids": [
+        "CVE-2026-116566"
+      ],
+      "control_ids": [],
+      "affected_findings": [
+        {
+          "finding_id": "grype:630701e199bea7a9",
+          "tool": "grype",
+          "category": "image",
+          "severity": "MEDIUM",
+          "title": "CVE-2026-116566",
+          "file": "/usr/local/bin/python3.13",
+          "resource": "python",
+          "package": "python",
+          "installed_version": "3.13.18",
+          "fixed_version": "3.16.0"
+        }
+      ],
+      "policy_engine": "conftest-rego",
+      "tool": "grype",
+      "source_locations": [
+        "/usr/local/bin/python3.13"
+      ]
+    }
+  ],
+  "informational_findings": [],
+  "excepted_findings": [],
+  "expired_exceptions": [],
+  "unused_exceptions": []
+}

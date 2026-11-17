@@ -1,10 +1,8 @@
-diff --git a/Code/DevSecOps/Dockerfile b/Code/DevSecOps/Dockerfile
-index 580c3fb..57053a4 100644
 --- a/Code/DevSecOps/Dockerfile
 +++ b/Code/DevSecOps/Dockerfile
-@@ -16,6 +16,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
- WORKDIR /app
- COPY --from=builder /opt/venv /opt/venv
+@@ -40,6 +40,7 @@
+     rm -f /usr/local/bin/pip /usr/local/bin/pip3 /usr/local/bin/pip3.13 \
+       /opt/venv/bin/pip /opt/venv/bin/pip3 /opt/venv/bin/pip3.13
  COPY src/app ./app
 +ADD https://github.com/krallin/tini/releases/download/v0.19.0/tini /usr/local/bin/tini
  

@@ -1,9 +1,7 @@
-diff --git a/Code/DevSecOps/src/requirements.txt b/Code/DevSecOps/src/requirements.txt
-index 4777095..78dfbae 100644
 --- a/Code/DevSecOps/src/requirements.txt
 +++ b/Code/DevSecOps/src/requirements.txt
 @@ -1,7 +1,7 @@
- fastapi==0.162.0
+ fastapi==0.162.7
  starlette==1.10.0
  uvicorn[standard]==0.34.0
 -pydantic==2.10.5

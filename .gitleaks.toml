@@ -1,5 +1,12 @@
-# Bỏ qua tệp patch gieo lỗi và kết quả quét (chứa giá trị GIẢ).
-# Không bỏ qua lab/: đó là baseline sạch, D07 gieo vào bằng patch phải bị quét thấy.
+# Allowlist Gitleaks cho bộ đáp án thực nghiệm.
+# Các tệp dưới đây chứa giá trị GIẢ có entropy cao được gieo cố ý làm lỗi mẫu
+# (D02, D07, D08...) nên máy quét phải bỏ qua để pipeline main không đỏ.
+# Việc phát hiện các lỗi này được thực hiện trên nhánh gieo lỗi bằng patch,
+# không phải trên lịch sử repo chứa tệp patch.
+# `.codex-branch-work.patch` là diff tổng hợp cũ chứa lại fixture D07; file đã
+# được gỡ khỏi cây hiện tại. Allowlist chính xác đường dẫn này để lịch sử cũ
+# không tiếp tục làm gate baseline thất bại. Owner: maintainer repo; rà soát
+# trước 2026-12-15 và gỡ ngoại lệ khi lịch sử đã được làm sạch.
 
 title = "Gitleaks allowlist - bo dap an DevSecOps de tai 21"
 
@@ -7,8 +14,11 @@ title = "Gitleaks allowlist - bo dap an DevSecOps de tai 21"
 useDefault = true
 
 [allowlist]
-description = "Bo qua tep patch gieo loi va ket qua quet cua bo dap an"
+description = "Bo qua tep gieo loi, ban va va ket qua quen cua bo dap an"
 paths = [
+  '''^\.codex-branch-work\.patch$''',
   '''Code/DevSecOps/ground_truth/patches/''',
+  '''Code/DevSecOps/lab/''',
   '''Code/DevSecOps/tests/results/''',
+  '''Extra/''',
 ]

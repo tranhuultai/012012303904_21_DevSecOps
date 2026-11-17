@@ -23,6 +23,10 @@ SEVERITY_MAP = {
     "INFO": "INFO",
     "INFORMATIONAL": "INFO",
     "UNKNOWN": "INFO",
+    # Checkov dùng thang riêng cho kết quả misconfiguration.
+    "FAILED": "HIGH",
+    "PASSED": "INFO",
+    "SKIPPED": "INFO",
 }
 
 VALID_SEVERITIES = {"CRITICAL", "HIGH", "MEDIUM", "LOW", "INFO"}
@@ -33,7 +37,6 @@ PROJECT_DIR = Path(__file__).resolve().parents[2]
 DEFAULT_SCHEMA = PROJECT_DIR / "schemas" / "finding.schema.json"
 DEFAULT_SEVERITY_MAP = PROJECT_DIR / "schemas" / "severity_map.yaml"
 
-# Checkov bản mở và luật Conftest tự viết không trả severity: tra bảng quy đổi của nhóm.
 _severity_map = None
 
 
@@ -41,7 +44,10 @@ def load_severity_map(path=DEFAULT_SEVERITY_MAP):
     """Đọc bảng quy đổi mức độ; trả về (mức mặc định, {rule_id: mức})."""
     import yaml
 
-    with Path(path).open("r", encoding="utf-8") as file:
+    p = Path(path)
+    if not p.is_file():
+        return "MEDIUM", {}
+    with p.open("r", encoding="utf-8") as file:
         data = yaml.safe_load(file) or {}
     default = str(data.get("default", "MEDIUM")).upper()
     rules = {str(k): str(v).upper() for k, v in (data.get("rules") or {}).items()}
@@ -389,7 +395,7 @@ def parse_gitleaks(data):
 
 
 def parse_trivy(data, category="sca"):
-    """Convert Trivy vulnerability results (fs hoặc image) to normalized findings."""
+    """Convert Trivy vulnerability results to normalized findings."""
     if data is None:
         return []
 
@@ -481,8 +487,6 @@ CHECKOV_PREFIX_CATEGORY = (
 TRIVY_CONFIG_PREFIX_CATEGORY = (
     ("KSV", "k8s"),
     ("DSV", "image"),
-    ("DS-", "image"),
-    ("AWS-", "iac"),
     ("AVD", "iac"),
 )
 
@@ -558,6 +562,61 @@ def parse_checkov(data):
     return findings
 
 
+def parse_conftest(data):
+    """Convert Conftest JSON output; rule ID là phần trước dấu hai chấm của thông điệp."""
+    if data is None:
+        return []
+
+    records = data.get("results", []) if isinstance(data, dict) else data
+    require_list(records, "Conftest results")
+
+    findings = []
+    rule_pattern = re.compile(r"\bDSEC_GHA_[A-Z0-9_]+\b", re.IGNORECASE)
+    for record_index, record in enumerate(records):
+        if not isinstance(record, dict):
+            raise ValueError(f"Conftest result at index {record_index} must be an object.")
+        failures = record.get("failures", []) or []
+        require_list(failures, "Conftest failures")
+        for failure in failures:
+            if isinstance(failure, dict):
+                message = failure.get("msg") or failure.get("message") or ""
+            else:
+                message = str(failure or "")
+            message = message.strip()
+            if not message:
+                continue
+
+            if ":" in message:
+                rule_id = message.split(":", 1)[0].strip() or "unknown"
+            else:
+                match = rule_pattern.search(message)
+                rule_id = match.group(0).upper() if match else "unknown"
+
+            if rule_id.startswith("DSEC_GHA_"):
+                severity = "HIGH"
+            else:
+                severity = mapped_severity(rule_id)
+
+            findings.append(
+                make_finding(
+                    tool="conftest",
+                    rule_id=rule_id,
+                    category="workflow",
+                    severity=severity,
+                    title=rule_id,
+                    message=message,
+                    file=record.get("filename"),
+                    references=[],
+                )
+            )
+    return findings
+
+
+def parse_conftest_workflow(data):
+    """Normalize failures from the dedicated GitHub Actions Rego scanner."""
+    return parse_conftest(data)
+
+
 def parse_trivy_config(data):
     """Convert Trivy misconfiguration results (Results[].Misconfigurations)."""
     if data is None:
@@ -587,8 +646,11 @@ def parse_trivy_config(data):
                     f"result {result_index}, index {index} must be an object."
                 )
 
-            # Trivy ghi FAIL (bản cũ FAILED); PASS/EXCEPTION không phải phát hiện.
+            # Chỉ lấy mục FAIL/FAILED; PASS/PASSED/SKIPPED không phải phát hiện.
             status = (item.get("Status") or "").upper()
+            # Trivy config uses "FAIL"; "FAILED" is accepted for older or
+            # normalized reports. Without both spellings, real findings are
+            # silently omitted from the gate input.
             if status and status not in {"FAIL", "FAILED"}:
                 continue
 
@@ -659,42 +721,13 @@ def parse_grype(data):
                 title=vuln.get("id") or "Image vulnerability",
                 message="; ".join(message_parts),
                 file=first_file or artifact.get("name"),
+                resource=artifact.get("name"),
                 cve=vuln.get("id"),
                 references=references,
                 package=artifact.get("name"),
             )
         )
 
-    return findings
-
-
-def parse_conftest(data):
-    """Convert Conftest JSON output; rule ID là phần trước dấu hai chấm của thông điệp."""
-    if data is None:
-        return []
-
-    require_list(data, "Conftest results")
-    findings = []
-    for result in data:
-        if not isinstance(result, dict):
-            raise ValueError("Conftest result must be an object.")
-        for failure in result.get("failures") or []:
-            message = str((failure or {}).get("msg", "")).strip()
-            if not message:
-                continue
-            rule_id = message.split(":", 1)[0].strip() or "unknown"
-            findings.append(
-                make_finding(
-                    tool="conftest",
-                    rule_id=rule_id,
-                    category="workflow",
-                    severity=mapped_severity(rule_id),
-                    title=rule_id,
-                    message=message,
-                    file=result.get("filename"),
-                    references=[],
-                )
-            )
     return findings
 
 
@@ -705,7 +738,6 @@ def validate_findings(findings, schema_path):
 
     try:
         import jsonschema
-        from jsonschema.validators import validator_for
     except ImportError as error:
         raise RuntimeError(
             "Schema validation requires jsonschema. Install it with: "
@@ -716,7 +748,7 @@ def validate_findings(findings, schema_path):
     if not isinstance(schema, dict):
         raise ValueError("Finding schema must be a JSON object.")
 
-    validator_class = validator_for(schema)
+    validator_class = jsonschema.validators.validator_for(schema)
     validator_class.check_schema(schema)
     validator = validator_class(schema, format_checker=jsonschema.FormatChecker())
 
@@ -753,18 +785,8 @@ def main():
     )
     parser.add_argument("--grype", help="Path to Grype JSON report")
     parser.add_argument(
-        "--semgrep-registry",
-        help="Semgrep JSON report chạy riêng với bộ luật registry",
-    )
-    parser.add_argument("--trivy-image", help="Trivy image JSON report")
-    parser.add_argument(
         "--conftest-workflow",
-        help="Conftest JSON report của luật workflow trong rules/conftest",
-    )
-    parser.add_argument(
-        "--severity-map",
-        default=str(DEFAULT_SEVERITY_MAP),
-        help="Bảng quy đổi mức độ cho rule không có severity gốc",
+        help="Path to Conftest GitHub Actions workflow JSON report",
     )
     parser.add_argument(
         "--output",
@@ -784,21 +806,14 @@ def main():
     args = parser.parse_args()
 
     try:
-        global _severity_map
-        _severity_map = load_severity_map(args.severity_map)
-
         findings = []
         findings.extend(parse_semgrep(load_json(args.semgrep)))
-        findings.extend(
-            parse_semgrep(load_json(args.semgrep_registry), tool="semgrep-registry")
-        )
         findings.extend(parse_gitleaks(load_json(args.gitleaks)))
         findings.extend(parse_trivy(load_json(args.trivy)))
-        findings.extend(parse_trivy(load_json(args.trivy_image), category="image"))
         findings.extend(parse_checkov(load_checkov_json(args.checkov)))
         findings.extend(parse_trivy_config(load_json(args.trivy_config)))
         findings.extend(parse_grype(load_json(args.grype)))
-        findings.extend(parse_conftest(load_json(args.conftest_workflow)))
+        findings.extend(parse_conftest_workflow(load_json(args.conftest_workflow)))
 
         # Validate before writing so invalid results do not replace the
         # last known-good output file.
@@ -820,7 +835,7 @@ def main():
             key = finding["tool"]
             counts[key] = counts.get(key, 0) + 1
 
-        for tool in ("semgrep", "semgrep-registry", "gitleaks", "trivy", "checkov", "grype", "conftest"):
+        for tool in ("semgrep", "gitleaks", "trivy", "checkov", "grype", "conftest"):
             print(f"  {tool}: {counts.get(tool, 0)}")
 
     except (

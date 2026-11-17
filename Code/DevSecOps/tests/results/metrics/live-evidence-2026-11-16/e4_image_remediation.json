@@ -1,0 +1,242 @@
+{
+  "experiment": "E4",
+  "structural": {
+    "before": {
+      "file": "Dockerfile.vuln",
+      "non_root_user": false,
+      "no_add_remote": false,
+      "no_sshd_or_port22": false,
+      "multi_stage": false
+    },
+    "after": {
+      "file": "Dockerfile",
+      "non_root_user": true,
+      "no_add_remote": true,
+      "no_sshd_or_port22": true,
+      "multi_stage": true
+    },
+    "remediated_controls": [
+      "multi_stage",
+      "no_add_remote",
+      "no_sshd_or_port22",
+      "non_root_user"
+    ],
+    "remediated_count": 4,
+    "total_controls": 4
+  },
+  "db_drift": {
+    "description": "Mô phỏng chính sách với tín hiệu KEV/EPSS T0 được tạo có chủ đích; không phải snapshot lịch sử CISA/FIRST và không mô tả trạng thái thật của CVE.",
+    "rows": [
+      {
+        "cve": "CVE-2024-35195",
+        "decision_T0": "BLOCK",
+        "decision_T1": "WARN"
+      },
+      {
+        "cve": "CVE-2023-45803",
+        "decision_T0": "BLOCK",
+        "decision_T1": "WARN"
+      },
+      {
+        "cve": "CVE-2024-24762",
+        "decision_T0": "BLOCK",
+        "decision_T1": "BLOCK"
+      }
+    ],
+    "changed_decisions": [
+      {
+        "cve": "CVE-2024-35195",
+        "from": "BLOCK",
+        "to": "WARN"
+      },
+      {
+        "cve": "CVE-2023-45803",
+        "from": "BLOCK",
+        "to": "WARN"
+      }
+    ],
+    "changed_count": 2
+  },
+  "live": {
+    "before": {
+      "vulnerabilities": {
+        "CRITICAL": 18,
+        "HIGH": 804,
+        "MEDIUM": 1746,
+        "LOW": 1819,
+        "UNKNOWN": 99
+      },
+      "sbom_packages": 22943,
+      "image": {
+        "image_id": "sha256:f1cfb59eb412a73669278891d1072bcc4d7fe92a8096bc98525bb951e6a7f83e",
+        "image_config_digest": "sha256:f1cfb59eb412a73669278891d1072bcc4d7fe92a8096bc98525bb951e6a7f83e",
+        "manifest_digest_available": false,
+        "repo_tags": [
+          "devsecops-e4-before:lab"
+        ],
+        "repo_digests": [],
+        "os": {
+          "Family": "debian",
+          "Name": "13.7"
+        },
+        "architecture": "amd64",
+        "python_version": "3.13.18",
+        "dockerfile": "Code/DevSecOps/lab/docker/Dockerfile.vuln",
+        "dockerfile_sha256": "23916a54ea387c265f15656dc5f096440a4ec46a660115a64535077ec9c47e7a",
+        "dockerfile_base": "FROM python:3.13.18-trixie@sha256:f32f0f0e0d159bb11df450a10a84e9fae1ff115d4e67710f082a47d0a139dad9"
+      },
+      "sbom": {
+        "serial_number": "urn:uuid:dd63340a-f45f-44d6-a9ff-8ddd95bc9104",
+        "timestamp": "2026-11-15T17:52:52Z",
+        "component": {
+          "bom-ref": "d49cec08ed711064",
+          "type": "container",
+          "name": "devsecops-e4-before",
+          "version": "lab"
+        },
+        "components": 22943
+      },
+      "trivy_database_before_scan": {
+        "version": "2",
+        "updated_at": "2026-11-15 12:50:30.599818283 +0000 UTC",
+        "next_update": "2026-11-16 12:50:30.599817752 +0000 UTC"
+      },
+      "trivy_database_after_scan": {
+        "version": "2",
+        "updated_at": "2026-11-15 12:50:30.599818283 +0000 UTC",
+        "next_update": "2026-11-16 12:50:30.599817752 +0000 UTC"
+      },
+      "vulnerabilities_total": 4486
+    },
+    "after": {
+      "vulnerabilities": {
+        "CRITICAL": 0,
+        "HIGH": 47,
+        "MEDIUM": 89,
+        "LOW": 65,
+        "UNKNOWN": 5
+      },
+      "sbom_packages": 2856,
+      "image": {
+        "image_id": "sha256:ed6c553e3778250b60d99db0b8f5313effe279d7b68f0a9419b339eab71cd02e",
+        "image_config_digest": "sha256:ed6c553e3778250b60d99db0b8f5313effe279d7b68f0a9419b339eab71cd02e",
+        "manifest_digest_available": false,
+        "repo_tags": [
+          "devsecops-app:scan",
+          "devsecops-e4-after:lab"
+        ],
+        "repo_digests": [],
+        "os": {
+          "Family": "debian",
+          "Name": "13.7"
+        },
+        "architecture": "amd64",
+        "python_version": "3.13.18",
+        "dockerfile": "Code/DevSecOps/Dockerfile",
+        "dockerfile_sha256": "fbea0553770e056681e46be7978b77440a1a44addc26733b786de9c89ef97d04",
+        "dockerfile_base": "FROM python:3.13.18-slim-trixie@sha256:76baad6037690d6e8c4397fbcaef17bca6f19eecef822b708fe8fa3417d30bb5 AS builder"
+      },
+      "sbom": {
+        "serial_number": "urn:uuid:997ebd8e-6c42-4e6f-8e3a-37fb87eb1c2a",
+        "timestamp": "2026-11-15T17:52:56Z",
+        "component": {
+          "bom-ref": "b02e626dcc68a022",
+          "type": "container",
+          "name": "devsecops-e4-after",
+          "version": "lab"
+        },
+        "components": 2856
+      },
+      "trivy_database_before_scan": {
+        "version": "2",
+        "updated_at": "2026-11-15 12:50:30.599818283 +0000 UTC",
+        "next_update": "2026-11-16 12:50:30.599817752 +0000 UTC"
+      },
+      "trivy_database_after_scan": {
+        "version": "2",
+        "updated_at": "2026-11-15 12:50:30.599818283 +0000 UTC",
+        "next_update": "2026-11-16 12:50:30.599817752 +0000 UTC"
+      },
+      "vulnerabilities_total": 206
+    },
+    "delta": {
+      "vulnerabilities_total": -4280,
+      "sbom_packages": -20087,
+      "vulnerabilities_by_severity": {
+        "CRITICAL": -18,
+        "HIGH": -757,
+        "LOW": -1754,
+        "MEDIUM": -1657,
+        "UNKNOWN": -94
+      }
+    },
+    "provenance": {
+      "ci_run_id": "43743317883",
+      "ci_run_attempt": "1",
+      "ci_run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43743317883/attempts/1",
+      "commit": "135606475be9d66842121135631d853a63c1e480",
+      "fixture_id": "baseline",
+      "tool_versions": {
+        "trivy": "0.76.1",
+        "syft": "1.54.1"
+      },
+      "trivy_vulnerability_database": {
+        "version": "2",
+        "updated_at": "2026-11-15 12:50:30.599818283 +0000 UTC",
+        "next_update": "2026-11-16 12:50:30.599817752 +0000 UTC"
+      },
+      "trivy_database_snapshots_per_scan": {
+        "before_before_scan": {
+          "version": "2",
+          "updated_at": "2026-11-15 12:50:30.599818283 +0000 UTC",
+          "next_update": "2026-11-16 12:50:30.599817752 +0000 UTC"
+        },
+        "before_after_scan": {
+          "version": "2",
+          "updated_at": "2026-11-15 12:50:30.599818283 +0000 UTC",
+          "next_update": "2026-11-16 12:50:30.599817752 +0000 UTC"
+        },
+        "after_before_scan": {
+          "version": "2",
+          "updated_at": "2026-11-15 12:50:30.599818283 +0000 UTC",
+          "next_update": "2026-11-16 12:50:30.599817752 +0000 UTC"
+        },
+        "after_after_scan": {
+          "version": "2",
+          "updated_at": "2026-11-15 12:50:30.599818283 +0000 UTC",
+          "next_update": "2026-11-16 12:50:30.599817752 +0000 UTC"
+        }
+      },
+      "trivy_database_snapshot_scope": "four raw records verified: before/after each E4 image scan"
+    },
+    "comparability": {
+      "same_application_build_context": true,
+      "same_python_version": true,
+      "same_os_release": true,
+      "same_architecture": true,
+      "same_trivy_version": true,
+      "shared_trivy_database_snapshot": true,
+      "job_level_trivy_snapshot_recorded": true,
+      "per_scan_trivy_snapshot_verified": true,
+      "confounds": [],
+      "causal_attribution_allowed": true,
+      "interpretation": "All four raw per-scan records match the image-job Trivy DB snapshot and tool version; the before/after images also match Python, OS, and architecture. The aggregate delta is comparable for the Dockerfile/image change as a whole."
+    },
+    "evidence_status": "comparable",
+    "raw_artifact_sha256": {
+      "trivy_before": "6e0bac6a8862e654af78cde3aa90e013ce41ff30cd94008d9244ad31bd2deffd",
+      "trivy_after": "fe050f308fc866f45b7cea7a5de917d509acb3d43c3927776fe2e48dcc8d5f1a",
+      "sbom_before": "fdab9cd8394b34b109ab40a8266b7fb40f734da88aedb2062b6f899d306409c2",
+      "sbom_after": "c2cbac084d9009bb82bc61d6cfb401b22cba586e0679e51c9d1d8ab0b4d80068",
+      "trivy_runtime_before_before_scan": "9fa93c44aeee5a776869a14fa4d902aed533c56933798b414e39ca7a0830b41a",
+      "trivy_runtime_before_after_scan": "9fa93c44aeee5a776869a14fa4d902aed533c56933798b414e39ca7a0830b41a",
+      "trivy_runtime_after_before_scan": "9fa93c44aeee5a776869a14fa4d902aed533c56933798b414e39ca7a0830b41a",
+      "trivy_runtime_after_after_scan": "9fa93c44aeee5a776869a14fa4d902aed533c56933798b414e39ca7a0830b41a"
+    }
+  },
+  "evidence_status": "comparable",
+  "causal_attribution_allowed": true,
+  "source_run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43743317883/attempts/1",
+  "source_commit": "135606475be9d66842121135631d853a63c1e480",
+  "data_origin": "raw Trivy and Syft reports from the report-image GitHub Actions artifact"
+}

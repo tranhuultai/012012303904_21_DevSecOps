@@ -1,0 +1,262 @@
+{
+  "experiment": "E3 controlled CI duration",
+  "evidence_status": "complete",
+  "measurement_definition": {
+    "workflow_wall_seconds": "min(job.started_at) to max(job.completed_at) for one workflow_dispatch run",
+    "workflow_runner_minutes": "sum of measured durations for all completed jobs divided by 60",
+    "scan_stage_wall_seconds": "first start to last completion among security-scan, iac, and image jobs",
+    "scan_stage_runner_minutes": "sum of those three scanner job durations divided by 60",
+    "cache_variable": "actions/setup-python pip cache for pytest/runtime dependencies, Semgrep, and Checkov installations",
+    "execution_mode": "parallel scanner jobs; this experiment does not claim a serial-mode comparison",
+    "warmup": "runs marked benchmark_role=warmup are excluded from all statistics"
+  },
+  "acceptance": {
+    "minimum_runs_per_profile": 5,
+    "same_commit_required": true,
+    "pinned_tool_versions_required": true,
+    "same_trivy_database_snapshot_required": true,
+    "same_commit": true,
+    "tool_versions_consistent": true,
+    "enough_repeats": true,
+    "trivy_database_snapshot_consistent": true
+  },
+  "profiles": {
+    "cold": {
+      "N": 5,
+      "run_ids": [
+        43637135355,
+        43637359664,
+        43637577691,
+        43637826399,
+        43638060994
+      ],
+      "commits": [
+        "b79a12a6a3e8c291ac4f2050db6946d841f2116a"
+      ],
+      "tool_version_sets": 1,
+      "tool_version_fingerprints": [
+        "{\"checkov\": \"3.3.22\", \"conftest\": \"0.71.1\", \"gitleaks\": \"8.30.1\", \"grype\": \"0.120.1\", \"semgrep\": \"1.183.0\", \"syft\": \"1.54.1\", \"trivy\": \"0.76.1\"}"
+      ],
+      "trivy_db_snapshots": [
+        "{\"next_update\": \"2026-11-15 19:00:12.815668137 +0000 UTC\", \"updated_at\": \"2026-11-14 19:00:12.815668408 +0000 UTC\", \"version\": \"2\"}"
+      ],
+      "workflow_wall_seconds": {
+        "N": 5,
+        "median": 138.0,
+        "q1": 135.0,
+        "q3": 140.0,
+        "iqr": 5.0,
+        "p90": 153.2
+      },
+      "workflow_runner_minutes": {
+        "N": 5,
+        "median": 3.85,
+        "q1": 3.78,
+        "q3": 3.85,
+        "iqr": 0.07,
+        "p90": 4.21
+      },
+      "scan_stage_wall_seconds": {
+        "N": 5,
+        "median": 122.0,
+        "q1": 119.0,
+        "q3": 126.0,
+        "iqr": 7.0,
+        "p90": 137.4
+      },
+      "scan_stage_runner_minutes": {
+        "N": 5,
+        "median": 3.33,
+        "q1": 3.33,
+        "q3": 3.4,
+        "iqr": 0.07,
+        "p90": 3.67
+      },
+      "per_job_seconds": {
+        "Run Python tests": {
+          "N": 5,
+          "median": 17.0,
+          "q1": 15.0,
+          "q3": 21.0,
+          "iqr": 6.0,
+          "p90": 21.6
+        },
+        "Security scans (collection mode)": {
+          "N": 5,
+          "median": 38.0,
+          "q1": 34.0,
+          "q3": 40.0,
+          "iqr": 6.0,
+          "p90": 40.0
+        },
+        "deploy-smoke": {
+          "N": 5,
+          "median": 0.0,
+          "q1": 0.0,
+          "q3": 0.0,
+          "iqr": 0.0,
+          "p90": 0.0
+        },
+        "gate (Conftest Rego)": {
+          "N": 5,
+          "median": 14.0,
+          "q1": 14.0,
+          "q3": 14.0,
+          "iqr": 0.0,
+          "p90": 16.4
+        },
+        "iac": {
+          "N": 5,
+          "median": 44.0,
+          "q1": 40.0,
+          "q3": 45.0,
+          "iqr": 5.0,
+          "p90": 46.2
+        },
+        "image": {
+          "N": 5,
+          "median": 122.0,
+          "q1": 119.0,
+          "q3": 126.0,
+          "iqr": 7.0,
+          "p90": 136.8
+        },
+        "release": {
+          "N": 5,
+          "median": 0.0,
+          "q1": 0.0,
+          "q3": 0.0,
+          "iqr": 0.0,
+          "p90": 0.0
+        }
+      }
+    },
+    "warm": {
+      "N": 5,
+      "run_ids": [
+        43638291510,
+        43638547170,
+        43638737171,
+        43638994874,
+        43639254677
+      ],
+      "commits": [
+        "b79a12a6a3e8c291ac4f2050db6946d841f2116a"
+      ],
+      "tool_version_sets": 1,
+      "tool_version_fingerprints": [
+        "{\"checkov\": \"3.3.22\", \"conftest\": \"0.71.1\", \"gitleaks\": \"8.30.1\", \"grype\": \"0.120.1\", \"semgrep\": \"1.183.0\", \"syft\": \"1.54.1\", \"trivy\": \"0.76.1\"}"
+      ],
+      "trivy_db_snapshots": [
+        "{\"next_update\": \"2026-11-15 19:00:12.815668137 +0000 UTC\", \"updated_at\": \"2026-11-14 19:00:12.815668408 +0000 UTC\", \"version\": \"2\"}"
+      ],
+      "workflow_wall_seconds": {
+        "N": 5,
+        "median": 150.0,
+        "q1": 143.0,
+        "q3": 152.0,
+        "iqr": 9.0,
+        "p90": 154.4
+      },
+      "workflow_runner_minutes": {
+        "N": 5,
+        "median": 3.8,
+        "q1": 3.8,
+        "q3": 3.83,
+        "iqr": 0.03,
+        "p90": 3.94
+      },
+      "scan_stage_wall_seconds": {
+        "N": 5,
+        "median": 128.0,
+        "q1": 127.0,
+        "q3": 130.0,
+        "iqr": 3.0,
+        "p90": 133.0
+      },
+      "scan_stage_runner_minutes": {
+        "N": 5,
+        "median": 3.28,
+        "q1": 3.17,
+        "q3": 3.37,
+        "iqr": 0.2,
+        "p90": 3.44
+      },
+      "per_job_seconds": {
+        "Run Python tests": {
+          "N": 5,
+          "median": 14.0,
+          "q1": 13.0,
+          "q3": 15.0,
+          "iqr": 2.0,
+          "p90": 15.6
+        },
+        "Security scans (collection mode)": {
+          "N": 5,
+          "median": 31.0,
+          "q1": 28.0,
+          "q3": 32.0,
+          "iqr": 4.0,
+          "p90": 33.2
+        },
+        "deploy-smoke": {
+          "N": 5,
+          "median": 0.0,
+          "q1": 0.0,
+          "q3": 0.0,
+          "iqr": 0.0,
+          "p90": 0.0
+        },
+        "gate (Conftest Rego)": {
+          "N": 5,
+          "median": 18.0,
+          "q1": 14.0,
+          "q3": 19.0,
+          "iqr": 5.0,
+          "p90": 20.8
+        },
+        "iac": {
+          "N": 5,
+          "median": 42.0,
+          "q1": 36.0,
+          "q3": 43.0,
+          "iqr": 7.0,
+          "p90": 47.8
+        },
+        "image": {
+          "N": 5,
+          "median": 128.0,
+          "q1": 126.0,
+          "q3": 130.0,
+          "iqr": 4.0,
+          "p90": 133.0
+        },
+        "release": {
+          "N": 5,
+          "median": 0.0,
+          "q1": 0.0,
+          "q3": 0.0,
+          "iqr": 0.0,
+          "p90": 0.0
+        }
+      }
+    }
+  },
+  "cache_comparison": {
+    "warm_minus_cold_seconds": 12.0,
+    "warm_change_percent": 8.7,
+    "interpretation": "negative means the warm pip-cache profile was faster by the median wall time"
+  },
+  "excluded_runs": [
+    {
+      "run_id": 43636896990,
+      "reason": "warm-up run"
+    }
+  ],
+  "limitations": [
+    "Cache comparison covers pip package downloads for the test job, Semgrep, and Checkov; scanner binaries and Trivy vulnerability databases are not cached by this variable.",
+    "GitHub-hosted runner hardware and external network conditions can vary between runs; report the observed spread.",
+    "Wall time is the measured workflow job interval for the dispatch run; release and kind deploy-smoke are skipped on workflow_dispatch.",
+    "A complete cache comparison requires one shared Trivy vulnerability DB snapshot across both profiles; repeat the study if the DB changes during collection."
+  ]
+}

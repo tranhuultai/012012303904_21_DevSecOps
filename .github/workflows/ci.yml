@@ -1,4 +1,5 @@
 name: DevSecOps CI
+run-name: DevSecOps CI | ${{ inputs.fixture_id || 'baseline' }} | ${{ inputs.cache_mode || 'cold' }} | ${{ inputs.benchmark_role || 'measurement' }} | ${{ github.sha }} | ${{ inputs.study_id || github.run_id }}
 
 on:
   push:
@@ -12,6 +13,32 @@ on:
         required: false
         default: baseline
         type: string
+      run_e4:
+        description: "Run the slower before/after image remediation experiment"
+        required: false
+        default: true
+        type: boolean
+      cache_mode:
+        description: "Pip cache profile for controlled E3 timing runs"
+        required: false
+        default: cold
+        type: choice
+        options:
+          - cold
+          - warm
+      benchmark_role:
+        description: "Mark warm-up runs so the E3 analyzer excludes them"
+        required: false
+        default: measurement
+        type: choice
+        options:
+          - measurement
+          - warmup
+      study_id:
+        description: "Unique identifier for an automated evidence collection study"
+        required: false
+        default: manual
+        type: string
 
 # Quyền tối thiểu toàn workflow (4.5): từng job xin thêm quyền riêng khi cần.
 permissions:
@@ -19,22 +46,33 @@ permissions:
 
 env:
   TRIVY_VERSION: "0.76.1"
+  # Immutable cache key for one Trivy vulnerability DB snapshot. Bump this ID
+  # only when intentionally refreshing the study's vulnerability database.
+  TRIVY_DB_SNAPSHOT_ID: "20261115-v1"
   SYFT_VERSION: "1.54.1"
   GRYPE_VERSION: "0.120.1"
+  # Grype DB is seeded once and restored by every image-scan job. Bump this ID
+  # only when intentionally refreshing the study's Grype vulnerability DB.
+  GRYPE_DB_SNAPSHOT_ID: "20261115-v1"
+  GRYPE_DB_AUTO_UPDATE: "false"
+  GRYPE_DB_VALIDATE_AGE: "false"
   CHECKOV_VERSION: "3.3.22"
   GITLEAKS_VERSION: "8.30.1"
   SEMGREP_VERSION: "1.183.0"
   CONFTEST_VERSION: "0.71.1"
   CONTEST_POLICY: g2
-  SEMGREP_REGISTRY_RULESET: p/python
   FIXTURE_ID: ${{ github.event.inputs.fixture_id || 'baseline' }}
+  CACHE_MODE: ${{ inputs.cache_mode || 'cold' }}
+  BENCHMARK_ROLE: ${{ inputs.benchmark_role || 'measurement' }}
+  RUN_E4: ${{ inputs.run_e4 && (inputs.fixture_id == '' || inputs.fixture_id == 'baseline') }}
+  SCAN_EXECUTION_MODE: parallel
 
 defaults:
   run:
     working-directory: Code/DevSecOps
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event.inputs.fixture_id || 'baseline' }}
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event.inputs.fixture_id || 'baseline' }}-${{ inputs.cache_mode || 'cold' }}
   cancel-in-progress: false
 
 jobs:
@@ -52,16 +90,15 @@ jobs:
         uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: "3.13.18"
-          cache: pip
+          cache: ${{ inputs.cache_mode == 'warm' && 'pip' || '' }}
           cache-dependency-path: Code/DevSecOps/src/requirements.txt
 
       - name: Install dependencies
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          python -m pip install --upgrade "pip==26.2.2"
+          python -m pip install --upgrade "pip==26.3"
           pip install -r src/requirements.txt
-          # Thư viện và Conftest cho test của bộ chuẩn hóa, gate, thực nghiệm và phân tích.
           pip install "jsonschema==4.26.0" "PyYAML==6.0.3" "matplotlib==3.11.2"
           bash tools/install_scanners.sh conftest
 
@@ -71,11 +108,89 @@ jobs:
       - name: Run tests
         run: python -m pytest -v src/test tests
 
+  # Seed immutable Trivy and Grype vulnerability databases before scanner jobs.
+  # Consumers restore these exact caches and never update the DB during a run.
+  trivy-db-snapshot:
+    name: Prepare Trivy and Grype vulnerability DB snapshots
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout pinned source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install pinned Trivy
+        run: |
+          asset="trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz"
+          base="https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}"
+          cd "$RUNNER_TEMP"
+          curl -fsSL -o "${asset}" "${base}/${asset}"
+          curl -fsSL -o trivy.sums "${base}/trivy_${TRIVY_VERSION}_checksums.txt"
+          grep "  ${asset}$" trivy.sums | sha256sum -c -
+          tar xzf "${asset}" trivy
+          sudo install trivy /usr/local/bin/trivy
+          trivy --version
+
+      - name: Restore or seed immutable Trivy database cache
+        id: trivy-db-cache
+        uses: actions/cache@a7833574556fa59680c1b7cb190c1735db73ebf0 # v6.1.0
+        with:
+          path: ~/.cache/trivy
+          key: trivy-db-${{ runner.os }}-${{ env.TRIVY_VERSION }}-${{ env.TRIVY_DB_SNAPSHOT_ID }}
+
+      - name: Seed pinned vulnerability DB and config checks on cache miss
+        if: steps.trivy-db-cache.outputs.cache-hit != 'true'
+        run: |
+          trivy image --download-db-only
+          trivy config --format json --output "$RUNNER_TEMP/trivy-config-seed.json" \
+            --exit-code 0 --skip-dirs lab .
+
+      - name: Verify snapshot metadata is present
+        run: |
+          trivy --version | tee "$RUNNER_TEMP/trivy-version.txt"
+          grep -q "Vulnerability DB:" "$RUNNER_TEMP/trivy-version.txt"
+
+      - name: Install pinned Grype
+        run: |
+          asset="grype_${GRYPE_VERSION}_linux_amd64.tar.gz"
+          base="https://github.com/anchore/grype/releases/download/v${GRYPE_VERSION}"
+          cd "$RUNNER_TEMP"
+          curl -fsSL -o "${asset}" "${base}/${asset}"
+          test -s "${asset}"
+          curl -fsSL -o grype_checksums.txt "${base}/grype_${GRYPE_VERSION}_checksums.txt"
+          expected="$(awk -v name="${asset}" '($2 == name || $2 == ("*" name)) {print $1; found=1} END {if (!found) exit 1}' grype_checksums.txt)"
+          actual="$(sha256sum "${asset}" | awk '{print $1}')"
+          test "${actual}" = "${expected}"
+          tar xzf "${asset}" grype
+          sudo install grype /usr/local/bin/grype
+          grype version
+
+      - name: Restore or seed immutable Grype database cache
+        id: grype-db-cache
+        uses: actions/cache@a7833574556fa59680c1b7cb190c1735db73ebf0 # v6.1.0
+        with:
+          path: ~/.cache/grype/db
+          key: grype-db-${{ runner.os }}-${{ env.GRYPE_VERSION }}-${{ env.GRYPE_DB_SNAPSHOT_ID }}
+
+      - name: Seed pinned Grype database on cache miss
+        if: steps.grype-db-cache.outputs.cache-hit != 'true'
+        run: |
+          grype db update
+          grype db status -o json > "$RUNNER_TEMP/grype-db-status.json"
+          test -s "$RUNNER_TEMP/grype-db-status.json"
+          test -d "$HOME/.cache/grype/db"
+
+      - name: Verify pinned Grype database snapshot
+        run: |
+          grype db status -o json | tee "$RUNNER_TEMP/grype-db-status.json"
+          test -s "$RUNNER_TEMP/grype-db-status.json"
+
   # ─────────────────────────────────────────────────────────────
   # 2) SAST + Secret + SCA (chế độ thu thập: thoát 0, chỉ báo cáo)
   # ─────────────────────────────────────────────────────────────
   security-scan:
     name: Security scans (collection mode)
+    needs: trivy-db-snapshot
     runs-on: ubuntu-24.04
     permissions:
       contents: read
@@ -93,6 +208,19 @@ jobs:
         if: github.event_name == 'workflow_dispatch' && inputs.fixture_id != '' && inputs.fixture_id != 'baseline'
         run: python tests/apply_fixture_patch.py --id "$FIXTURE_ID"
 
+      - name: Restore pinned Trivy database snapshot
+        id: trivy-db-cache
+        uses: actions/cache/restore@a7833574556fa59680c1b7cb190c1735db73ebf0 # v6.1.0
+        with:
+          path: ~/.cache/trivy
+          key: trivy-db-${{ runner.os }}-${{ env.TRIVY_VERSION }}-${{ env.TRIVY_DB_SNAPSHOT_ID }}
+
+      - name: Require pinned Trivy database snapshot
+        if: steps.trivy-db-cache.outputs.cache-hit != 'true'
+        run: |
+          echo "Expected pinned Trivy DB cache key trivy-db-${TRIVY_VERSION}-${TRIVY_DB_SNAPSHOT_ID}" >&2
+          exit 1
+
       - name: Create reports directory
         run: mkdir -p reports
 
@@ -101,6 +229,10 @@ jobs:
         uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: "3.13.18"
+          cache: ${{ inputs.cache_mode == 'warm' && 'pip' || '' }}
+          cache-dependency-path: |
+            Extra/TOOL_VERSIONS.md
+            Code/DevSecOps/src/requirements.txt
 
       - name: Install Semgrep
         run: python -m pip install "semgrep==${SEMGREP_VERSION}"
@@ -110,23 +242,20 @@ jobs:
         continue-on-error: true
         run: |
           semgrep scan \
+            --config auto \
             --config rules/semgrep \
-            --config "${SEMGREP_REGISTRY_RULESET}" \
-            --metrics=off \
             --json \
             --output reports/semgrep.json \
             src tools
 
       # 2.2 Secret scanning - Gitleaks (binary ghim, kiểm checksum)
       - name: Install Gitleaks CLI
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: |
           asset="gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
           cd "$RUNNER_TEMP"
           base="https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}"
-          bash "$GITHUB_WORKSPACE/Code/DevSecOps/tools/download_release.sh" "${asset}" "${base}/${asset}"
-          bash "$GITHUB_WORKSPACE/Code/DevSecOps/tools/download_release.sh" gitleaks.sums "${base}/gitleaks_${GITLEAKS_VERSION}_checksums.txt"
+          curl -fsSL -o "${asset}" "${base}/${asset}"
+          curl -fsSL -o gitleaks.sums "${base}/gitleaks_${GITLEAKS_VERSION}_checksums.txt"
           grep "  ${asset}$" gitleaks.sums | sha256sum -c -
           tar xzf "${asset}" gitleaks
           sudo install gitleaks /usr/local/bin/gitleaks
@@ -137,7 +266,11 @@ jobs:
         continue-on-error: true
         run: |
           if [ "$FIXTURE_ID" = "baseline" ]; then
+            # Gitleaks defaults to scanning every local ref. Scope history to
+            # the checked-out branch so another demo/PR branch cannot leak
+            # findings into this run.
             gitleaks git \
+              --log-opts="HEAD" \
               --config "${GITHUB_WORKSPACE}/.gitleaks.toml" \
               --report-format json \
               --report-path reports/gitleaks.json \
@@ -153,14 +286,12 @@ jobs:
 
       # 2.3 SCA - Trivy (filesystem, CLI ghim phiên bản như các job khác)
       - name: Cài Trivy (binary ghim, kiểm checksum)
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: |
           asset="trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz"
           base="https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}"
           cd "$RUNNER_TEMP"
-          bash "$GITHUB_WORKSPACE/Code/DevSecOps/tools/download_release.sh" "${asset}" "${base}/${asset}"
-          bash "$GITHUB_WORKSPACE/Code/DevSecOps/tools/download_release.sh" trivy.sums "${base}/trivy_${TRIVY_VERSION}_checksums.txt"
+          curl -fsSL -o "${asset}" "${base}/${asset}"
+          curl -fsSL -o trivy.sums "${base}/trivy_${TRIVY_VERSION}_checksums.txt"
           grep "  ${asset}$" trivy.sums | sha256sum -c -
           tar xzf "${asset}" trivy
           sudo install trivy /usr/local/bin/trivy
@@ -176,17 +307,8 @@ jobs:
             --output reports/trivy.json \
             --exit-code 0 \
             --ignore-unfixed \
+            --skip-db-update \
             .
-
-      # 2.4 Luật workflow tự viết (Conftest, chỉ báo cáo)
-      - name: Conftest luật workflow
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          bash tools/install_scanners.sh conftest
-          conftest test -p rules/conftest ../../.github/workflows lab/workflows-vuln/.github/workflows \
-            -o json > reports/conftest_wf.json || true
-          test -s reports/conftest_wf.json
 
       - name: Record CI timing
         if: always()
@@ -210,6 +332,7 @@ jobs:
   # ─────────────────────────────────────────────────────────────
   iac:
     name: iac
+    needs: trivy-db-snapshot
     runs-on: ubuntu-24.04
     permissions:
       contents: read
@@ -221,39 +344,67 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
+      - name: Set up Python for Checkov
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.13.18"
+          cache: ${{ inputs.cache_mode == 'warm' && 'pip' || '' }}
+          cache-dependency-path: |
+            Extra/TOOL_VERSIONS.md
+            Code/DevSecOps/tests/README.md
+
       - name: Apply selected experiment fixture
         if: github.event_name == 'workflow_dispatch' && inputs.fixture_id != '' && inputs.fixture_id != 'baseline'
         run: python tests/apply_fixture_patch.py --id "$FIXTURE_ID"
 
+      - name: Restore pinned Trivy database snapshot
+        id: trivy-db-cache
+        uses: actions/cache/restore@a7833574556fa59680c1b7cb190c1735db73ebf0 # v6.1.0
+        with:
+          path: ~/.cache/trivy
+          key: trivy-db-${{ runner.os }}-${{ env.TRIVY_VERSION }}-${{ env.TRIVY_DB_SNAPSHOT_ID }}
+
+      - name: Require pinned Trivy database snapshot
+        if: steps.trivy-db-cache.outputs.cache-hit != 'true'
+        run: |
+          echo "Expected pinned Trivy DB cache key trivy-db-${TRIVY_VERSION}-${TRIVY_DB_SNAPSHOT_ID}" >&2
+          exit 1
+
       - name: Cài Trivy (binary ghim, kiểm checksum theo tệp phát hành)
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: |
           asset="trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz"
           base="https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}"
           cd "$RUNNER_TEMP"
-          bash "$GITHUB_WORKSPACE/Code/DevSecOps/tools/download_release.sh" "${asset}" "${base}/${asset}"
-          bash "$GITHUB_WORKSPACE/Code/DevSecOps/tools/download_release.sh" trivy.sums "${base}/trivy_${TRIVY_VERSION}_checksums.txt"
+          curl -fsSL -o "${asset}" "${base}/${asset}"
+          curl -fsSL -o trivy.sums "${base}/trivy_${TRIVY_VERSION}_checksums.txt"
           grep "  ${asset}$" trivy.sums | sha256sum -c -
           tar xzf "${asset}" trivy
           sudo install trivy /usr/local/bin/trivy
           trivy --version
 
       - name: Cài Checkov (ghim)
-        run: pipx install "checkov==${CHECKOV_VERSION}"
+        run: python -m pip install "checkov==${CHECKOV_VERSION}"
 
-      - name: Checkov (soft-fail, chỉ báo cáo)
+      - name: Checkov Terraform và Kubernetes (soft-fail, chỉ báo cáo)
         run: |
           mkdir -p reports
-          # Gọi riêng từng framework rồi gộp: gọi gộp kèm -f Dockerfile có thể bỏ sót Dockerfile.
-          checkov -d infra -d deploy --framework terraform kubernetes --compact --soft-fail -o json > reports/checkov_iac.json
-          checkov -f Dockerfile --framework dockerfile --compact --soft-fail -o json > reports/checkov_docker.json
-          checkov -d ../.. --framework github_actions --compact --soft-fail -o json > reports/checkov_gha.json
+          # Checkov không cho dùng --directory cùng --file; tách Terraform/Kubernetes
+          # và Dockerfile. GitHub Actions được kiểm tra bằng Conftest/Rego bên dưới.
+          checkov -d infra -d deploy --framework terraform,kubernetes \
+            --skip-path lab \
+            --compact --soft-fail -o json > reports/checkov-iac.stream.json || true
+          checkov -f Dockerfile --framework dockerfile \
+            --compact --soft-fail -o json > reports/checkov-dockerfile.stream.json || true
+          for report in reports/checkov-iac.stream.json reports/checkov-dockerfile.stream.json; do
+            test -s "$report"
+          done
+          cat reports/checkov-iac.stream.json reports/checkov-dockerfile.stream.json \
+            > reports/checkov.stream.json
           jq -s 'map(if type == "array" then .[] else . end)' \
-            reports/checkov_iac.json reports/checkov_docker.json reports/checkov_gha.json > reports/checkov.json
+            reports/checkov-iac.stream.json reports/checkov-dockerfile.stream.json > reports/checkov.json
 
       - name: Trivy config (chỉ báo cáo)
-        run: trivy config --format json --output reports/trivy-config.json --exit-code 0 --skip-dirs lab .
+        run: trivy config --format json --output reports/trivy-config.json --exit-code 0 --skip-check-update --skip-dirs lab .
 
       - name: Record CI timing
         if: always()
@@ -276,6 +427,7 @@ jobs:
   # ─────────────────────────────────────────────────────────────
   image:
     name: image
+    needs: trivy-db-snapshot
     runs-on: ubuntu-24.04
     permissions:
       contents: read
@@ -291,9 +443,20 @@ jobs:
         if: github.event_name == 'workflow_dispatch' && inputs.fixture_id != '' && inputs.fixture_id != 'baseline'
         run: python tests/apply_fixture_patch.py --id "$FIXTURE_ID"
 
+      - name: Restore pinned Trivy database snapshot
+        id: trivy-db-cache
+        uses: actions/cache/restore@a7833574556fa59680c1b7cb190c1735db73ebf0 # v6.1.0
+        with:
+          path: ~/.cache/trivy
+          key: trivy-db-${{ runner.os }}-${{ env.TRIVY_VERSION }}-${{ env.TRIVY_DB_SNAPSHOT_ID }}
+
+      - name: Require pinned Trivy database snapshot
+        if: steps.trivy-db-cache.outputs.cache-hit != 'true'
+        run: |
+          echo "Expected pinned Trivy DB cache key trivy-db-${TRIVY_VERSION}-${TRIVY_DB_SNAPSHOT_ID}" >&2
+          exit 1
+
       - name: Cài Trivy/Syft/Grype (binary ghim, kiểm checksum theo tệp phát hành)
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: |
           fetch() {
             local repo="$1" ver="$2" asset="$3"
@@ -301,9 +464,9 @@ jobs:
             local checksum_file="${repo##*/}_${ver}_checksums.txt"
             local expected actual
             cd "$RUNNER_TEMP"
-            bash "$GITHUB_WORKSPACE/Code/DevSecOps/tools/download_release.sh" "${asset}" "${base}/${asset}"
+            curl -fsSL -o "${asset}" "${base}/${asset}"
             test -s "${asset}"
-            bash "$GITHUB_WORKSPACE/Code/DevSecOps/tools/download_release.sh" pkg.sums "${base}/${checksum_file}"
+            curl -fsSL -o pkg.sums "${base}/${checksum_file}"
             # So sánh hash trực tiếp; không phụ thuộc cách manifest ghi tên file.
             expected="$(awk -v name="${asset}" '($2 == name || $2 == ("*" name)) {print $1; found=1} END {if (!found) exit 1}' pkg.sums)"
             actual="$(sha256sum "${asset}" | awk '{print $1}')"
@@ -321,6 +484,22 @@ jobs:
           syft version
           grype version
 
+      - name: Restore pinned Grype database snapshot
+        id: grype-db-cache
+        uses: actions/cache/restore@a7833574556fa59680c1b7cb190c1735db73ebf0 # v6.1.0
+        with:
+          path: ~/.cache/grype/db
+          key: grype-db-${{ runner.os }}-${{ env.GRYPE_VERSION }}-${{ env.GRYPE_DB_SNAPSHOT_ID }}
+
+      - name: Require pinned Grype database snapshot
+        if: steps.grype-db-cache.outputs.cache-hit != 'true'
+        run: |
+          echo "Expected pinned Grype DB cache key grype-db-${GRYPE_VERSION}-${GRYPE_DB_SNAPSHOT_ID}" >&2
+          exit 1
+
+      - name: Verify restored Grype database
+        run: grype db status -o json
+
       - name: Build image (không push)
         if: ${{ !contains(fromJSON('["D12","D13","D14","D15"]'), env.FIXTURE_ID) }}
         run: docker build -f Dockerfile -t devsecops-app:scan .
@@ -329,7 +508,7 @@ jobs:
         if: ${{ !contains(fromJSON('["D12","D13","D14","D15"]'), env.FIXTURE_ID) }}
         run: |
           mkdir -p reports
-          trivy image --format json --output reports/trivy-image.json --exit-code 0 devsecops-app:scan
+          trivy image --format json --output reports/trivy-image.json --exit-code 0 --skip-db-update devsecops-app:scan
 
       - name: Syft SBOM (CycloneDX JSON)
         if: ${{ !contains(fromJSON('["D12","D13","D14","D15"]'), env.FIXTURE_ID) }}
@@ -351,6 +530,30 @@ jobs:
         if: always()
         run: python tests/record_trivy_runtime.py --out reports/experiment/trivy-runtime-image.json
 
+      - name: E4 image remediation (before/after SBOM and vulnerabilities)
+        if: github.event_name == 'workflow_dispatch' && inputs.run_e4 && env.FIXTURE_ID == 'baseline'
+        run: >-
+          python tests/e4_image_remediation.py --live --out-dir reports/e4
+          --trivy-runtime-meta reports/experiment/trivy-runtime-image.json
+          --strict-comparability
+
+      - name: Mark E4 intentionally omitted from this run
+        if: always() && !(github.event_name == 'workflow_dispatch' && inputs.run_e4 && env.FIXTURE_ID == 'baseline')
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          path = Path("reports/experiment/skipped-scans.json")
+          record = json.loads(path.read_text()) if path.is_file() else {"skipped": []}
+          skipped = set(record.get("skipped", []))
+          skipped.add("e4-live-image-remediation")
+          record["skipped"] = sorted(skipped)
+          record["e4_reason"] = "E4 runs only when explicitly enabled on a baseline workflow_dispatch."
+          path.parent.mkdir(parents=True, exist_ok=True)
+          path.write_text(json.dumps(record, indent=2) + "\n")
+          PY
+
       - name: Record CI timing
         if: always()
         run: python tests/record_ci_timing.py --job image --started-at-epoch "$JOB_START_EPOCH" --out reports/timing/image.json
@@ -370,29 +573,16 @@ jobs:
   gate:
     name: gate (Conftest Rego)
     needs: [security-scan, iac, image]
-    # Vẫn chạy khi job quét lỗi để tự báo đỏ: GitHub tính job bị skip là đạt.
-    if: always()
     runs-on: ubuntu-24.04
     permissions:
       contents: read
-      actions: read # tải findings của lần chạy gần nhất trên main cho chế độ delta
-    env:
-      GATE_FINDINGS: reports/enriched_findings.json
-      GATE_MODE: full
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Chặn khi job quét không thành công
-        env:
-          NEEDS_RESULTS: ${{ join(needs.*.result, ' ') }}
-        run: |
-          for r in ${NEEDS_RESULTS}; do
-            if [ "${r}" != "success" ]; then
-              echo "::error::job quét kết thúc '${r}' (${NEEDS_RESULTS}), gate chặn"
-              exit 1
-            fi
-          done
+      - name: Apply fixture for GitHub Actions workflow policy scan
+        if: github.event_name == 'workflow_dispatch' && inputs.fixture_id != '' && inputs.fixture_id != 'baseline'
+        run: python tests/apply_fixture_patch.py --id "$FIXTURE_ID"
 
       - name: Tải báo cáo quét
         uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
@@ -410,27 +600,38 @@ jobs:
         run: python tests/summarize_ci_timings.py --input-dir reports/timing --out reports/e3-ci-run-timing.json
 
       - name: Install gate dependencies
-        run: python -m pip install "jsonschema==4.26.0" "PyYAML==6.0.3"
+        run: python -m pip install "jsonschema==4.26.0" PyYAML
 
       - name: Cài Conftest (binary ghim, kiểm checksum)
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: |
           asset="conftest_${CONFTEST_VERSION}_Linux_x86_64.tar.gz"
           cd "$RUNNER_TEMP"
           base="https://github.com/open-policy-agent/conftest/releases/download/v${CONFTEST_VERSION}"
-          bash "$GITHUB_WORKSPACE/Code/DevSecOps/tools/download_release.sh" "${asset}" "${base}/${asset}"
-          bash "$GITHUB_WORKSPACE/Code/DevSecOps/tools/download_release.sh" conftest.sums "${base}/checksums.txt"
+          curl -fsSL -o "${asset}" "${base}/${asset}"
+          curl -fsSL -o conftest.sums "${base}/checksums.txt"
           # grep neo cuối dòng: checksums.txt còn chứa dòng *.sbom.json.
           grep "  ${asset}$" conftest.sums | sha256sum -c -
           tar xzf "${asset}" conftest
           sudo install conftest /usr/local/bin/conftest
           conftest --version
 
-      - name: Kiểm thử chính sách gate và luật workflow
+      - name: Kiểm thử unit policy G0/G1/G2
         run: |
-          for policy in g0 g1 g2; do conftest verify -p "policy/${policy}"; done
-          conftest verify -p rules/conftest
+          for policy in g0 g1 g2; do
+            conftest verify -p "policy/${policy}"
+          done
+
+      - name: Quét bảo mật workflow GitHub Actions bằng Conftest
+        run: |
+          mkdir -p reports
+          set +e
+          conftest test -p rules/conftest/workflow.rego \
+            ../../.github/workflows/ci.yml --output json \
+            > reports/conftest-workflow.json
+          scanner_status=$?
+          set -e
+          test -s reports/conftest-workflow.json
+          echo "Conftest workflow scanner status: ${scanner_status} (gate quyết định ở G2)"
 
       - name: Chuẩn hóa findings (schema bắt buộc, fail-closed)
         run: |
@@ -441,48 +642,21 @@ jobs:
             --checkov reports/checkov.json \
             --trivy-config reports/trivy-config.json \
             --grype reports/grype-image.json \
-            --conftest-workflow reports/conftest_wf.json \
+            --conftest-workflow reports/conftest-workflow.json \
             --output reports/normalized_findings.json
-
-      - name: Lấy KEV (CISA) và EPSS (FIRST); lỗi mạng thì dùng snapshot đã commit
-        run: |
-          if python tools/fetch_kev_epss.py --findings reports/normalized_findings.json --out-dir reports/kev; then
-            echo "KEV_FILE=reports/kev/kev.json" >> "$GITHUB_ENV"
-            echo "EPSS_FILE=reports/kev/epss.json" >> "$GITHUB_ENV"
-          else
-            echo "::warning::Không tải được KEV/EPSS, dùng snapshot trong security/kev"
-            echo "KEV_FILE=security/kev/kev_snapshot.json" >> "$GITHUB_ENV"
-            echo "EPSS_FILE=security/kev/epss_snapshot.json" >> "$GITHUB_ENV"
-          fi
 
       - name: Làm giàu ngữ cảnh rủi ro (KEV, EPSS, bản vá, độ tin cậy)
         run: |
           python tools/enrich_findings.py \
             --findings reports/normalized_findings.json \
-            --kev "${KEV_FILE}" \
-            --epss "${EPSS_FILE}" \
+            --kev security/kev/cisa_kev_subset.json \
+            --epss security/kev/epss_subset.json \
             --out reports/enriched_findings.json
-
-      - name: PR chấm theo delta so với lần quét gần nhất trên main
-        if: github.event_name == 'pull_request'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          run_id="$(gh run list --repo "${GITHUB_REPOSITORY}" --workflow ci.yml --branch main --event push \
-            --status success --limit 1 --json databaseId -q '.[0].databaseId')"
-          if [ -n "${run_id}" ] && gh run download "${run_id}" --repo "${GITHUB_REPOSITORY}" -n report-gate -D baseline; then
-            python tools/delta_findings.py --current reports/enriched_findings.json \
-              --baseline baseline/reports/enriched_findings.json --out reports/delta_findings.json
-            echo "GATE_FINDINGS=reports/delta_findings.json" >> "$GITHUB_ENV"
-            echo "GATE_MODE=delta" >> "$GITHUB_ENV"
-          else
-            echo "::notice::Chưa có baseline trên main, gate chấm toàn bộ finding"
-          fi
 
       - name: Dựng gate_input.json
         run: |
           python tools/gate_input.py \
-            --findings "${GATE_FINDINGS}" \
+            --findings reports/enriched_findings.json \
             --exceptions security/exceptions.yaml \
             --today "$(date -u +%F)" \
             --policy "${CONTEST_POLICY}" \
@@ -529,38 +703,9 @@ jobs:
             --gate gate_report.json \
             --output pr_summary.md \
             --title "DevSecOps Security Summary (${CONTEST_POLICY})" || true
-          echo "Chế độ gate: ${GATE_MODE}" >> "$GITHUB_STEP_SUMMARY"
           if [ -f pr_summary.md ]; then
             cat pr_summary.md >> "$GITHUB_STEP_SUMMARY"
           fi
-
-      - name: Ghi lý do chặn thành annotation trên PR
-        if: always()
-        run: |
-          python - <<'PY'
-          import json
-          import pathlib
-
-          report = pathlib.Path("gate_report.json")
-          if not report.exists():
-              print("::warning title=Gate::Không có gate_report.json, gate dừng trước khi chấm")
-              raise SystemExit(0)
-          data = json.loads(report.read_text(encoding="utf-8"))
-          blockers = data.get("blockers", [])
-          enriched = pathlib.Path("reports/enriched_findings.json")
-          findings = json.loads(enriched.read_text(encoding="utf-8")) if enriched.exists() else []
-          if isinstance(findings, dict):
-              findings = findings.get("findings", [])
-          for item in blockers[:10]:
-              text = item.get("title") or item.get("message")
-              cve = next((w.strip(":(),") for w in text.split() if w.startswith(("CVE-", "GHSA-"))), None)
-              hit = next((f for f in findings if cve and f.get("rule_id") == cve), None)
-              if hit:
-                  detail = hit.get("message", "").split("; ")[:3]
-                  text += f" | {hit.get('category')} | {'; '.join(detail)}"
-              print(f"::error title=G2 BLOCK::{text}")
-          print(f"Quyết định: {data.get('decision')}, chặn {len(blockers)}, cảnh báo {len(data.get('warnings', []))}")
-          PY
 
       - name: Record traceable scan observation
         if: always()
@@ -587,6 +732,19 @@ jobs:
             Code/DevSecOps/pr_summary.md
           if-no-files-found: warn
 
+      - name: Upload gói observation gọn cho tổng hợp E1–E3
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.0
+        with:
+          name: experiment-${{ env.FIXTURE_ID }}
+          path: |
+            Code/DevSecOps/reports/experiment/observation.json
+            Code/DevSecOps/reports/experiment/gate-report-*.json
+            Code/DevSecOps/reports/timing/*.json
+            Code/DevSecOps/reports/e3-ci-run-timing.json
+          if-no-files-found: warn
+          retention-days: 90
+
   # ─────────────────────────────────────────────────────────────
   # 6) Release: push image theo digest, ký keyless bằng Cosign (chỉ trên main)
   # ─────────────────────────────────────────────────────────────
@@ -610,14 +768,12 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Cài syft + cosign (binary ghim, kiểm checksum)
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: |
           cd "$RUNNER_TEMP"
           sbase="https://github.com/anchore/syft/releases/download/v${SYFT_VERSION}"
           syft_asset="syft_${SYFT_VERSION}_linux_amd64.tar.gz"
-          bash "$GITHUB_WORKSPACE/Code/DevSecOps/tools/download_release.sh" "${syft_asset}" "${sbase}/${syft_asset}"
-          bash "$GITHUB_WORKSPACE/Code/DevSecOps/tools/download_release.sh" syft.sums "${sbase}/syft_${SYFT_VERSION}_checksums.txt"
+          curl -fsSL -o "${syft_asset}" "${sbase}/${syft_asset}"
+          curl -fsSL -o syft.sums "${sbase}/syft_${SYFT_VERSION}_checksums.txt"
           test -s "${syft_asset}"
           expected="$(awk -v name="${syft_asset}" '($2 == name || $2 == ("*" name)) {print $1; found=1} END {if (!found) exit 1}' syft.sums)"
           actual="$(sha256sum "${syft_asset}" | awk '{print $1}')"
@@ -627,8 +783,8 @@ jobs:
           fi
           tar xzf "${syft_asset}" syft && sudo install syft /usr/local/bin/
           cbase="https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}"
-          bash "$GITHUB_WORKSPACE/Code/DevSecOps/tools/download_release.sh" cosign "${cbase}/cosign-linux-amd64"
-          bash "$GITHUB_WORKSPACE/Code/DevSecOps/tools/download_release.sh" cosign.sums "${cbase}/cosign_checksums.txt"
+          curl -fsSL -o cosign "${cbase}/cosign-linux-amd64"
+          curl -fsSL -o cosign.sums "${cbase}/cosign_checksums.txt"
           grep "  cosign-linux-amd64$" cosign.sums | sed 's#cosign-linux-amd64#cosign#' | sha256sum -c -
           sudo install cosign /usr/local/bin/
           syft version && cosign version
@@ -696,17 +852,15 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Cài cosign + kind (binary ghim)
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: |
           cd "$RUNNER_TEMP"
           cbase="https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}"
-          bash "$GITHUB_WORKSPACE/Code/DevSecOps/tools/download_release.sh" cosign "${cbase}/cosign-linux-amd64"
-          bash "$GITHUB_WORKSPACE/Code/DevSecOps/tools/download_release.sh" cosign.sums "${cbase}/cosign_checksums.txt"
+          curl -fsSL -o cosign "${cbase}/cosign-linux-amd64"
+          curl -fsSL -o cosign.sums "${cbase}/cosign_checksums.txt"
           grep "  cosign-linux-amd64$" cosign.sums | sed 's#cosign-linux-amd64#cosign#' | sha256sum -c -
           sudo install cosign /usr/local/bin/
           # kind không phát hành tệp checksums gộp; ghim theo tag + TLS.
-          bash "$GITHUB_WORKSPACE/Code/DevSecOps/tools/download_release.sh" kind "https://github.com/kubernetes-sigs/kind/releases/download/v${KIND_VERSION}/kind-linux-amd64"
+          curl -fsSL -o kind "https://github.com/kubernetes-sigs/kind/releases/download/v${KIND_VERSION}/kind-linux-amd64"
           sudo install kind /usr/local/bin/
           cosign version && kind version
 

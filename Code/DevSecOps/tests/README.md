@@ -28,53 +28,123 @@ Pipeline được coi là bị tê liệt khi dính 1 trong các dấu hiệu sa
 Pipeline chạy quá 10 phút.
 1 PR nhận hơn 20 cảnh báo.
 
-## Mục 2b. Giả thuyết (viết ngày 03/11/2026, trước lần chạy thực nghiệm chính thức; không sửa sau khi có số liệu)
-- H1: Không công cụ đơn lẻ nào đạt recall từ 50% trên 28 lỗi, nhưng 5 lớp kết hợp đạt ít nhất 85%.
-- H2: G1 chặn nhầm ít nhất một nửa số thay đổi sạch; G2 không chặn nhầm thay đổi sạch nào và chặn mọi lỗi tầng BLOCK.
-- H3: Cấu hình song song có cache (C3) rút ngắn thời gian trung vị ít nhất 30% so với tuần tự không cache (C1).
-- H4: Image sau khắc phục giảm ít nhất một nửa số CVE CRITICAL/HIGH có bản vá và nhẹ hơn image trước.
+## Mục 3. Kết quả thực nghiệm live
 
-## Mục 3. Dữ liệu và cách thu
+Các kết quả dưới đây được tính từ raw scanner reports và observation của GitHub
+Actions, không dùng `findings.csv`, `decisions.csv` hay `runs.csv` làm thay dữ liệu
+phát hiện.
 
-- E1, E2, E4: workflow `experiments.yml` chạy ma trận 47 mẫu (BASE, D01–D28, C01–C10, N01–N08) trên
-  commit của tag `gt-v1`. Mỗi mẫu áp đúng một patch rồi chạy `run_scans.sh` với cùng phiên bản công
-  cụ như `ci.yml`; Semgrep chạy tách luật tự viết và bộ luật registry. Job `aggregate` lấy KEV/EPSS
-  tại thời điểm chấm, chạy `collect_experiment.py` và `eval_policies.py` (Conftest thật cho G0/G1/G2,
-  chế độ full và delta), job `e4-image` build mỗi image ba lần rồi quét SBOM và lỗ hổng.
-- E3: workflow `e3-orchestrate.yml` chạy xen kẽ C1 (tuần tự, không cache), C2 (song song, không cache),
-  C3 (song song, cache pip, Trivy DB, binary công cụ) trên cùng một SHA; thời gian lấy từ API jobs,
-  không tính thời gian xếp hàng. Mỗi lần điều phối có nhãn lượt chạy và khóa cache riêng, nên lượt đầu
-  của C3 luôn là cache lạnh và được loại khi tính trung vị.
-- Dữ liệu thô được lưu tại `results/raw/exp_<ngày>_<run_id>/` và `results/raw/e3_<ngày>_<run_id>/`:
-  `findings_all.csv`, `decisions.csv`, `samples.csv`, `scan_runs.csv`, `consistency.json`,
-  `e4_images.csv`, `kev/`, `samples/<mẫu>/`, `e4/` (SBOM Syft, báo cáo Trivy và Grype của hai image,
-  nén gzip) và `runs.csv`, `jobs.csv`, `meta.json`. URL run nằm trong `samples.csv`, `runs.csv` và các
-  `meta.json`; báo cáo thô của từng công cụ theo mẫu nằm trong artifact của run (giữ 90 ngày).
-- `results/raw/demo_20261103_pr21/`: báo cáo gate của PR #21 khi commit lỗi bị chặn (`block/`) và sau
-  khi sửa (`pass/`), kèm `run.json` lấy từ API.
-- `analyze_results.py` (hoặc `analysis.ipynb`) sinh `results/metrics/*.csv`, `results/figures/*.png`
-  và `results/metrics/so_lieu_bao_cao.csv`; số nào chưa có nguồn được ghi `CHUA_DO`.
-- Finding được tính là phát hiện đúng khi là finding mới so với baseline, có rule ID thuộc
-  `accepted_rule_ids` và trỏ đúng tệp đích trong `ground_truth.csv`. Recall trình bày phân số trước,
-  phần trăm sau; không dùng accuracy.
+| Đo lường | Kết quả live mới nhất |
+|---|---|
+| E1 – D/C/N | 38/38 fixture D/C và 8/8 N hoàn tất; scanner phát hiện 28/28 lỗi D; 0/10 C có finding mới; 0/8 N có finding mới theo rule đích. |
+| E2 – G1 | TP/FN/FP/TN = 28/0/0/10; block recall 28/28 trường hợp kỳ vọng BLOCK; blocker khớp rule đích 27/28; false-block C 0/10, N 1/8. |
+| E2 – G2 | TP/FN/FP/TN = 23/0/0/15; block recall 23/23 trường hợp kỳ vọng BLOCK; blocker khớp rule đích 22/23; false-block C 0/10, N 0/8. Năm lỗi D còn lại được policy xếp WARN. |
+| E2 – G0 | Không có trường hợp kỳ vọng BLOCK nên recall không áp dụng; 0/8 negative control bị chặn. |
+| E3 – cold/warm | Mỗi profile N=5, cùng commit và snapshot Trivy/Grype. Wall median 111s/125s, IQR 3s/10s, p90 115,8s/126,6s; scan stage 87s/97s; tổng runner-minutes median 3,45/3,63. |
+| E4 – image/SBOM | 4.486 → 206 bản ghi Trivy; 18 → 0 CRITICAL; SBOM 22.943 → 2.856 thành phần. Cùng Python 3.13.18, Debian 13.7, amd64, Trivy 0.76.1 và DB snapshot. |
 
-## Mục 4. Ghi chú khi đọc số liệu
+E1/E2 có 47 observation nguồn: một baseline và 46 fixture D/C/N, cùng commit
+`135606475be9d66842121135631d853a63c1e480`. Kết quả được tính từ raw report và
+finding mới so với baseline; không lấy `decisions.csv` làm dữ liệu phát hiện.
+G1 chặn mọi lỗi được kỳ vọng BLOCK; G2 chặn 23 trường hợp kỳ vọng BLOCK và cảnh
+báo 5 lỗi ở mức WARN. G1 chặn 1/8 negative control trong khi G2 chặn 0/8.
 
-- `e1_recall_by_tool.csv`: `new_outside_key_d`, `new_on_n`, `new_on_c` đếm theo công cụ các finding mới
-  không thuộc đáp án trên mẫu D và mọi finding mới trên N, trên C. Đây là ứng viên báo nhầm, chưa
-  triage; kết quả triage của nhóm lưu ở `results/triage/`.
-- `e1_detection_by_defect.csv` có quyết định G1/G2 của từng lỗi cạnh `expected_g2`. D10 là mẫu duy nhất
-  lệch tầng: lỗi gieo là CVE-2023-45803 (MEDIUM, kỳ vọng WARN) nhưng bản urllib3 cũ còn CVE HIGH có bản
-  vá (ví dụ CVE-2025-66418) nên G2 trả BLOCK.
-- N04 (urllib3 2.6.0) có 5 CVE HIGH theo Trivy DB 2026-11-03 nên bị G2 chặn; đây là mẫu N duy nhất bị
-  G2 chặn (`controls_blocked`).
-- Baseline là trạng thái sau khi sửa của mọi lỗi D: G2 full trả WARN với 96 cảnh báo, không chặn
-  (`E2_G2_BASELINE_FULL`). Minh chứng chặn rồi qua trên CI thật: PR #21 (`demo_20261103_pr21/`).
-- Cùng lỗi mở cổng 22, Checkov báo `CKV_AWS_24` (thuộc danh mục chặn) còn Trivy báo `AWS-0107` (chỉ
-  WARN); chính sách giữ nguyên như lúc đóng băng ở `gt-v1`.
-- `e1_scan_timing.csv`: thời gian từng bước quét trong một runner, không gồm cài công cụ;
-  `e3_jobs.csv`: thời gian từng job của E3. Bộ luật registry `p/python` của Semgrep tải lúc chạy nên
-  không ghim được phiên bản.
+E3 warm chậm hơn median 14 giây (12,61%) trong mẫu đo. Chỉ pip cache thay đổi;
+scanner jobs vẫn chạy song song. E4 có config digest và Dockerfile SHA-256 cục
+bộ nhưng chưa có manifest digest registry; kết luận áp dụng cho toàn bộ thay đổi
+Dockerfile/image, không tách riêng từng package. Số CRITICAL `18 → 0` lấy từ cặp
+raw report before/after của cùng run E4.
+
+Chi tiết hiện hành nằm tại
+`tests/results/metrics/live-evidence-2026-11-16/`. Manifest E1/E2 lưu run URL,
+commit, SHA-256 observation/raw report, tool versions và DB snapshot; JSON E3 lưu
+10 run ID cùng thống kê và thời gian từng job; JSON E4 lưu raw report hashes và
+metadata so sánh. Các raw report đầy đủ nằm trong artifact của từng run GitHub
+Actions và tuân theo thời hạn lưu artifact. Xem
+[E1/E2](results/metrics/live-evidence-2026-11-16/e1_e2_live_observations.md),
+[E3](results/metrics/live-evidence-2026-11-16/e3_live_cache_comparison.md),
+[E4](results/metrics/live-evidence-2026-11-16/e4_image_remediation.md) và
+[bằng chứng PR/ruleset](results/metrics/live-evidence-2026-11-16/PR_GATE_EVIDENCE.md).
+
+Các tệp `e1_g0_metrics.json`, `e1_g1_metrics.json`, `e1_g2_metrics.json` và
+`e2_policy_comparison.json` ở thư mục `results/metrics/` là policy replay thăm
+dò từ `decisions.csv`; chúng được giữ để đối chiếu lịch sử, không thay cho kết
+quả live trong gói ngày 2026-11-16.
+
+### Giới hạn cần giữ rõ trong báo cáo
+
+- E3 sử dụng 5 cold và 5 warm run thành công; một lượt warm-up được loại khỏi thống kê.
+  Một số baseline có `WARN`, nhưng không có baseline nào bị G2 `BLOCK` trong nhóm đo.
+- PR #1 có lượt thử block/pass có kiểm soát: D01 SQL injection bị gate G2 chặn
+  tại [run 43729980295](https://github.com/gialong611/DevSecOps_Project/actions/runs/43729980295);
+  sau khi hoàn nguyên fixture, [run 43730231762](https://github.com/gialong611/DevSecOps_Project/actions/runs/43730231762)
+  pass. Xem `tests/results/metrics/live-evidence-2026-11-16/PR_GATE_EVIDENCE.md`.
+- Ruleset `Protect main` đang active, yêu cầu PR và sáu check: DB snapshots,
+  Python tests, security scans, IaC, image và gate. PR #1 merge trước thời điểm
+  bật ruleset; cần PR tiếp theo để chứng minh ruleset chặn merge thật. Cấu hình
+  chi tiết có trong `PR_GATE_EVIDENCE.md`.
+- T0 KEV/EPSS trong E4 là mô phỏng, không phải snapshot lịch sử CISA/FIRST.
+- Observation schema v6 tại `schemas/scan-observation.schema.json` lưu run URL,
+  commit, tool versions, timing, cache profile, report SHA-256, quyết định G0/G1/G2
+  và provenance snapshot Trivy/Grype.
+
+### Thu thập lại fixture D/C/N và E3
+
+Để thu thập study mới, chạy từ thư mục `Code/DevSecOps` trên máy đã đăng nhập
+`gh auth login` và có quyền dispatch workflow, đọc run và tải artifact. Script
+tự ghim một SHA cho toàn bộ study, tải artifact nhỏ cho từng run, ghi URL/run
+ID/job timing, và hỗ trợ tiếp tục bằng `--resume`.
+
+```bash
+# Baseline + 28 D + 10 C + 8 N, sau đó tạo báo cáo live E1/E2.
+python tests/run_fixture_matrix.py --ref main --out-dir tests/results/live-study --parallelism 4
+
+# Ít nhất 5 lượt mỗi profile; chạy warm-up trước và loại khỏi thống kê.
+python tests/run_fixture_matrix.py --ref main --skip-fixtures \
+  --e3-cold-repeats 5 --e3-warm-repeats 5 \
+  --out-dir tests/results/e3-live
+
+# Tiếp tục sau khi bị ngắt, dùng đúng thư mục và cùng commit.
+python tests/run_fixture_matrix.py --ref main --skip-fixtures \
+  --e3-cold-repeats 5 --e3-warm-repeats 5 \
+  --out-dir tests/results/e3-live --resume
+```
+
+Fixture matrix mặc định gồm 47 lượt (baseline + 46 mẫu); baseline chạy trước,
+sau đó D/C/N chạy song song tối đa 4 workflow. E3 thêm 11 lượt (1 warm-up + 5
+cold + 5 warm). Workflow dùng cache DB Trivy/Grype có snapshot ID cố định; nếu
+snapshot hoặc tool version khác baseline, analyzer E1/E2/E3 đánh dấu chưa đủ và
+không gộp số liệu. E3 chỉ giữ run thành công, hoặc run baseline mà test, DB và
+cả ba job scanner thành công và gate G2 là job duy nhất bị chặn; các lỗi khác
+vẫn bị loại. E3 đo pip cache trong khi scanner jobs vẫn chạy song song; không
+diễn giải như so sánh tuần tự.
+
+Sau study, kiểm tra JSON/Markdown tổng hợp, URL từng case trong `run-index.json`
+và hash artifact trước khi cập nhật báo cáo. Bộ dữ liệu Markdown/JSON hiện hành
+đã được lưu trong repo; PPTX giữ nguyên. Báo cáo DOCX là tài liệu riêng cần đồng
+bộ nội dung với bộ số liệu mới trước khi phát hành.
+
+### Phân tích artifact E4 đã tải
+
+Nếu đã giải nén artifact `report-image` và `report-gate` cùng một run, xác minh
+run ID/commit và đối chiếu summary với raw reports bằng:
+
+```bash
+python tests/analyze_e4_artifact.py \
+  --artifact-dir "<thu_muc_report-image>" \
+  --gate-artifact-dir "<thu_muc_report-gate>" \
+  --out-json tests/results/metrics/e4_image_remediation.json \
+  --out-md tests/results/metrics/e4_image_remediation.md
+```
+
+Script kiểm tra lại số lỗ hổng theo severity và số thành phần SBOM từ raw JSON,
+lưu SHA-256, image ID/digest, Python/OS/architecture, tool version và DB
+snapshot. Nếu thiếu bằng chứng per-scan hoặc có yếu tố khác nhau, kết quả được
+đánh `limited` và `causal_attribution_allowed=false`.
+
+Khi thu thập lại, lưu artifact scanner không chuẩn hóa, kết quả gate của G0/G1/G2,
+URL run, hash commit, phiên bản tool, thời gian bắt đầu/kết thúc và cấu hình
+cache/song song. Không thay dữ liệu fixture bằng số đo CI nếu chưa lưu nguồn.
 
 ## Ước tính chi phí runner
 

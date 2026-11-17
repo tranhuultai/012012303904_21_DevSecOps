@@ -2,8 +2,8 @@
 """Làm giàu findings đã chuẩn hóa bằng ngữ cảnh rủi ro cho Security Gate G2.
 
 Với mỗi finding, bổ sung các trường mà gate_input.schema.json cho phép:
-    - kev:              CVE nằm trong danh mục CISA KEV (kev_snapshot.json hoặc bản tải lúc chạy).
-    - epss:             điểm EPSS [0..1] từ epss_snapshot.json hoặc bản tải lúc chạy; không có thì 0.0.
+    - kev:              CVE nằm trong danh mục CISA KEV (tệp cisa_kev_subset.json).
+    - epss:             điểm EPSS [0..1] từ tệp epss_subset.json; không có thì 0.0.
     - fix_available:    có bản vá hay chưa (trivy: FixedVersion; grype: fix.versions).
     - match_confidence: "high" khi rule_id/CVE khớp trực tiếp với luật chặn của G2
                         hoặc CVE khớp KEV/EPSS; ngược lại "low".
@@ -15,8 +15,8 @@ Không sửa trường gốc nào ngoài việc bổ sung; giữ nguyên thứ t
 Dùng:
     python tools/enrich_findings.py \
         --findings reports/normalized_findings.json \
-        --kev security/kev/kev_snapshot.json \
-        --epss security/kev/epss_snapshot.json \
+        --kev security/kev/cisa_kev_subset.json \
+        --epss security/kev/epss_subset.json \
         --out reports/enriched_findings.json
 """
 
@@ -30,11 +30,11 @@ IAC_BLOCK_CONTROLS = {
     "CKV_AWS_24", "CKV_AWS_25",
     "CKV_AWS_1", "CKV_AWS_49", "CKV_AWS_62", "CKV_AWS_63",
     "CKV_AWS_53", "CKV_AWS_54", "CKV_AWS_55", "CKV_AWS_56",
-    "CKV_AWS_17", "CKV_AWS_16",
+    "CKV_AWS_17", "CKV_AWS_16", "CKV_AWS_382", "AWS-0104",
     "CKV_DOCKER_1", "CKV_DOCKER_3", "CKV_DOCKER_4", "CKV_DOCKER_7",
     "CKV_K8S_16", "CKV_K8S_14",
     "KSV-0111", "KSV-0109",
-    "CKV2_GHA_1", "CKV_GHA_2", "GHA-WRITE-ALL", "GHA-SCRIPT-INJECTION",
+    "CKV2_GHA_1", "CKV_GHA_2", "DSEC_GHA_001", "DSEC_GHA_002", "DSEC_GHA_003",
 }
 
 SECRET_CATEGORIES = {"secret"}
@@ -117,7 +117,7 @@ def match_confidence(finding, kev_ids, epss_map):
     return "low"
 
 
-def enrich(finding, kev_ids, epss_map) -> dict:
+def enrich(finding, kev_ids, epss_map):
     out = dict(finding)
     cve = finding_cve(out)
     out["kev"] = bool(cve and cve in kev_ids)

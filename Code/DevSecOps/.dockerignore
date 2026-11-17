@@ -1,4 +1,5 @@
 .git/
+.codex-trivy-verification/
 ground_truth/
 tests/
 lab/

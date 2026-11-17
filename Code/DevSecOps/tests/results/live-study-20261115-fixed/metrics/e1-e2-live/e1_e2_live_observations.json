@@ -1,0 +1,903 @@
+{
+  "experiment": "E1/E2 actual scanner and gate observations",
+  "evidence_status": "partial",
+  "baseline_run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43624239226/attempts/1",
+  "baseline_commit": "b79a12a6a3e8c291ac4f2050db6946d841f2116a",
+  "fixture_cases_expected": 38,
+  "fixture_cases_measured": 38,
+  "missing_cases": [],
+  "negative_controls_expected": 8,
+  "negative_controls_measured": 8,
+  "negative_controls_unmeasured": [],
+  "excluded_incomplete_observations": [],
+  "negative_control_scanner_outcomes": {
+    "attempts": 8,
+    "false_positive_findings": 0,
+    "no_expected_finding": 8,
+    "expected_tool_false_positive_rate": 0.0
+  },
+  "negative_control_policy_outcomes": {
+    "g0": {
+      "attempts": 8,
+      "blocked": 0,
+      "not_blocked": 8,
+      "false_block_rate": 0.0
+    },
+    "g1": {
+      "attempts": 8,
+      "blocked": 2,
+      "not_blocked": 6,
+      "false_block_rate": 0.25
+    },
+    "g2": {
+      "attempts": 8,
+      "blocked": 1,
+      "not_blocked": 7,
+      "false_block_rate": 0.125
+    }
+  },
+  "scanner_outcomes": {
+    "clean_with_new_findings": 1,
+    "clean_without_new_findings": 9,
+    "detected": 11,
+    "missed": 17,
+    "defect_attempts": 28,
+    "clean_attempts": 10,
+    "clean_cases_with_new_findings": 1
+  },
+  "policy_metrics": {
+    "g0": {
+      "TP": 0,
+      "FN": 28,
+      "FP": 0,
+      "TN": 10,
+      "defects_measured": 28,
+      "clean_changes_measured": 10,
+      "recall_blocked_defects": 0.0,
+      "precision_blocked_defects": null,
+      "false_block_rate_on_measured_clean": 0.0
+    },
+    "g1": {
+      "TP": 15,
+      "FN": 13,
+      "FP": 0,
+      "TN": 10,
+      "defects_measured": 28,
+      "clean_changes_measured": 10,
+      "recall_blocked_defects": 0.5357,
+      "precision_blocked_defects": 1.0,
+      "false_block_rate_on_measured_clean": 0.0
+    },
+    "g2": {
+      "TP": 10,
+      "FN": 18,
+      "FP": 0,
+      "TN": 10,
+      "defects_measured": 28,
+      "clean_changes_measured": 10,
+      "recall_blocked_defects": 0.3571,
+      "precision_blocked_defects": 1.0,
+      "false_block_rate_on_measured_clean": 0.0
+    }
+  },
+  "cases": [
+    {
+      "fixture_id": "C01",
+      "sample_type": "clean",
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43631629021/attempts/1",
+      "commit": "b79a12a6a3e8c291ac4f2050db6946d841f2116a",
+      "evidence_status": "complete",
+      "skipped_scans": [
+        "e4-live-image-remediation"
+      ],
+      "scanner_detected_expected_tool": null,
+      "new_findings_count": 0,
+      "policy_decisions": {
+        "g0": "PASS",
+        "g1": "BLOCK",
+        "g2": "WARN"
+      }
+    },
+    {
+      "fixture_id": "C02",
+      "sample_type": "clean",
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43631889591/attempts/1",
+      "commit": "b79a12a6a3e8c291ac4f2050db6946d841f2116a",
+      "evidence_status": "complete",
+      "skipped_scans": [
+        "e4-live-image-remediation"
+      ],
+      "scanner_detected_expected_tool": null,
+      "new_findings_count": 0,
+      "policy_decisions": {
+        "g0": "PASS",
+        "g1": "BLOCK",
+        "g2": "WARN"
+      }
+    },
+    {
+      "fixture_id": "C03",
+      "sample_type": "clean",
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43632140068/attempts/1",
+      "commit": "b79a12a6a3e8c291ac4f2050db6946d841f2116a",
+      "evidence_status": "complete",
+      "skipped_scans": [
+        "e4-live-image-remediation"
+      ],
+      "scanner_detected_expected_tool": null,
+      "new_findings_count": 0,
+      "policy_decisions": {
+        "g0": "PASS",
+        "g1": "BLOCK",
+        "g2": "WARN"
+      }
+    },
+    {
+      "fixture_id": "C04",
+      "sample_type": "clean",
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43632390954/attempts/1",
+      "commit": "b79a12a6a3e8c291ac4f2050db6946d841f2116a",
+      "evidence_status": "complete",
+      "skipped_scans": [
+        "e4-live-image-remediation"
+      ],
+      "scanner_detected_expected_tool": null,
+      "new_findings_count": 0,
+      "policy_decisions": {
+        "g0": "PASS",
+        "g1": "BLOCK",
+        "g2": "WARN"
+      }
+    },
+    {
+      "fixture_id": "C05",
+      "sample_type": "clean",
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43632669966/attempts/1",
+      "commit": "b79a12a6a3e8c291ac4f2050db6946d841f2116a",
+      "evidence_status": "complete",
+      "skipped_scans": [
+        "e4-live-image-remediation"
+      ],
+      "scanner_detected_expected_tool": null,
+      "new_findings_count": 6,
+      "policy_decisions": {
+        "g0": "PASS",
+        "g1": "BLOCK",
+        "g2": "WARN"
+      }
+    },
+    {
+      "fixture_id": "C06",
+      "sample_type": "clean",
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43632938396/attempts/1",
+      "commit": "b79a12a6a3e8c291ac4f2050db6946d841f2116a",
+      "evidence_status": "complete",
+      "skipped_scans": [
+        "e4-live-image-remediation"
+      ],
+      "scanner_detected_expected_tool": null,
+      "new_findings_count": 0,
+      "policy_decisions": {
+        "g0": "PASS",
+        "g1": "BLOCK",
+        "g2": "WARN"
+      }
+    },
+    {
+      "fixture_id": "C07",
+      "sample_type": "clean",
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43633155846/attempts/1",
+      "commit": "b79a12a6a3e8c291ac4f2050db6946d841f2116a",
+      "evidence_status": "complete",
+      "skipped_scans": [
+        "e4-live-image-remediation"
+      ],
+      "scanner_detected_expected_tool": null,
+      "new_findings_count": 0,
+      "policy_decisions": {
+        "g0": "PASS",
+        "g1": "BLOCK",
+        "g2": "WARN"
+      }
+    },
+    {
+      "fixture_id": "C08",
+      "sample_type": "clean",
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43633413465/attempts/1",
+      "commit": "b79a12a6a3e8c291ac4f2050db6946d841f2116a",
+      "evidence_status": "complete",
+      "skipped_scans": [
+        "e4-live-image-remediation"
+      ],
+      "scanner_detected_expected_tool": null,
+      "new_findings_count": 0,
+      "policy_decisions": {
+        "g0": "PASS",
+        "g1": "BLOCK",
+        "g2": "WARN"
+      }
+    },
+    {
+      "fixture_id": "C09",
+      "sample_type": "clean",
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43633636681/attempts/1",
+      "commit": "b79a12a6a3e8c291ac4f2050db6946d841f2116a",
+      "evidence_status": "complete",
+      "skipped_scans": [
+        "e4-live-image-remediation"
+      ],
+      "scanner_detected_expected_tool": null,
+      "new_findings_count": 0,
+      "policy_decisions": {
+        "g0": "PASS",
+        "g1": "BLOCK",
+        "g2": "WARN"
+      }
+    },
+    {
+      "fixture_id": "C10",
+      "sample_type": "clean",
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43633896034/attempts/1",
+      "commit": "b79a12a6a3e8c291ac4f2050db6946d841f2116a",
+      "evidence_status": "complete",
+      "skipped_scans": [
+        "e4-live-image-remediation"
+      ],
+      "scanner_detected_expected_tool": null,
+      "new_findings_count": 0,
+      "policy_decisions": {
+        "g0": "PASS",
+        "g1": "BLOCK",
+        "g2": "WARN"
+      }
+    },
+    {
+      "fixture_id": "D01",
+      "sample_type": "defect",
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43624497841/attempts/1",
+      "commit": "b79a12a6a3e8c291ac4f2050db6946d841f2116a",
+      "evidence_status": "complete",
+      "skipped_scans": [
+        "e4-live-image-remediation"
+      ],
+      "scanner_detected_expected_tool": false,
+      "new_findings_count": 2,
+      "policy_decisions": {
+        "g0": "PASS",
+        "g1": "BLOCK",
+        "g2": "BLOCK"
+      }
+    },
+    {
+      "fixture_id": "D02",
+      "sample_type": "defect",
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43624752978/attempts/1",
+      "commit": "b79a12a6a3e8c291ac4f2050db6946d841f2116a",
+      "evidence_status": "complete",
+      "skipped_scans": [
+        "e4-live-image-remediation"
+      ],
+      "scanner_detected_expected_tool": false,
+      "new_findings_count": 1,
+      "policy_decisions": {
+        "g0": "PASS",
+        "g1": "BLOCK",
+        "g2": "BLOCK"
+      }
+    },
+    {
+      "fixture_id": "D03",
+      "sample_type": "defect",
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43625011632/attempts/1",
+      "commit": "b79a12a6a3e8c291ac4f2050db6946d841f2116a",
+      "evidence_status": "complete",
+      "skipped_scans": [
+        "e4-live-image-remediation"
+      ],
+      "scanner_detected_expected_tool": true,
+      "new_findings_count": 1,
+      "policy_decisions": {
+        "g0": "PASS",
+        "g1": "BLOCK",
+        "g2": "BLOCK"
+      }
+    },
+    {
+      "fixture_id": "D04",
+      "sample_type": "defect",
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43625313947/attempts/1",
+      "commit": "b79a12a6a3e8c291ac4f2050db6946d841f2116a",
+      "evidence_status": "complete",
+      "skipped_scans": [
+        "e4-live-image-remediation"
+      ],
+      "scanner_detected_expected_tool": true,
+      "new_findings_count": 1,
+      "policy_decisions": {
+        "g0": "PASS",
+        "g1": "BLOCK",
+        "g2": "WARN"
+      }
+    },
+    {
+      "fixture_id": "D05",
+      "sample_type": "defect",
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43625621225/attempts/1",
+      "commit": "b79a12a6a3e8c291ac4f2050db6946d841f2116a",
+      "evidence_status": "complete",
+      "skipped_scans": [
+        "e4-live-image-remediation"
+      ],
+      "scanner_detected_expected_tool": true,
+      "new_findings_count": 2,
+      "policy_decisions": {
+        "g0": "PASS",
+        "g1": "BLOCK",
+        "g2": "BLOCK"
+      }
+    },
+    {
+      "fixture_id": "D06",
+      "sample_type": "defect",
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43625883539/attempts/1",
+      "commit": "b79a12a6a3e8c291ac4f2050db6946d841f2116a",
+      "evidence_status": "complete",
+      "skipped_scans": [
+        "e4-live-image-remediation"
+      ],
+      "scanner_detected_expected_tool": false,
+      "new_findings_count": 2,
+      "policy_decisions": {
+        "g0": "PASS",
+        "g1": "BLOCK",
+        "g2": "WARN"
+      }
+    },
+    {
+      "fixture_id": "D07",
+      "sample_type": "defect",
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43626149435/attempts/1",
+      "commit": "b79a12a6a3e8c291ac4f2050db6946d841f2116a",
+      "evidence_status": "complete",
+      "skipped_scans": [
+        "e4-live-image-remediation"
+      ],
+      "scanner_detected_expected_tool": true,
+      "new_findings_count": 1,
+      "policy_decisions": {
+        "g0": "PASS",
+        "g1": "BLOCK",
+        "g2": "BLOCK"
+      }
+    },
+    {
+      "fixture_id": "D08",
+      "sample_type": "defect",
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43626376985/attempts/1",
+      "commit": "b79a12a6a3e8c291ac4f2050db6946d841f2116a",
+      "evidence_status": "complete",
+      "skipped_scans": [
+        "e4-live-image-remediation"
+      ],
+      "scanner_detected_expected_tool": false,
+      "new_findings_count": 1,
+      "policy_decisions": {
+        "g0": "PASS",
+        "g1": "BLOCK",
+        "g2": "BLOCK"
+      }
+    },
+    {
+      "fixture_id": "D09",
+      "sample_type": "defect",
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43626634074/attempts/1",
+      "commit": "b79a12a6a3e8c291ac4f2050db6946d841f2116a",
+      "evidence_status": "complete",
+      "skipped_scans": [
+        "e4-live-image-remediation"
+      ],
+      "scanner_detected_expected_tool": true,
+      "new_findings_count": 6,
+      "policy_decisions": {
+        "g0": "PASS",
+        "g1": "BLOCK",
+        "g2": "WARN"
+      }
+    },
+    {
+      "fixture_id": "D10",
+      "sample_type": "defect",
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43626878855/attempts/1",
+      "commit": "b79a12a6a3e8c291ac4f2050db6946d841f2116a",
+      "evidence_status": "complete",
+      "skipped_scans": [
+        "e4-live-image-remediation"
+      ],
+      "scanner_detected_expected_tool": true,
+      "new_findings_count": 18,
+      "policy_decisions": {
+        "g0": "PASS",
+        "g1": "BLOCK",
+        "g2": "BLOCK"
+      }
+    },
+    {
+      "fixture_id": "D11",
+      "sample_type": "defect",
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43627154090/attempts/1",
+      "commit": "b79a12a6a3e8c291ac4f2050db6946d841f2116a",
+      "evidence_status": "complete",
+      "skipped_scans": [
+        "e4-live-image-remediation"
+      ],
+      "scanner_detected_expected_tool": false,
+      "new_findings_count": 14,
+      "policy_decisions": {
+        "g0": "PASS",
+        "g1": "BLOCK",
+        "g2": "BLOCK"
+      }
+    },
+    {
+      "fixture_id": "D12",
+      "sample_type": "defect",
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43627463433/attempts/1",
+      "commit": "b79a12a6a3e8c291ac4f2050db6946d841f2116a",
+      "evidence_status": "complete",
+      "skipped_scans": [
+        "e4-live-image-remediation",
+        "grype-image",
+        "image-build",
+        "syft-sbom",
+        "trivy-image"
+      ],
+      "scanner_detected_expected_tool": false,
+      "new_findings_count": 0,
+      "policy_decisions": {
+        "g0": "PASS",
+        "g1": "BLOCK",
+        "g2": "WARN"
+      }
+    },
+    {
+      "fixture_id": "D13",
+      "sample_type": "defect",
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43627590190/attempts/1",
+      "commit": "b79a12a6a3e8c291ac4f2050db6946d841f2116a",
+      "evidence_status": "complete",
+      "skipped_scans": [
+        "e4-live-image-remediation",
+        "grype-image",
+        "image-build",
+        "syft-sbom",
+        "trivy-image"
+      ],
+      "scanner_detected_expected_tool": false,
+      "new_findings_count": 1,
+      "policy_decisions": {
+        "g0": "PASS",
+        "g1": "BLOCK",
+        "g2": "WARN"
+      }
+    },
+    {
+      "fixture_id": "D14",
+      "sample_type": "defect",
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43627709594/attempts/1",
+      "commit": "b79a12a6a3e8c291ac4f2050db6946d841f2116a",
+      "evidence_status": "complete",
+      "skipped_scans": [
+        "e4-live-image-remediation",
+        "grype-image",
+        "image-build",
+        "syft-sbom",
+        "trivy-image"
+      ],
+      "scanner_detected_expected_tool": false,
+      "new_findings_count": 0,
+      "policy_decisions": {
+        "g0": "PASS",
+        "g1": "BLOCK",
+        "g2": "WARN"
+      }
+    },
+    {
+      "fixture_id": "D15",
+      "sample_type": "defect",
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43628277919/attempts/1",
+      "commit": "b79a12a6a3e8c291ac4f2050db6946d841f2116a",
+      "evidence_status": "complete",
+      "skipped_scans": [
+        "e4-live-image-remediation",
+        "grype-image",
+        "image-build",
+        "syft-sbom",
+        "trivy-image"
+      ],
+      "scanner_detected_expected_tool": false,
+      "new_findings_count": 1,
+      "policy_decisions": {
+        "g0": "PASS",
+        "g1": "BLOCK",
+        "g2": "WARN"
+      }
+    },
+    {
+      "fixture_id": "D16",
+      "sample_type": "defect",
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43628434192/attempts/1",
+      "commit": "b79a12a6a3e8c291ac4f2050db6946d841f2116a",
+      "evidence_status": "complete",
+      "skipped_scans": [
+        "e4-live-image-remediation"
+      ],
+      "scanner_detected_expected_tool": false,
+      "new_findings_count": 7,
+      "policy_decisions": {
+        "g0": "PASS",
+        "g1": "BLOCK",
+        "g2": "BLOCK"
+      }
+    },
+    {
+      "fixture_id": "D17",
+      "sample_type": "defect",
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43628660230/attempts/1",
+      "commit": "b79a12a6a3e8c291ac4f2050db6946d841f2116a",
+      "evidence_status": "complete",
+      "skipped_scans": [
+        "e4-live-image-remediation"
+      ],
+      "scanner_detected_expected_tool": false,
+      "new_findings_count": 27,
+      "policy_decisions": {
+        "g0": "PASS",
+        "g1": "BLOCK",
+        "g2": "BLOCK"
+      }
+    },
+    {
+      "fixture_id": "D18",
+      "sample_type": "defect",
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43628890250/attempts/1",
+      "commit": "b79a12a6a3e8c291ac4f2050db6946d841f2116a",
+      "evidence_status": "complete",
+      "skipped_scans": [
+        "e4-live-image-remediation"
+      ],
+      "scanner_detected_expected_tool": false,
+      "new_findings_count": 19,
+      "policy_decisions": {
+        "g0": "PASS",
+        "g1": "BLOCK",
+        "g2": "BLOCK"
+      }
+    },
+    {
+      "fixture_id": "D19",
+      "sample_type": "defect",
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43629170975/attempts/1",
+      "commit": "b79a12a6a3e8c291ac4f2050db6946d841f2116a",
+      "evidence_status": "complete",
+      "skipped_scans": [
+        "e4-live-image-remediation"
+      ],
+      "scanner_detected_expected_tool": false,
+      "new_findings_count": 8,
+      "policy_decisions": {
+        "g0": "PASS",
+        "g1": "BLOCK",
+        "g2": "BLOCK"
+      }
+    },
+    {
+      "fixture_id": "D20",
+      "sample_type": "defect",
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43629428615/attempts/1",
+      "commit": "b79a12a6a3e8c291ac4f2050db6946d841f2116a",
+      "evidence_status": "complete",
+      "skipped_scans": [
+        "e4-live-image-remediation"
+      ],
+      "scanner_detected_expected_tool": false,
+      "new_findings_count": 9,
+      "policy_decisions": {
+        "g0": "PASS",
+        "g1": "BLOCK",
+        "g2": "WARN"
+      }
+    },
+    {
+      "fixture_id": "D21",
+      "sample_type": "defect",
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43629671910/attempts/1",
+      "commit": "b79a12a6a3e8c291ac4f2050db6946d841f2116a",
+      "evidence_status": "complete",
+      "skipped_scans": [
+        "e4-live-image-remediation"
+      ],
+      "scanner_detected_expected_tool": true,
+      "new_findings_count": 3,
+      "policy_decisions": {
+        "g0": "PASS",
+        "g1": "BLOCK",
+        "g2": "BLOCK"
+      }
+    },
+    {
+      "fixture_id": "D22",
+      "sample_type": "defect",
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43629946726/attempts/1",
+      "commit": "b79a12a6a3e8c291ac4f2050db6946d841f2116a",
+      "evidence_status": "complete",
+      "skipped_scans": [
+        "e4-live-image-remediation"
+      ],
+      "scanner_detected_expected_tool": true,
+      "new_findings_count": 6,
+      "policy_decisions": {
+        "g0": "PASS",
+        "g1": "BLOCK",
+        "g2": "WARN"
+      }
+    },
+    {
+      "fixture_id": "D23",
+      "sample_type": "defect",
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43630179994/attempts/1",
+      "commit": "b79a12a6a3e8c291ac4f2050db6946d841f2116a",
+      "evidence_status": "complete",
+      "skipped_scans": [
+        "e4-live-image-remediation"
+      ],
+      "scanner_detected_expected_tool": true,
+      "new_findings_count": 5,
+      "policy_decisions": {
+        "g0": "PASS",
+        "g1": "BLOCK",
+        "g2": "BLOCK"
+      }
+    },
+    {
+      "fixture_id": "D24",
+      "sample_type": "defect",
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43630407957/attempts/1",
+      "commit": "b79a12a6a3e8c291ac4f2050db6946d841f2116a",
+      "evidence_status": "complete",
+      "skipped_scans": [
+        "e4-live-image-remediation"
+      ],
+      "scanner_detected_expected_tool": true,
+      "new_findings_count": 1,
+      "policy_decisions": {
+        "g0": "PASS",
+        "g1": "BLOCK",
+        "g2": "BLOCK"
+      }
+    },
+    {
+      "fixture_id": "D25",
+      "sample_type": "defect",
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43630673455/attempts/1",
+      "commit": "b79a12a6a3e8c291ac4f2050db6946d841f2116a",
+      "evidence_status": "complete",
+      "skipped_scans": [
+        "e4-live-image-remediation"
+      ],
+      "scanner_detected_expected_tool": true,
+      "new_findings_count": 3,
+      "policy_decisions": {
+        "g0": "PASS",
+        "g1": "BLOCK",
+        "g2": "BLOCK"
+      }
+    },
+    {
+      "fixture_id": "D26",
+      "sample_type": "defect",
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43630934201/attempts/1",
+      "commit": "b79a12a6a3e8c291ac4f2050db6946d841f2116a",
+      "evidence_status": "complete",
+      "skipped_scans": [
+        "e4-live-image-remediation"
+      ],
+      "scanner_detected_expected_tool": false,
+      "new_findings_count": 0,
+      "policy_decisions": {
+        "g0": "PASS",
+        "g1": "BLOCK",
+        "g2": "WARN"
+      }
+    },
+    {
+      "fixture_id": "D27",
+      "sample_type": "defect",
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43631200232/attempts/1",
+      "commit": "b79a12a6a3e8c291ac4f2050db6946d841f2116a",
+      "evidence_status": "complete",
+      "skipped_scans": [
+        "e4-live-image-remediation"
+      ],
+      "scanner_detected_expected_tool": false,
+      "new_findings_count": 0,
+      "policy_decisions": {
+        "g0": "PASS",
+        "g1": "BLOCK",
+        "g2": "WARN"
+      }
+    },
+    {
+      "fixture_id": "D28",
+      "sample_type": "defect",
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43631427812/attempts/1",
+      "commit": "b79a12a6a3e8c291ac4f2050db6946d841f2116a",
+      "evidence_status": "complete",
+      "skipped_scans": [
+        "e4-live-image-remediation"
+      ],
+      "scanner_detected_expected_tool": false,
+      "new_findings_count": 0,
+      "policy_decisions": {
+        "g0": "PASS",
+        "g1": "BLOCK",
+        "g2": "WARN"
+      }
+    },
+    {
+      "fixture_id": "N01",
+      "sample_type": "control",
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43634085904/attempts/1",
+      "commit": "b79a12a6a3e8c291ac4f2050db6946d841f2116a",
+      "evidence_status": "complete",
+      "skipped_scans": [
+        "e4-live-image-remediation"
+      ],
+      "scanner_detected_expected_tool": false,
+      "new_findings_count": 0,
+      "policy_decisions": {
+        "g0": "PASS",
+        "g1": "BLOCK",
+        "g2": "WARN"
+      }
+    },
+    {
+      "fixture_id": "N02",
+      "sample_type": "control",
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43634345385/attempts/1",
+      "commit": "b79a12a6a3e8c291ac4f2050db6946d841f2116a",
+      "evidence_status": "complete",
+      "skipped_scans": [
+        "e4-live-image-remediation"
+      ],
+      "scanner_detected_expected_tool": false,
+      "new_findings_count": 0,
+      "policy_decisions": {
+        "g0": "PASS",
+        "g1": "BLOCK",
+        "g2": "WARN"
+      }
+    },
+    {
+      "fixture_id": "N03",
+      "sample_type": "control",
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43634566356/attempts/1",
+      "commit": "b79a12a6a3e8c291ac4f2050db6946d841f2116a",
+      "evidence_status": "complete",
+      "skipped_scans": [
+        "e4-live-image-remediation"
+      ],
+      "scanner_detected_expected_tool": false,
+      "new_findings_count": 0,
+      "policy_decisions": {
+        "g0": "PASS",
+        "g1": "BLOCK",
+        "g2": "WARN"
+      }
+    },
+    {
+      "fixture_id": "N04",
+      "sample_type": "control",
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43634786957/attempts/1",
+      "commit": "b79a12a6a3e8c291ac4f2050db6946d841f2116a",
+      "evidence_status": "complete",
+      "skipped_scans": [
+        "e4-live-image-remediation"
+      ],
+      "scanner_detected_expected_tool": false,
+      "new_findings_count": 10,
+      "policy_decisions": {
+        "g0": "PASS",
+        "g1": "BLOCK",
+        "g2": "BLOCK"
+      }
+    },
+    {
+      "fixture_id": "N05",
+      "sample_type": "control",
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43635000603/attempts/1",
+      "commit": "b79a12a6a3e8c291ac4f2050db6946d841f2116a",
+      "evidence_status": "complete",
+      "skipped_scans": [
+        "e4-live-image-remediation"
+      ],
+      "scanner_detected_expected_tool": false,
+      "new_findings_count": 0,
+      "policy_decisions": {
+        "g0": "PASS",
+        "g1": "BLOCK",
+        "g2": "WARN"
+      }
+    },
+    {
+      "fixture_id": "N06",
+      "sample_type": "control",
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43635275212/attempts/1",
+      "commit": "b79a12a6a3e8c291ac4f2050db6946d841f2116a",
+      "evidence_status": "complete",
+      "skipped_scans": [
+        "e4-live-image-remediation"
+      ],
+      "scanner_detected_expected_tool": false,
+      "new_findings_count": 7,
+      "policy_decisions": {
+        "g0": "PASS",
+        "g1": "BLOCK",
+        "g2": "WARN"
+      }
+    },
+    {
+      "fixture_id": "N07",
+      "sample_type": "control",
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43635544299/attempts/1",
+      "commit": "b79a12a6a3e8c291ac4f2050db6946d841f2116a",
+      "evidence_status": "complete",
+      "skipped_scans": [
+        "e4-live-image-remediation"
+      ],
+      "scanner_detected_expected_tool": false,
+      "new_findings_count": 0,
+      "policy_decisions": {
+        "g0": "PASS",
+        "g1": "BLOCK",
+        "g2": "WARN"
+      }
+    },
+    {
+      "fixture_id": "N08",
+      "sample_type": "control",
+      "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43635780175/attempts/1",
+      "commit": "b79a12a6a3e8c291ac4f2050db6946d841f2116a",
+      "evidence_status": "complete",
+      "skipped_scans": [
+        "e4-live-image-remediation"
+      ],
+      "scanner_detected_expected_tool": false,
+      "new_findings_count": 0,
+      "policy_decisions": {
+        "g0": "PASS",
+        "g1": "BLOCK",
+        "g2": "WARN"
+      }
+    }
+  ],
+  "errors": [
+    "C09 Trivy vulnerability database metadata differs from baseline",
+    "C10 Trivy vulnerability database metadata differs from baseline",
+    "N01 Trivy vulnerability database metadata differs from baseline",
+    "N02 Trivy vulnerability database metadata differs from baseline",
+    "N03 Trivy vulnerability database metadata differs from baseline",
+    "N04 Trivy vulnerability database metadata differs from baseline",
+    "N05 Trivy vulnerability database metadata differs from baseline",
+    "N06 Trivy vulnerability database metadata differs from baseline",
+    "N07 Trivy vulnerability database metadata differs from baseline",
+    "N08 Trivy vulnerability database metadata differs from baseline"
+  ],
+  "limitations": [
+    "Scanner detection means a new normalized finding matching expected tool, rule/CVE, and file relative to the same-commit baseline.",
+    "Grype image findings are baseline-matched by CVE and package when available; legacy observations without package identity fall back to CVE because image-layer paths are unstable across rebuilds.",
+    "Clean-change false-block counts cover Cxx fixtures; Nxx scanner false positives and gate false blocks are reported separately.",
+    "Gate outcomes use blocker details added relative to the same-commit baseline; pre-existing baseline blockers are not attributed to a fixture.",
+    "Repeat runs are counted as attempts; report the number of runs and avoid treating repeated copies of a case as independent defects.",
+    "Trivy CLI and database metadata must match the baseline; findings from runs with different database metadata are not pooled."
+  ]
+}

@@ -1,0 +1,129 @@
+[
+	{
+		"filename": "gate_input.json",
+		"namespace": "main",
+		"successes": 1,
+		"warnings": [
+			{
+				"msg": "WARN HIGH chưa có bản vá: CVE-2025-69720",
+				"metadata": {
+					"query": "data.main.warn"
+				}
+			},
+			{
+				"msg": "WARN HIGH chưa có bản vá: CVE-2026-102010",
+				"metadata": {
+					"query": "data.main.warn"
+				}
+			},
+			{
+				"msg": "WARN HIGH chưa có bản vá: CVE-2026-119373",
+				"metadata": {
+					"query": "data.main.warn"
+				}
+			},
+			{
+				"msg": "WARN HIGH chưa có bản vá: CVE-2026-119374",
+				"metadata": {
+					"query": "data.main.warn"
+				}
+			},
+			{
+				"msg": "WARN HIGH chưa có bản vá: CVE-2026-119379",
+				"metadata": {
+					"query": "data.main.warn"
+				}
+			},
+			{
+				"msg": "WARN HIGH chưa có bản vá: CVE-2026-19499",
+				"metadata": {
+					"query": "data.main.warn"
+				}
+			},
+			{
+				"msg": "WARN HIGH chưa có bản vá: CVE-2026-5435",
+				"metadata": {
+					"query": "data.main.warn"
+				}
+			},
+			{
+				"msg": "WARN HIGH chưa có bản vá: CVE-2026-54369",
+				"metadata": {
+					"query": "data.main.warn"
+				}
+			},
+			{
+				"msg": "WARN HIGH chưa có bản vá: CVE-2026-54370",
+				"metadata": {
+					"query": "data.main.warn"
+				}
+			},
+			{
+				"msg": "WARN HIGH chưa có bản vá: CVE-2026-76642",
+				"metadata": {
+					"query": "data.main.warn"
+				}
+			},
+			{
+				"msg": "WARN HIGH chưa có bản vá: CVE-2026-78408",
+				"metadata": {
+					"query": "data.main.warn"
+				}
+			},
+			{
+				"msg": "WARN HIGH chưa có bản vá: CVE-2026-78409",
+				"metadata": {
+					"query": "data.main.warn"
+				}
+			},
+			{
+				"msg": "WARN HIGH chưa có bản vá: CVE-2026-78410",
+				"metadata": {
+					"query": "data.main.warn"
+				}
+			},
+			{
+				"msg": "WARN HIGH chưa có bản vá: CVE-2026-82560",
+				"metadata": {
+					"query": "data.main.warn"
+				}
+			},
+			{
+				"msg": "WARN HIGH chưa có bản vá: CVE-2026-84243",
+				"metadata": {
+					"query": "data.main.warn"
+				}
+			},
+			{
+				"msg": "WARN HIGH chưa có bản vá: CVE-2026-9538",
+				"metadata": {
+					"query": "data.main.warn"
+				}
+			},
+			{
+				"msg": "WARN HIGH chưa có bản vá: CVE-2026-95619",
+				"metadata": {
+					"query": "data.main.warn"
+				}
+			},
+			{
+				"msg": "WARN IaC controls require review: AWS-0077, AWS-0090, AWS-0132, AWS-0176, AWS-0177, AWS-0178, CKV2_AWS_11, CKV2_AWS_12, CKV2_AWS_30, CKV_AWS_129, CKV_AWS_145, CKV_AWS_161, CKV_AWS_21, CKV_AWS_226, CKV_AWS_293, CKV_K8S_35, KSV-0125",
+				"metadata": {
+					"query": "data.main.warn"
+				}
+			},
+			{
+				"msg": "WARN MEDIUM có bản vá: CVE-2025-15367",
+				"metadata": {
+					"query": "data.main.warn"
+				}
+			},
+			{
+				"msg": "WARN MEDIUM có bản vá: CVE-2026-116566",
+				"metadata": {
+					"query": "data.main.warn"
+				}
+			}
+		]
+	}
+]

@@ -43,10 +43,14 @@ def main() -> int:
         "ref": os.environ.get("GITHUB_REF", ""),
         "event": os.environ.get("GITHUB_EVENT_NAME", ""),
         "fixture_id": os.environ.get("FIXTURE_ID", "baseline"),
+        "cache_mode": os.environ.get("CACHE_MODE", "cold"),
+        "benchmark_role": os.environ.get("BENCHMARK_ROLE", "measurement"),
+        "scan_execution_mode": os.environ.get("SCAN_EXECUTION_MODE", "parallel"),
         "started_at": utc_iso(args.started_at_epoch),
         "ended_at": utc_iso(ended),
         "duration_seconds": ended - args.started_at_epoch,
         "runner_os": os.environ.get("RUNNER_OS", ""),
+        "runner_arch": os.environ.get("RUNNER_ARCH", ""),
     }
 
     out = Path(args.out)

@@ -1,0 +1,3015 @@
+{
+  "schema_version": 4,
+  "evidence_status": "complete",
+  "sample_type": "patch-fixture",
+  "fixture_id": "D26",
+  "cache_mode": "cold",
+  "benchmark_role": "measurement",
+  "scan_execution_mode": "parallel",
+  "e4_evidence_status": "not_requested",
+  "e4_requested": false,
+  "e4_raw_reports": {
+    "raw/e4/trivy-image-before.json": {
+      "present": false
+    },
+    "raw/e4/trivy-image-after.json": {
+      "present": false
+    },
+    "raw/e4/sbom-before.cdx.json": {
+      "present": false
+    },
+    "raw/e4/sbom-after.cdx.json": {
+      "present": false
+    }
+  },
+  "run_id": "43644396454",
+  "run_attempt": "1",
+  "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43644396454/attempts/1",
+  "commit": "f7fc110487f2e81a1729e8317ba0457b414a0bb2",
+  "ref": "refs/heads/codex/fixture-patch-refresh",
+  "event": "workflow_dispatch",
+  "recorded_at": "2026-11-14T21:46:52.453762Z",
+  "scan_stage_started_at": "2026-11-14T21:44:30Z",
+  "scan_stage_ended_at": "2026-11-14T21:46:37Z",
+  "policy_configured": "g2",
+  "tool_versions_configured": {
+    "semgrep": "1.183.0",
+    "gitleaks": "8.30.1",
+    "trivy": "0.76.1",
+    "checkov": "3.3.22",
+    "syft": "1.54.1",
+    "grype": "0.120.1",
+    "conftest": "0.71.1"
+  },
+  "raw_reports": {
+    "semgrep.json": {
+      "present": true,
+      "size_bytes": 1721,
+      "sha256": "7197985f5fcc0ac5072238b01d55e4890b0c83d42dd9c0836a36285721ae4bb7"
+    },
+    "gitleaks.json": {
+      "present": true,
+      "size_bytes": 3,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    "trivy.json": {
+      "present": true,
+      "size_bytes": 3384,
+      "sha256": "125a85a0e08e3f03a3314c715abb5710447445200fcdd647dffadf2828a2913d"
+    },
+    "checkov.json": {
+      "present": true,
+      "size_bytes": 880399,
+      "sha256": "90a41a9b37f0230e384067892deafda7acb2e9a37a4c6ca1cd02a16ac1438c39"
+    },
+    "checkov.stream.json": {
+      "present": true,
+      "size_bytes": 1077498,
+      "sha256": "c373d51dd2ded4a9394e8977fa7d5d2a1b4ee752d9b84d24e67120b1894c7f57"
+    },
+    "trivy-config.json": {
+      "present": true,
+      "size_bytes": 45671,
+      "sha256": "1ad9ed76646ed283670928adb08e45c73536edbf3b1b8a4cec42b672977fc655"
+    },
+    "grype-image.json": {
+      "present": true,
+      "size_bytes": 940798,
+      "sha256": "856f9b5d4ba2a25837b7b49aa51c9669ae423cb83a7fc0e95d76e871c5c12ed0"
+    },
+    "conftest-workflow.json": {
+      "present": true,
+      "size_bytes": 98,
+      "sha256": "2399577eced82f4e617fd236df4cfde08aa5723979d8bdd0595826f9a2623f61"
+    }
+  },
+  "normalized_findings": {
+    "count": 265,
+    "by_tool": {
+      "checkov": 50,
+      "grype": 204,
+      "trivy": 11
+    },
+    "by_severity": {
+      "HIGH": 111,
+      "INFO": 65,
+      "LOW": 20,
+      "MEDIUM": 69
+    },
+    "items": [
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_394",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/network.tf",
+        "resource": "aws_availability_zones.available",
+        "fingerprint": "1553d680560e3d4f2beaca612267e6c0b66f32a20f0ec12af4293710b964dee7"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_353",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/rds.tf",
+        "resource": "aws_db_instance.main",
+        "fingerprint": "ad348be4217223a4238c8b22b4b31bcbfa67ed61966c3998d51cae37d128b574"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_157",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/rds.tf",
+        "resource": "aws_db_instance.main",
+        "fingerprint": "8fb2a1d677a5d58eb625edff29a111407c1b344b8caa1828546ace58b8591f3d"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_118",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/rds.tf",
+        "resource": "aws_db_instance.main",
+        "fingerprint": "eec95c872659c3f6c90cbb4aae290cfa18fa82de2ffe3f9dfdec07a8a2175d41"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_293",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/rds.tf",
+        "resource": "aws_db_instance.main",
+        "fingerprint": "ca6faac2c7f180f0bd8961e82ed11572317a89148c6a1011429ed4d8eb4342cb"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_129",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/rds.tf",
+        "resource": "aws_db_instance.main",
+        "fingerprint": "e5c249b1b6057966da88f18d681dd83f481432109f1a8908555a2ebd6f5f9032"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_226",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/rds.tf",
+        "resource": "aws_db_instance.main",
+        "fingerprint": "20a48d2d9745f90299b94ffca446d03b8cc8908901f0b434f0741c2c5940e481"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_161",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/rds.tf",
+        "resource": "aws_db_instance.main",
+        "fingerprint": "b4fc745afb07e82c0fea5fdc5ba786996ee0b4be2081077d1f012cad46655345"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV2_AWS_12",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/network.tf",
+        "resource": "aws_vpc.main",
+        "fingerprint": "58bf1a93f936c822cf957c7ccc5b1d2d9cfa767b2a780275841307ab9b0ec7cc"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV2_AWS_11",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/network.tf",
+        "resource": "aws_vpc.main",
+        "fingerprint": "6010c97eb06b0187ab23a43f4a91f7c67debddce90ceb7903f413ac8f03671a0"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV2_AWS_5",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/security_groups.tf",
+        "resource": "aws_security_group.alb",
+        "fingerprint": "e6a3f82dfd3adadb9130cda0b9694f1c6fb32b7261067da15e58e110e61e6b1f"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV2_AWS_5",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/security_groups.tf",
+        "resource": "aws_security_group.app",
+        "fingerprint": "d1ac87e7df34d2aecbc52fcb17a87357589f1af65b444482ce955b3c2316925f"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_145",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/s3.tf",
+        "resource": "aws_s3_bucket.logs",
+        "fingerprint": "90340749b5261f65e6ade7f3d8271d77d4e2a82075e71f98b2c56ffd5d8a642e"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_145",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/s3.tf",
+        "resource": "aws_s3_bucket.app",
+        "fingerprint": "c2b4c21d2fed605a78d58651b6c75bda2e0dfd2a789e4d61f5d495ece0899287"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV2_AWS_30",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/rds.tf",
+        "resource": "aws_db_instance.main",
+        "fingerprint": "c4b73d346add080fe6512e820b8d8ea52271c2dc6ced49cd4ea1c65ec4dcd2f9"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV2_AWS_60",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/rds.tf",
+        "resource": "aws_db_instance.main",
+        "fingerprint": "3562419574b036dd624f4e099c4e013da0a54c3c010e2434cb10b344113d6f10"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV2_AWS_62",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/s3.tf",
+        "resource": "aws_s3_bucket.logs",
+        "fingerprint": "72e8aeb8374a9fd36d39faadc2a4a1d9b9229172706c4dc1851b051c393441a8"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV2_AWS_62",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/s3.tf",
+        "resource": "aws_s3_bucket.app",
+        "fingerprint": "fdb9fb899bcc193101cc9eb01ab49510580c9c7b129d63bc376e558436c0b350"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_21",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/s3.tf",
+        "resource": "aws_s3_bucket.logs",
+        "fingerprint": "740e0c4d6c6bc6ad0925ca35b4c69bf3d200a6c8390bfbd7ef87047734d54a67"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV2_AWS_61",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/s3.tf",
+        "resource": "aws_s3_bucket.logs",
+        "fingerprint": "4ed68938ba1ad8cd81d30046507e2b286bfda6dec455bae2068b5c6753fa1960"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV2_AWS_61",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/s3.tf",
+        "resource": "aws_s3_bucket.app",
+        "fingerprint": "df671b5a0ac14b679195dce63086d7168c542c8e360b0a28b122e34dd9e8da88"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_144",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/s3.tf",
+        "resource": "aws_s3_bucket.logs",
+        "fingerprint": "bd2bf9a130f08eed6281426a92d7a9917c5d0963029d5d3f32991ad9d429fa3e"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_144",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/s3.tf",
+        "resource": "aws_s3_bucket.app",
+        "fingerprint": "0a8c59d709339016a52c76618b19bcdea413eb42e17191bfbad202b2a0548155"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_K8S_21",
+        "category": "k8s",
+        "severity": "HIGH",
+        "file": "/deploy/serviceaccount.yaml",
+        "resource": "ServiceAccount.default.devsecops-app",
+        "fingerprint": "4f0608e162f6c1e084b6e72342c91cd5b89d05e9ab6359cba088be602d605dce"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_K8S_35",
+        "category": "k8s",
+        "severity": "HIGH",
+        "file": "/deploy/deployment.yaml",
+        "resource": "Deployment.default.devsecops-app",
+        "fingerprint": "9171126c7045b266fb39514d1f629c56ff1c1380e1f8c48682dbafc0743ca5df"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_K8S_21",
+        "category": "k8s",
+        "severity": "HIGH",
+        "file": "/deploy/deployment.yaml",
+        "resource": "Deployment.default.devsecops-app",
+        "fingerprint": "298baa853a3940b6272d0785b6fbbe7ac33641ffb4ac5480eb7d18e83fd44491"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_K8S_21",
+        "category": "k8s",
+        "severity": "HIGH",
+        "file": "/deploy/service.yaml",
+        "resource": "Service.default.devsecops-app",
+        "fingerprint": "2684b043fc4a522b74740b0cc855f80c89a460881d9b9e86252c7c8ab4081b25"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_394",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/network.tf",
+        "resource": "aws_availability_zones.available",
+        "fingerprint": "1553d680560e3d4f2beaca612267e6c0b66f32a20f0ec12af4293710b964dee7"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_353",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/rds.tf",
+        "resource": "aws_db_instance.main",
+        "fingerprint": "ad348be4217223a4238c8b22b4b31bcbfa67ed61966c3998d51cae37d128b574"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_157",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/rds.tf",
+        "resource": "aws_db_instance.main",
+        "fingerprint": "8fb2a1d677a5d58eb625edff29a111407c1b344b8caa1828546ace58b8591f3d"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_118",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/rds.tf",
+        "resource": "aws_db_instance.main",
+        "fingerprint": "eec95c872659c3f6c90cbb4aae290cfa18fa82de2ffe3f9dfdec07a8a2175d41"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_293",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/rds.tf",
+        "resource": "aws_db_instance.main",
+        "fingerprint": "ca6faac2c7f180f0bd8961e82ed11572317a89148c6a1011429ed4d8eb4342cb"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_129",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/rds.tf",
+        "resource": "aws_db_instance.main",
+        "fingerprint": "e5c249b1b6057966da88f18d681dd83f481432109f1a8908555a2ebd6f5f9032"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_226",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/rds.tf",
+        "resource": "aws_db_instance.main",
+        "fingerprint": "20a48d2d9745f90299b94ffca446d03b8cc8908901f0b434f0741c2c5940e481"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_161",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/rds.tf",
+        "resource": "aws_db_instance.main",
+        "fingerprint": "b4fc745afb07e82c0fea5fdc5ba786996ee0b4be2081077d1f012cad46655345"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV2_AWS_12",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/network.tf",
+        "resource": "aws_vpc.main",
+        "fingerprint": "58bf1a93f936c822cf957c7ccc5b1d2d9cfa767b2a780275841307ab9b0ec7cc"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV2_AWS_11",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/network.tf",
+        "resource": "aws_vpc.main",
+        "fingerprint": "6010c97eb06b0187ab23a43f4a91f7c67debddce90ceb7903f413ac8f03671a0"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV2_AWS_5",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/security_groups.tf",
+        "resource": "aws_security_group.alb",
+        "fingerprint": "e6a3f82dfd3adadb9130cda0b9694f1c6fb32b7261067da15e58e110e61e6b1f"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV2_AWS_5",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/security_groups.tf",
+        "resource": "aws_security_group.app",
+        "fingerprint": "d1ac87e7df34d2aecbc52fcb17a87357589f1af65b444482ce955b3c2316925f"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_145",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/s3.tf",
+        "resource": "aws_s3_bucket.logs",
+        "fingerprint": "90340749b5261f65e6ade7f3d8271d77d4e2a82075e71f98b2c56ffd5d8a642e"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_145",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/s3.tf",
+        "resource": "aws_s3_bucket.app",
+        "fingerprint": "c2b4c21d2fed605a78d58651b6c75bda2e0dfd2a789e4d61f5d495ece0899287"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV2_AWS_30",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/rds.tf",
+        "resource": "aws_db_instance.main",
+        "fingerprint": "c4b73d346add080fe6512e820b8d8ea52271c2dc6ced49cd4ea1c65ec4dcd2f9"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV2_AWS_60",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/rds.tf",
+        "resource": "aws_db_instance.main",
+        "fingerprint": "3562419574b036dd624f4e099c4e013da0a54c3c010e2434cb10b344113d6f10"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV2_AWS_62",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/s3.tf",
+        "resource": "aws_s3_bucket.logs",
+        "fingerprint": "72e8aeb8374a9fd36d39faadc2a4a1d9b9229172706c4dc1851b051c393441a8"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV2_AWS_62",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/s3.tf",
+        "resource": "aws_s3_bucket.app",
+        "fingerprint": "fdb9fb899bcc193101cc9eb01ab49510580c9c7b129d63bc376e558436c0b350"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_21",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/s3.tf",
+        "resource": "aws_s3_bucket.logs",
+        "fingerprint": "740e0c4d6c6bc6ad0925ca35b4c69bf3d200a6c8390bfbd7ef87047734d54a67"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV2_AWS_61",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/s3.tf",
+        "resource": "aws_s3_bucket.logs",
+        "fingerprint": "4ed68938ba1ad8cd81d30046507e2b286bfda6dec455bae2068b5c6753fa1960"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV2_AWS_61",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/s3.tf",
+        "resource": "aws_s3_bucket.app",
+        "fingerprint": "df671b5a0ac14b679195dce63086d7168c542c8e360b0a28b122e34dd9e8da88"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_144",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/s3.tf",
+        "resource": "aws_s3_bucket.logs",
+        "fingerprint": "bd2bf9a130f08eed6281426a92d7a9917c5d0963029d5d3f32991ad9d429fa3e"
+      },
+      {
+        "tool": "checkov",
+        "rule_id": "CKV_AWS_144",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "/s3.tf",
+        "resource": "aws_s3_bucket.app",
+        "fingerprint": "0a8c59d709339016a52c76618b19bcdea413eb42e17191bfbad202b2a0548155"
+      },
+      {
+        "tool": "trivy",
+        "rule_id": "KSV-0110",
+        "category": "k8s",
+        "severity": "LOW",
+        "file": "deploy/deployment.yaml",
+        "resource": null,
+        "fingerprint": "c3bf6b04655229ba2a5e1c02a2e456ecc94903227f6d3fa8709a8b7074714bc4"
+      },
+      {
+        "tool": "trivy",
+        "rule_id": "KSV-0125",
+        "category": "k8s",
+        "severity": "MEDIUM",
+        "file": "deploy/deployment.yaml",
+        "resource": null,
+        "fingerprint": "a681a2bf8a08cefdadbd195c2b42071e9380d6469891ed9b171600b7fe770ca0"
+      },
+      {
+        "tool": "trivy",
+        "rule_id": "AWS-0178",
+        "category": "iac",
+        "severity": "MEDIUM",
+        "file": "infra/network.tf",
+        "resource": null,
+        "fingerprint": "3e9c89073befd6c942bc07975b09a8e1dbbb2ca220d03eb189c3da5316831063"
+      },
+      {
+        "tool": "trivy",
+        "rule_id": "AWS-0077",
+        "category": "iac",
+        "severity": "MEDIUM",
+        "file": "infra/rds.tf",
+        "resource": null,
+        "fingerprint": "097e230fbbffff5bece50c60fdd6c8aa9148b6a34592baeee92dcbad52952902"
+      },
+      {
+        "tool": "trivy",
+        "rule_id": "AWS-0133",
+        "category": "iac",
+        "severity": "LOW",
+        "file": "infra/rds.tf",
+        "resource": null,
+        "fingerprint": "2ee8475617b1342281981f2a921a751efb655796918f59220755d87f81f48edd"
+      },
+      {
+        "tool": "trivy",
+        "rule_id": "AWS-0176",
+        "category": "iac",
+        "severity": "MEDIUM",
+        "file": "infra/rds.tf",
+        "resource": null,
+        "fingerprint": "26ce7129a4606eb0d0a59f6f84a95d32384190125731047f36a6c925c82e367e"
+      },
+      {
+        "tool": "trivy",
+        "rule_id": "AWS-0177",
+        "category": "iac",
+        "severity": "MEDIUM",
+        "file": "infra/rds.tf",
+        "resource": null,
+        "fingerprint": "1890e967b2f1250e3cbd067778df039f02235f45e42f1ad07e161c8c45fcb7f1"
+      },
+      {
+        "tool": "trivy",
+        "rule_id": "AWS-0089",
+        "category": "iac",
+        "severity": "LOW",
+        "file": "infra/s3.tf",
+        "resource": null,
+        "fingerprint": "f25ab39354ecef25cc08911e095d47ae015099c4d06f8fac37d327ce9244136e"
+      },
+      {
+        "tool": "trivy",
+        "rule_id": "AWS-0090",
+        "category": "iac",
+        "severity": "MEDIUM",
+        "file": "infra/s3.tf",
+        "resource": null,
+        "fingerprint": "5c78626abfad9b1923e7da00fa70208e07ab563b0f86d638a116f6a4def6801c"
+      },
+      {
+        "tool": "trivy",
+        "rule_id": "AWS-0132",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "infra/s3.tf",
+        "resource": null,
+        "fingerprint": "2ef6903dba2bbd6134bd7107fba541dcb819bd2579241d7c24f17818e0d47403"
+      },
+      {
+        "tool": "trivy",
+        "rule_id": "AWS-0132",
+        "category": "iac",
+        "severity": "HIGH",
+        "file": "infra/s3.tf",
+        "resource": null,
+        "fingerprint": "2ef6903dba2bbd6134bd7107fba541dcb819bd2579241d7c24f17818e0d47403"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-82560",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/info/perl-base.list",
+        "resource": "perl-base",
+        "fingerprint": "c79f27e61d788be8ec69d3c6a6f725451c17aa0df6f6af7c31ed3d86c4e2ee24"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-9538",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/info/perl-base.list",
+        "resource": "perl-base",
+        "fingerprint": "26ef4c0d5c9de92a58a23dc7714518499cd94c9b7cde48f0a9f14ab2b710c44c"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-114691",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "gcc-14-base",
+        "fingerprint": "8a3118ab411c533b0dac3f5d562c9896d4137979812a4fcdfc0b4fbf3567faf7"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-114691",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libgcc-s1",
+        "fingerprint": "49ebd4a9384740e3c6db83a34d38d4ff028f230132ce498793fe7971e01a4a96"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-114691",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libstdc++6",
+        "fingerprint": "937cae1b981dda63c2172f6f9e68bcf8cd42a1c5f6b945c0e45a506153321174"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-95619",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "gcc-14-base",
+        "fingerprint": "a85ab968c5d3d0c32d65ec385f8dc43c0ae4e154194ff7a8eb3feffb7ff4b29d"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-95619",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libgcc-s1",
+        "fingerprint": "79575ea318281468461145a569ff7b4add1945250caa5141b6647c29a077ad5e"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-95619",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libstdc++6",
+        "fingerprint": "66d83b3c73417c030f09a4dc20381f29e966a4c6024b6052b46bb4e90879d041"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2025-69720",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/info/libncursesw6:amd64.md5sums",
+        "resource": "libncursesw6",
+        "fingerprint": "cf9cdd4682b4602060c5659ecff7a659e90dfbd6300528a767ea584944a5332e"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2025-69720",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libtinfo6",
+        "fingerprint": "597581716c5df10f2acaa4ee3534f68c92e515aa6fde010e4d92f1e48e01e52d"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2025-69720",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "ncurses-base",
+        "fingerprint": "f5076e3038bb611b7de246fa2e428e6cc0b8e8b204af8a2e85ea69edce454719"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2025-69720",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "ncurses-bin",
+        "fingerprint": "edf0e63509a34d7e870ff1fe47aa97cf139df33a222fb5d15633b51a744585e4"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-102010",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "gcc-14-base",
+        "fingerprint": "f7c3d9234be3cd52fd443056891211a82d449f6a5317a002b34e4a0059fe94f9"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-102010",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libgcc-s1",
+        "fingerprint": "6929d195726cc29f67fe6e460a877b2846f600890073946cffdda089a764eb2a"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-102010",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libstdc++6",
+        "fingerprint": "1e1f766327eca8c8dd405dd139db13a7e553d3719ad74eeeb52be338069216c1"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2018-20796",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libc-bin",
+        "fingerprint": "b7773174af9b4d47392f80eca4b58870ceec5970124e0b255d4c2b8dba5b7968"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2018-20796",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libc6",
+        "fingerprint": "ca9252f6b5312bdf57322639578cbf5066a42e31bf8cb64479e7df0cc72fa3b8"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-5704",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "tar",
+        "fingerprint": "66e713d2838d566ab69b6447d72f347f1dad12a5b77363efb7bc0782aed555ed"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-3184",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "bsdutils",
+        "fingerprint": "f96c2d67b227193672bcf8e3726a6db94e7ea05fff20ef96807f2b1d2ae7f12e"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-3184",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libblkid1",
+        "fingerprint": "58179b0060a9f1a1f912de6efb0ff62576daa7a01e3f72569f403ac65668e8df"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-3184",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "liblastlog2-2",
+        "fingerprint": "38be92995165d4840a5ae79e5aaef2429336361f12fd79a2842ee53d1e167fd7"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-3184",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libmount1",
+        "fingerprint": "1017557a296a8c15f6e8e1d161bd153782bd96aa29c44bf95a87de1346b55db6"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-3184",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libsmartcols1",
+        "fingerprint": "5b7f1f74f3fdfb4ab8e581d76734109139cf30021cfdc2f01a07f99c90f68837"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-3184",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libuuid1",
+        "fingerprint": "c8d2ef528e9989faccfad79fd0da4fa02b7f9a71e0c48255b0fb5dc8cce160b3"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-3184",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "login",
+        "fingerprint": "d836e1af1dd930c3f91be3759eb024ec118501ae6b8c07b2e7c0e0de53dda740"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-3184",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "mount",
+        "fingerprint": "0c11dbbe3a989b62f4760f51c49972b029f69a120507c9a2cd401166bb0731ca"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-3184",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "util-linux",
+        "fingerprint": "9f1871cd6a0558c4ad878e8f6b553b01c134630c494c731b098a74f473f30b7a"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-19499",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libc-bin",
+        "fingerprint": "fd401f778bbe3575cd1e345194b7eba41ed379fc8346c8e6e5ff3bbd5bbd9585"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-19499",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libc6",
+        "fingerprint": "d8d4babd4dfdfacb64cc8fad03aad7e6815821ee65141dce9aa3d5d6cd4fe634"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-119379",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libsqlite3-0",
+        "fingerprint": "2ad5cb73cf8b750f4837a429ef4c547c8f0f5262c88de5c5685069e8bd715272"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-84243",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libc-bin",
+        "fingerprint": "4709ffdf922ef75640dcc2e85a186b357fce1cd1c8099ee09bdf2a90c7272f53"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-84243",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libc6",
+        "fingerprint": "2cb4e60417ee6fb46f44cfb0c986b3614d0dc1a209f99aa131118ca2f1ccbaa1"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-6238",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libc-bin",
+        "fingerprint": "af870180f8cc3e4bcd59f0f6c0ccfc3f6434031b61a581b2c05c41337adbca31"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-6238",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libc6",
+        "fingerprint": "c32947f322f760c0cdc5f2d9f7c9bd60e91ac011094d9f2cca0cdfbdfcc8379f"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2025-15367",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/usr/local/bin/python3.13",
+        "resource": "python",
+        "fingerprint": "0687124b692f72e2b143296632ae1d5054b05bc83fc1b12ee3bed1fca173360d"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2005-2541",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "tar",
+        "fingerprint": "1f2d5b7280e4bebff487b0c896291c13bda32bbd4b584c68c2e5b41139a4b002"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-77117",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libc-bin",
+        "fingerprint": "ed8425104eeb4284791c44cf24f82ded9a6b4b9376d05935baa61bb19a801ffe"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-80489",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libc-bin",
+        "fingerprint": "899f6b65402e57beb4b756a2e9a649c785f2e73aa00a0a96de2c6cdc197430eb"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-77117",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libc6",
+        "fingerprint": "f12398130b3a60bb1a1ea6c84386e1aa738236beccb2f7f4e11e6d0a956810bd"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-80489",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libc6",
+        "fingerprint": "59b7b792f7d829f749e4c40a65f7f15e38f7687e3809e85030b27af197cf1275"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-54411",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libpam-modules",
+        "fingerprint": "5232b75e3838e8299dda8ec6da3d614ea631a6dc320b76387935620ce0947bd4"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-54411",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libpam-modules-bin",
+        "fingerprint": "d4966a2092c14684431636bac805d2f8a616c1ab33a96669158ea3b3726a8d12"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-54411",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libpam-runtime",
+        "fingerprint": "f4749466032d502757d3c7dfe67decce47f1ee7471e9a5b306c6f054c44dae59"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-54411",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libpam0g",
+        "fingerprint": "cf7279a6b9d7aa0ff92e4d27409afeae321aa5bb704c68f270fc2ead25c9314c"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-119374",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libsqlite3-0",
+        "fingerprint": "a30e408278a01c4fd59b196c2e1378c7c78faa181eda7d74ba4f3896891cb191"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-78408",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "bsdutils",
+        "fingerprint": "aa5712576c0eed0809eb8054841c25f534026876e7625465226f5c08fd7e1cd8"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-78408",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libblkid1",
+        "fingerprint": "a2e0b9177512e9d586603d47512b6d9fb90c914bf178a0c2ac9d7a7f73e79055"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-78408",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "liblastlog2-2",
+        "fingerprint": "afc0e01914e6b4b83c7dd34bb0c1765dd140d9739a80e22f27105a59d39a198c"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-78408",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libmount1",
+        "fingerprint": "16ef6ec59e8473c8975508e12e32e16973b2b4a44d6722b357e2b350fbe00638"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-78408",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libsmartcols1",
+        "fingerprint": "42b3420c4e5b6bc897670e01a7ec3f2e35ccc2654ef82dd9ef4659e821f9bebc"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-78408",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libuuid1",
+        "fingerprint": "8a0d1388512d17063edfec3bf8471b9c23df7017278cdfec0898abb8cf2147b0"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-78408",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "login",
+        "fingerprint": "40d8dd4893faf066976c1dbdd21a06c17992eca593532233c0c34c819927a870"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-78408",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "mount",
+        "fingerprint": "8bdcb07b3008386a51a53c6b7b72932e43a193f7a39d05a7da59abe852e778b9"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-78408",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "util-linux",
+        "fingerprint": "77ea8e5acb252691500aebc5ab48a3da852af989e2d58db4a0435e00c370b919"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-5435",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libc-bin",
+        "fingerprint": "a31ad572a6ffcdb11ec4df82df7fbee79ca0556357c58006192471d3c59f2945"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-5435",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libc6",
+        "fingerprint": "c8c9b849a7cf43c1075ef4f5af70e4f9b368cd98ff7614aa7676fbf1f714e850"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-76642",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "bsdutils",
+        "fingerprint": "e6bb4d23122277f3cb7e423d265b6626d46fa67056baeedaaf3a401cc0e40ff4"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-76642",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libblkid1",
+        "fingerprint": "3efdf4b0a9ea928b3b5c3e5650b694f41426de00c96792197f0d2932b609797a"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-76642",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "liblastlog2-2",
+        "fingerprint": "d2a7a67e12107a285884b0708656e6e2fb0de366d0329ca014347f9b5c5c291f"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-76642",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libmount1",
+        "fingerprint": "7d6a636761bba946e5889986b9a180528d96e84530a8712c8d660a4598e14848"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-76642",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libsmartcols1",
+        "fingerprint": "4159c9fdfce5d86efed0d25fd0dac0534a947e36a440e81994da6e519d361c29"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-76642",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libuuid1",
+        "fingerprint": "02ac4502e339e5034922fa2c7c27014d694c9ec317a186584a3bedf561d3f0dd"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-76642",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "login",
+        "fingerprint": "b9dd90b4c01bdd085e0d8873afe36e2a8443f4d171fb4d2a9d6756406b9936fe"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-76642",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "mount",
+        "fingerprint": "6c199daf7161d27d83202b445bd53c59b50107187ae611a48adf9b3c04d4d5b3"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-76642",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "util-linux",
+        "fingerprint": "7a9715d8e2440ff1e3ee62dc6c2a9600185e08649d70c55dfb80ce523ec9f89e"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2019-1010022",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libc-bin",
+        "fingerprint": "c6576df7c3f8989c24c256bbe650deac7c137a0a6a6dfd079be33d177848105e"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2019-1010022",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libc6",
+        "fingerprint": "fc7317307171636e5059b1511581ec891b3ea8f971053b6f048c57534ab37c67"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-8674",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libc-bin",
+        "fingerprint": "43cfd3591f1b72141c1a62524dd85e097960b5d90e69f8126ddd2e019e702c7e"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-8674",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libc6",
+        "fingerprint": "d2f07541b09501f24f678e7fbd9fd6593cd4dfce3d8d6e11b90de2fe578a8c47"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2019-1010024",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libc-bin",
+        "fingerprint": "458e1fa7132c39ece973ef362c4e2253d5a9e99929e9ce4658e8a3615326aa8f"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2019-1010024",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libc6",
+        "fingerprint": "708ec85dba4dd581bd74ec80f905b0353de5a510dbf0d3dd67511f3d76f7e623"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2019-1010023",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libc-bin",
+        "fingerprint": "a005435be613c562e857c39d8b960078615d484eb63fdd08903aea0845fc7e70"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2019-1010023",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libc6",
+        "fingerprint": "3540d24ca236688cc14894cb72a40d35c3fc7f45b99b6a6a6980bf87eb920e81"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-78410",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "bsdutils",
+        "fingerprint": "3185188b4a992b3121e8c9c23200a6f7e4aeb37f2f3bc88fb336d54920e4b449"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-78410",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libblkid1",
+        "fingerprint": "41e089adfaa7223771e9df09b9312c313d0c8736fb19d27fc89f5e96466e6034"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-78410",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "liblastlog2-2",
+        "fingerprint": "b08218b4f7ac30521f54bc9ff335a97f7f196809bebceec661d5111b637a89a1"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-78410",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libmount1",
+        "fingerprint": "dfa6d40e6421817f412f193450304c0c8afad5cef09db409377a65eec2b4dcaa"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-78410",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libsmartcols1",
+        "fingerprint": "7ecb3b463a63a924f4ad23540c86e234db88135c1a4b41aa88df07d90aba4db8"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-78410",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libuuid1",
+        "fingerprint": "865a1f05bf5051bd401fb4308e8af584c5421b95a997f88b80fcded919c6be46"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-78410",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "login",
+        "fingerprint": "336e57f344dd22e10d6896ecfe5767d6cf729c05d05523e4c3d8b1205f2691ec"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-78410",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "mount",
+        "fingerprint": "437ca7e04e80506d7b3223346bebde2f4a55551096366637e533569f8e10eb18"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-78410",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "util-linux",
+        "fingerprint": "4a043861f9d4cfc2f2f3bc5a672d6621f43bc68724f64ff8417b2c2c12ea9ed1"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-119378",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libsqlite3-0",
+        "fingerprint": "5a26c46c8c203c46e6381b1aa7edd15a17820633e1766804255e32105953d9bb"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2024-56433",
+        "category": "image",
+        "severity": "LOW",
+        "file": "/var/lib/dpkg/status",
+        "resource": "login.defs",
+        "fingerprint": "8f948d29807ec630d7210b98f7e6d4035b428f0b1e34f2402a9853288a4ee0a0"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2024-56433",
+        "category": "image",
+        "severity": "LOW",
+        "file": "/var/lib/dpkg/status",
+        "resource": "passwd",
+        "fingerprint": "53fef9a7614b95b6f88ba9dde0ecb1593688b9cf6546c4df5e781064f25fb136"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-78409",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "bsdutils",
+        "fingerprint": "3e05d11c8b55b706bb353fa105c1ec20e21aecb5bf1d0dbe19c863e2c11465c8"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-78409",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libblkid1",
+        "fingerprint": "2b51da80613e9636e55078f5e55cbe34743425c5e7d773b4b56d4c05a7c150f8"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-78409",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "liblastlog2-2",
+        "fingerprint": "3aa83a102969cb8cd07f51ce70f93ebb370620dbc8e0ea84e20c41d33f1e8757"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-78409",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libmount1",
+        "fingerprint": "794b3b8b4201446542d78bd14bda08d6fec5824c7d7b9049582da2762f5a8adc"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-78409",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libsmartcols1",
+        "fingerprint": "6d2259472a974a5657477f14e8d6684172ce2719ed86ef1f888af941fb3ce6ea"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-78409",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libuuid1",
+        "fingerprint": "0a9cbadfb11e80d0e02559bcca840f398b7a5f4a17cb8f290900b2106940fda0"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-78409",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "login",
+        "fingerprint": "13def79c117a52ffb9cc53ba9977ac989744bd4c73fc1f90d36b60adb9881c87"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-78409",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "mount",
+        "fingerprint": "54807570597d750f9b10ab68d1f86dfba6a7e4eaf10645df4f105139b4d80412"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-78409",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "util-linux",
+        "fingerprint": "b45a13a9f4fb1d864e1b2f13fd12c188f34bce2bfd0bee345f3c9c35b1f76451"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-116566",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/usr/local/bin/python3.13",
+        "resource": "python",
+        "fingerprint": "630701e199bea7a9ccda7b29d8cac6cb3f9311c11c1cadbafd91e7c15c949fb9"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2010-4756",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libc-bin",
+        "fingerprint": "1a5e3a5a52c1ff4c07705b477def6cf07f66034f53c1bfdd5ba7752d79d48a45"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2010-4756",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libc6",
+        "fingerprint": "54218483c29bf7ac31cd2fcf34d7ffded8d48e3b7261a3e021191590013b51ea"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-119373",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libsqlite3-0",
+        "fingerprint": "fa3126b9dec22d70c9c9e88ab238d7a095c9b21f4adf4f63519f9b179a8ad891"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-115819",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libc-bin",
+        "fingerprint": "02524bc3f553570c15faf2f380832b1a022d13dd55534debf6655a04fefda1d5"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-115819",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libc6",
+        "fingerprint": "bb5ed653f213b3f9514cb0ced169206066454417f7895579175149886a0100b7"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-6791",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libc-bin",
+        "fingerprint": "e1f310d4375c1144cfb29a7203a21ab58cff5ddf1df8c7d2d8abcc3dfd4cef3e"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-6791",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libc6",
+        "fingerprint": "48c7e99a6087398b22028c1c6e058b1db9e92eb3758047f6b88418b697d3477f"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-115456",
+        "category": "image",
+        "severity": "LOW",
+        "file": "/var/lib/dpkg/status",
+        "resource": "gcc-14-base",
+        "fingerprint": "f5e06fdcfec31c4a801e6444f92a6e7e1efcfdf9a71bbc125555876b222e2028"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-115456",
+        "category": "image",
+        "severity": "LOW",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libgcc-s1",
+        "fingerprint": "dcbee4260cf022a3c8e8e8cb08070a10c702e148fe4ae6b783e7a4361d0f4f6a"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-115456",
+        "category": "image",
+        "severity": "LOW",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libstdc++6",
+        "fingerprint": "ba5183f1aa31fa596c8e969b63f57e5c2cf7645d84fa02d4c63da5316f6be7e4"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2019-1010025",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libc-bin",
+        "fingerprint": "bc4c75bc85a4da69fd5a21fc9848f7557b00d6d43f60ea0247c6c975c3222fa7"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2019-1010025",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libc6",
+        "fingerprint": "23453f6bcfa827180d75611d5d32591b41f886b99008a7c649e08b46526066fb"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2019-9192",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libc-bin",
+        "fingerprint": "59d1951c0e11fb21a41a3ca74e430cf8e4ab299fb2db258beb95a43f80f15d10"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2019-9192",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libc6",
+        "fingerprint": "e32df72be1937d3851adfec831527c13dc2e705fedc09e468904ea55e860fff3"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-19542",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libc-bin",
+        "fingerprint": "df46a7a73fd5844d640da87bea86b783782ba8100e9e2c136fe022744f356ff7"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-19542",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libc6",
+        "fingerprint": "cebd953f6e613b786de7c26ac0fa8762015712e55e21be26986ce6a2cb5c7877"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-119375",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libsqlite3-0",
+        "fingerprint": "d2e6375cb20cefce13bf2f30bbf3d91b585df25a971f2036c5dd427312b3adf9"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-119371",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libsqlite3-0",
+        "fingerprint": "d5921201c516abcb1d5012468b4e4032be3402c1c65fda6a6393cb592a32ab69"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-100290",
+        "category": "image",
+        "severity": "LOW",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libc-bin",
+        "fingerprint": "d6d93f298905a349247156578560faed5a7e063a97d7e35a60c6391fbb967a9f"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-100290",
+        "category": "image",
+        "severity": "LOW",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libc6",
+        "fingerprint": "a5b7eea14b417a5000661fcbf5a16357666b7ea19d56e364f53aee3c840be20f"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-54369",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libacl1",
+        "fingerprint": "d504ce5c08a9a410b63f6a142af619afafec0bc92bea9617ba9c4c5940d2748a"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-89092",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libc-bin",
+        "fingerprint": "a8c4cb730a979e52ed6b8e18abfcd53592296b5e5fde83316c510feab5d2a77d"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-89092",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libc6",
+        "fingerprint": "cee2ff82719389de5733869573d81af4d968a98a010c55be3483738cf3592005"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-119376",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libsqlite3-0",
+        "fingerprint": "f794d36cf9ecf8e1e2e8e9d47b88ce36fddf903971d7d951f1204635642c54c0"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-95692",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libssl3t64",
+        "fingerprint": "1cf31bc72dc3aacd149a64e8455ebeecd18fc27501ad6b71e0b50aaf51019717"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-95692",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "openssl",
+        "fingerprint": "8e68c142e712416a10b438b3e87bdc3e3ceedc51866244af6280d50b98f6df73"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-95692",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "openssl-provider-legacy",
+        "fingerprint": "39a26903477e43302463a8b782d554261a54231b7af276308b680b7023f6569f"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2025-6141",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/info/libncursesw6:amd64.md5sums",
+        "resource": "libncursesw6",
+        "fingerprint": "3df327bd17a7ce4144d02351f248a80748a94458ded0784ec0e074095b75d913"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2025-6141",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libtinfo6",
+        "fingerprint": "d271ac14642509484300f94f1727045e62e463db2458bbef13071aa58df900d0"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2025-6141",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "ncurses-base",
+        "fingerprint": "0e4a259ddb6744d1b860c9937e9a8185c6ef82924fd38806869ded2f7f071861"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2025-6141",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "ncurses-bin",
+        "fingerprint": "1b0baed7c11af193f8f4b0b2f67e59a458d593a14ebffaeea7f4e8dc1e0f37c3"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-119591",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libsqlite3-0",
+        "fingerprint": "a09560caa0a2c2652bd22128b3318b45ef8dc58b094828308ccb8be0cca5e419"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-88822",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libssl3t64",
+        "fingerprint": "27743653672a5e64bc4f486ac6665ba13de5774c25db4f00351f39ebbedf69ac"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-95691",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libssl3t64",
+        "fingerprint": "225a00ad5868f305df49eb3bc2fd6f702e866e48febe12f17ab74955697f9a6a"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-88822",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "openssl",
+        "fingerprint": "95e3c8e6fd5530faea4923a8514c568c7f220c1311c5c43762b509226c10eddf"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-95691",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "openssl",
+        "fingerprint": "2e705602c0c82b501fd166299420ad9e1dbb78a138845df61d817a037f4b075d"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-88822",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "openssl-provider-legacy",
+        "fingerprint": "c4434e5a8deefb81a6aac92321a7cde8ac3e6b5b9fe4a9e4930f08b7f5819049"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-95691",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "openssl-provider-legacy",
+        "fingerprint": "7ff72d1b5cede9351854764217fcda87a04143a6edf364235b6e0bf978dbdb50"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-97399",
+        "category": "image",
+        "severity": "LOW",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libc-bin",
+        "fingerprint": "7ff774f3c5ac013b6247cc2669c3cc21a30666889a22f30fe14410df6b13edd9"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-97399",
+        "category": "image",
+        "severity": "LOW",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libc6",
+        "fingerprint": "d65cb24ed93469ec1b1d6bfa55aee11e8f7303b05406ec6518c8c6c1f33b31ba"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-103995",
+        "category": "image",
+        "severity": "LOW",
+        "file": "/usr/local/bin/python3.13",
+        "resource": "python",
+        "fingerprint": "21eb76c3cd217c0fbf7ee9b80d73e6ac96e314e87245635847cd85903185b8b8"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-15534",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/info/perl-base.list",
+        "resource": "perl-base",
+        "fingerprint": "74d1b8b07caa1646feb1c1f504445c28555d296233f37579c2913cb41adad06f"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-119372",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libsqlite3-0",
+        "fingerprint": "5b63e33d84c3171788fa00a71b751e344a5070d11db164d9afe7e98b751dad16"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-15059",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libsystemd0",
+        "fingerprint": "9ea862e23cdd9c09120cd41ccfe362640478e3bb4795a7fb693e66bf050e84f1"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-15059",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libudev1",
+        "fingerprint": "8bafe3f36450bfaba8a3985f8a5ed082daaf1343162f8c5baba8849d6067f333"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-50812",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libsqlite3-0",
+        "fingerprint": "71687ef5bddd89ba73b4a4f474b415c601dd18f30e7519a054e15838941fecc7"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-50813",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libsqlite3-0",
+        "fingerprint": "8efe69307d6cb3e8f22a91e8051b2f4052db248c71dafacadd351351bee69ddd"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-54371",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libattr1",
+        "fingerprint": "2221e1964f312484ba60632d77341790f03e8692d81561ece25f683e11e5c745"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2021-45346",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libsqlite3-0",
+        "fingerprint": "7c1adb1449a8d64eda37c57cd9e6cd5616ff86b1f4588a142ade270d381b7574"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-114690",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "gcc-14-base",
+        "fingerprint": "3901128a92af34cdfe0ba036ec557bafa9ba405a8662e9be6aa9861708e8e7c3"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-114690",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libgcc-s1",
+        "fingerprint": "438cd75800142cd91723fdbff3a5bae3de595de6ab5222c811edbe274b3bfbe2"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-114690",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libstdc++6",
+        "fingerprint": "3ea416d98aea6cad0730d4bb8a1bef1f3f18d45113136cd636892981b1fb1dfc"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-18374",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libc-bin",
+        "fingerprint": "07bcf1319c2305701c1d85dd1cbaf98986be86079b3140081d0e299eb7b934f6"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-18374",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libc6",
+        "fingerprint": "01f294e6e22463af1a198387ffef62907f6124539a926a5f9ed15265486c9d1b"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-88823",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libssl3t64",
+        "fingerprint": "688a3f51dffbde6683998b8b30112b14dade24e2baf80f9455f50b3a445db31e"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-88823",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "openssl",
+        "fingerprint": "57025a5fb8ed7b58e932577dcd0adaf3023af18a98a5368ce11dedfa1918b080"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-88823",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "openssl-provider-legacy",
+        "fingerprint": "42034612333a0920a54b034770bca9e9e6948740ba5659df3238246b713eeea4"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-18508",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "tar",
+        "fingerprint": "9443ea5f7fb1921bd4c13598a0c09b28c4d703d49b3e7642406635754098c257"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-54370",
+        "category": "image",
+        "severity": "HIGH",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libacl1",
+        "fingerprint": "d99d918d38702e1c90be5f33e5eec6161e5803e8c101887028a4d888f53f0074"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-107496",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libssl3t64",
+        "fingerprint": "b248713612b83dc786cf500dd61cdd0bfcf03151dff81894ea2ef76d7faa4413"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-107496",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "openssl",
+        "fingerprint": "bbaa2708847d74c19ecd9a2a9e7d6bfb58f1b346190558b570029621a0810fda"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-107496",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "openssl-provider-legacy",
+        "fingerprint": "c247ff6801fa9bf17235b1c521658049ced0253cf0df53301fef783d9175620f"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-42250",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libbz2-1.0",
+        "fingerprint": "8663c7b03d39c06f656b44fd5d8b7c6dd9c51a60ea6ef5dbbceb8b61e806d74f"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2011-3374",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/usr/share/doc/apt/copyright",
+        "resource": "apt",
+        "fingerprint": "2161b9e217aeb9c332fc3e24fae30508198caa035318b7bdbe605b73ffa44205"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2011-3374",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/usr/share/doc/libapt-pkg7.0/copyright",
+        "resource": "libapt-pkg7.0",
+        "fingerprint": "41620e68374f6097af92b95fcf584ba866543c2309ecbc38d2d08db05bf870e9"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-40228",
+        "category": "image",
+        "severity": "LOW",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libsystemd0",
+        "fingerprint": "9d9cd98718942d6f6be0c01ce3e7dcaddcb53d7174811bc6405830fd5b9c0283"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-40228",
+        "category": "image",
+        "severity": "LOW",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libudev1",
+        "fingerprint": "55804935bcd9b88771c6721dc80bc0b0dee84fd56a6b2a920d08991bbb49ad17"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-86805",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libc-bin",
+        "fingerprint": "a0bc73f1b1a206934611952413ef849884528826fa5a1d1ddf87f43b6b550c62"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-86805",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libc6",
+        "fingerprint": "9a8ffd7dc7207a8687722e7a9dad32664e378c14b39132b1e9efcb3ed063812e"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-18477",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "tar",
+        "fingerprint": "7c89279b3349a61619fab51567697448e47a1a65a666c1c0a0d975075241f338"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2007-5686",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "login.defs",
+        "fingerprint": "9c3b0e88b7dd06532389b898100b8be3fa2f94e8f78b14719cfb1fc17c6d09e8"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2007-5686",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "passwd",
+        "fingerprint": "bf5b3eb219fc80f2a40cde0b51b58e615f56fc30e42a603dd942142cb9442c4a"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-119377",
+        "category": "image",
+        "severity": "LOW",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libsqlite3-0",
+        "fingerprint": "1b29622672c9793b99244efe38d3be968cfb6bcf0d3e0ce31d2d3a3103037714"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-95818",
+        "category": "image",
+        "severity": "LOW",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libc-bin",
+        "fingerprint": "26e5bd258d355986f4d79114a1f63f968109c6788a6c17c2a9211b312a1cc5ab"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-95818",
+        "category": "image",
+        "severity": "LOW",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libc6",
+        "fingerprint": "33ce2bf6992656e650fb0939f360f7eb68741df5c1210aadf778229685de6962"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-16742",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libsystemd0",
+        "fingerprint": "f59c5a0f3a0b13889edef0a95bf8df0140055f3b7c891bef6ca5cc26b5c954fb"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-16742",
+        "category": "image",
+        "severity": "MEDIUM",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libudev1",
+        "fingerprint": "c4d95810b2df064a307d3e2fd7220aac44f6bd8de35028470c2cf77bc12a1610"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-6368",
+        "category": "image",
+        "severity": "LOW",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libc-bin",
+        "fingerprint": "50ab179eb829be13359c647ecdb1a1d9ad824243c6838eebd0eb94a0968b3b3d"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-6368",
+        "category": "image",
+        "severity": "LOW",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libc6",
+        "fingerprint": "3b610e352b743f2cf5f71f84d0e0058ea5face90f80b445375a8464411617b70"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2011-4116",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/info/perl-base.list",
+        "resource": "perl-base",
+        "fingerprint": "ce3ba3a33b7865f02b905fa95d3845a96a46e8be457c35859034bf85d15aebe4"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2025-70873",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libsqlite3-0",
+        "fingerprint": "32c0916bf032d795b65ffaf9eac5c7ec2152f1827619aad564e845cfa2d5d59e"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2013-4392",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libsystemd0",
+        "fingerprint": "834c3eaa9899b68ea7b32fdb1fdef1500c59c8f35de4f46425c2b4cb3bd53270"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2013-4392",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libudev1",
+        "fingerprint": "0738f834d7ec9d6767a5699a779f01cfe81127c4a0bfa8acfb90d05adba20a17"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2022-0563",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "bsdutils",
+        "fingerprint": "1a2677bb682ee55314015b9351509d667b7e43b9323649854020a90890d1ccd6"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2022-0563",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libblkid1",
+        "fingerprint": "6874e6ccad0273b1a8c6055f9d27843fe1dc06aa7026ddc4ac814d76396e7762"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2022-0563",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "liblastlog2-2",
+        "fingerprint": "e26ff51f9cdb1d901ba26257281c1f3b950f3056e3e044642e4c39cb7f677f1a"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2022-0563",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libmount1",
+        "fingerprint": "b0615b07d43854390113900e61077d3d60ca0e1545a75c266aed15e0d7cdc75b"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2022-0563",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libsmartcols1",
+        "fingerprint": "96aff5765f6e3261f7d0e90f3919afa38b7f64a6b3cfca1d0fa1a019d22bca03"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2022-0563",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libuuid1",
+        "fingerprint": "861af504f8dde2f50e34dc1da41f59ba5b7dc9087be668f9f5ae73da2bd44fcd"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2022-0563",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "login",
+        "fingerprint": "5309b316bc3d9ee965f0b33eddd0215616b39d1ffb40a939c48d767e9971d691"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2022-0563",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "mount",
+        "fingerprint": "78291ced09bd158158d6440e3a11a7d9b353c105692919be37bb1e947245f53e"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2022-0563",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "util-linux",
+        "fingerprint": "f82fac5c61ef02d8c1c5fa7ade709d5513bcba3ff6a4c981ac7bb2e0afc1c31e"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-115455",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "gcc-14-base",
+        "fingerprint": "c3b1cee5987826369574e9c7bb638c89dc508941b1f57f0c97ebed9a4a2f00da"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-115455",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libgcc-s1",
+        "fingerprint": "de1ab7aed58f7bf39b4b8fdd6e205cedd25d2d977b980840229d3b4f497ce234"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-115455",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libstdc++6",
+        "fingerprint": "163860c639832bde16e6f4f4eea23cbad6e45c93f261bd3b530820c49b6cec9f"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2023-31439",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libsystemd0",
+        "fingerprint": "695b9d72df1c8339f3b337dddbf3632c7e342e1f2eaadb20057e0788b9ba5871"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2023-31439",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libudev1",
+        "fingerprint": "ace07957830ca062335ab79dc615ab82c43e9908b7b2130aef4df30efd784373"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2017-18018",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "coreutils",
+        "fingerprint": "85c86d9b7f0161f1b802f94631885d9fa57862dd97fd6e095e625462f9b7caf3"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2023-31437",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libsystemd0",
+        "fingerprint": "e00fcdae550462f23e603f739d5ee1c1669b6722ec8d36c7542b21c47c3fe69f"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2023-31437",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libudev1",
+        "fingerprint": "51fa95e08c438de71072a26c648b40ae472055c15a578209147e0042b218936d"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2023-31438",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libsystemd0",
+        "fingerprint": "2afa1acf166af499e3c08a5882d8665cbd776cf6b67d3e79442f886ba3ebe472"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2023-31438",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "libudev1",
+        "fingerprint": "24ebd05231caf0270412c24e97eb142f977420f4a4eefb10ffb6f73eeaaada28"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2025-5278",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "coreutils",
+        "fingerprint": "e8e4008852cda54d143285762e289f08e3a78352d774244cab8c66dcd7738102"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-53910",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "diffutils",
+        "fingerprint": "c5ff7b746100ca076d717cf1e3e9496f0c4c6ecdc086c04a1889c3e740fc57b6"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-56392",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "coreutils",
+        "fingerprint": "dcc2e96c82bf803efac78c1376686d82c260d3c339422cee09209e92858aef6f"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-56391",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "coreutils",
+        "fingerprint": "4cc5f689774f55becd92ae96bb1d6ff003d9ff803c84f331b3de6f95370d0cdb"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-102474",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "dash",
+        "fingerprint": "662c46f5a8f0a912615d546ca16e4e2d53e3eb79168f54b9e2b9cd63c3eac7d4"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-102473",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "dash",
+        "fingerprint": "d11370e91803b4e8cca6aed2946c046fcca6edb68dbd80bd62565aa01ff159c0"
+      },
+      {
+        "tool": "grype",
+        "rule_id": "CVE-2026-91094",
+        "category": "image",
+        "severity": "INFO",
+        "file": "/var/lib/dpkg/status",
+        "resource": "dpkg",
+        "fingerprint": "dd8fa9355a89001738125d2d2ae527f3d84cec20b2fb02a640df36e1ad04c600"
+      }
+    ]
+  },
+  "gate": {
+    "policy": "g2",
+    "decision": "WARN",
+    "summary": {
+      "total_findings": 265,
+      "blockers": 0,
+      "warnings": 20,
+      "informational": 0,
+      "excepted": 0,
+      "expired_exceptions": 0
+    }
+  },
+  "policy_runs": [
+    {
+      "policy": "g0",
+      "decision": "PASS",
+      "summary": {
+        "total_findings": 265,
+        "blockers": 0,
+        "warnings": 0,
+        "informational": 0,
+        "excepted": 0,
+        "expired_exceptions": 0
+      },
+      "blockers": []
+    },
+    {
+      "policy": "g1",
+      "decision": "BLOCK",
+      "summary": {
+        "total_findings": 265,
+        "blockers": 81,
+        "warnings": 0,
+        "informational": 0,
+        "excepted": 0,
+        "expired_exceptions": 0
+      },
+      "blockers": [
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: AWS-0132 tại infra/s3.tf",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CKV2_AWS_11 tại /network.tf",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CKV2_AWS_12 tại /network.tf",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CKV2_AWS_30 tại /rds.tf",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CKV2_AWS_5 tại /security_groups.tf",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CKV2_AWS_60 tại /rds.tf",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CKV2_AWS_61 tại /s3.tf",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CKV2_AWS_62 tại /s3.tf",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CKV_AWS_118 tại /rds.tf",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CKV_AWS_129 tại /rds.tf",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CKV_AWS_144 tại /s3.tf",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CKV_AWS_145 tại /s3.tf",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CKV_AWS_157 tại /rds.tf",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CKV_AWS_161 tại /rds.tf",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CKV_AWS_21 tại /s3.tf",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CKV_AWS_226 tại /rds.tf",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CKV_AWS_293 tại /rds.tf",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CKV_AWS_353 tại /rds.tf",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CKV_AWS_394 tại /network.tf",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CKV_K8S_21 tại /deploy/deployment.yaml",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CKV_K8S_21 tại /deploy/service.yaml",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CKV_K8S_21 tại /deploy/serviceaccount.yaml",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CKV_K8S_35 tại /deploy/deployment.yaml",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CVE-2025-69720 tại /var/lib/dpkg/info/libncursesw6:amd64.md5sums",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CVE-2025-69720 tại /var/lib/dpkg/status",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CVE-2026-102010 tại /var/lib/dpkg/status",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CVE-2026-119373 tại /var/lib/dpkg/status",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CVE-2026-119374 tại /var/lib/dpkg/status",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CVE-2026-119379 tại /var/lib/dpkg/status",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CVE-2026-19499 tại /var/lib/dpkg/status",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CVE-2026-5435 tại /var/lib/dpkg/status",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CVE-2026-54369 tại /var/lib/dpkg/status",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CVE-2026-54370 tại /var/lib/dpkg/status",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CVE-2026-76642 tại /var/lib/dpkg/status",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CVE-2026-78408 tại /var/lib/dpkg/status",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CVE-2026-78409 tại /var/lib/dpkg/status",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CVE-2026-78410 tại /var/lib/dpkg/status",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CVE-2026-82560 tại /var/lib/dpkg/info/perl-base.list",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CVE-2026-84243 tại /var/lib/dpkg/status",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CVE-2026-9538 tại /var/lib/dpkg/info/perl-base.list",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn HIGH: CVE-2026-95619 tại /var/lib/dpkg/status",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn MEDIUM: AWS-0077 tại infra/rds.tf",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn MEDIUM: AWS-0090 tại infra/s3.tf",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn MEDIUM: AWS-0176 tại infra/rds.tf",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn MEDIUM: AWS-0177 tại infra/rds.tf",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn MEDIUM: AWS-0178 tại infra/network.tf",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn MEDIUM: CVE-2025-15367 tại /usr/local/bin/python3.13",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn MEDIUM: CVE-2025-6141 tại /var/lib/dpkg/info/libncursesw6:amd64.md5sums",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn MEDIUM: CVE-2025-6141 tại /var/lib/dpkg/status",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn MEDIUM: CVE-2026-114690 tại /var/lib/dpkg/status",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn MEDIUM: CVE-2026-114691 tại /var/lib/dpkg/status",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn MEDIUM: CVE-2026-115819 tại /var/lib/dpkg/status",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn MEDIUM: CVE-2026-116566 tại /usr/local/bin/python3.13",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn MEDIUM: CVE-2026-119371 tại /var/lib/dpkg/status",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn MEDIUM: CVE-2026-119372 tại /var/lib/dpkg/status",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn MEDIUM: CVE-2026-119375 tại /var/lib/dpkg/status",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn MEDIUM: CVE-2026-119376 tại /var/lib/dpkg/status",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn MEDIUM: CVE-2026-119378 tại /var/lib/dpkg/status",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn MEDIUM: CVE-2026-119591 tại /var/lib/dpkg/status",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn MEDIUM: CVE-2026-15059 tại /var/lib/dpkg/status",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn MEDIUM: CVE-2026-15534 tại /var/lib/dpkg/info/perl-base.list",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn MEDIUM: CVE-2026-16742 tại /var/lib/dpkg/status",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn MEDIUM: CVE-2026-18374 tại /var/lib/dpkg/status",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn MEDIUM: CVE-2026-18477 tại /var/lib/dpkg/status",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn MEDIUM: CVE-2026-18508 tại /var/lib/dpkg/status",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn MEDIUM: CVE-2026-19542 tại /var/lib/dpkg/status",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn MEDIUM: CVE-2026-3184 tại /var/lib/dpkg/status",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn MEDIUM: CVE-2026-42250 tại /var/lib/dpkg/status",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn MEDIUM: CVE-2026-50812 tại /var/lib/dpkg/status",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn MEDIUM: CVE-2026-50813 tại /var/lib/dpkg/status",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn MEDIUM: CVE-2026-54371 tại /var/lib/dpkg/status",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn MEDIUM: CVE-2026-54411 tại /var/lib/dpkg/status",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn MEDIUM: CVE-2026-5704 tại /var/lib/dpkg/status",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn MEDIUM: CVE-2026-6238 tại /var/lib/dpkg/status",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn MEDIUM: CVE-2026-6791 tại /var/lib/dpkg/status",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn MEDIUM: CVE-2026-77117 tại /var/lib/dpkg/status",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn MEDIUM: CVE-2026-80489 tại /var/lib/dpkg/status",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn MEDIUM: CVE-2026-8674 tại /var/lib/dpkg/status",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn MEDIUM: CVE-2026-86805 tại /var/lib/dpkg/status",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn MEDIUM: CVE-2026-89092 tại /var/lib/dpkg/status",
+          "file": "gate_input.json"
+        },
+        {
+          "rule_id": "deny",
+          "message": "G1 chặn MEDIUM: KSV-0125 tại deploy/deployment.yaml",
+          "file": "gate_input.json"
+        }
+      ]
+    },
+    {
+      "policy": "g2",
+      "decision": "WARN",
+      "summary": {
+        "total_findings": 265,
+        "blockers": 0,
+        "warnings": 20,
+        "informational": 0,
+        "excepted": 0,
+        "expired_exceptions": 0
+      },
+      "blockers": []
+    }
+  ],
+  "skipped_scans": [
+    "e4-live-image-remediation"
+  ],
+  "timing": {
+    "evidence_status": "traceable_single_run",
+    "run_id": "43644396454",
+    "run_attempt": "1",
+    "run_url": "https://github.com/gialong611/DevSecOps_Project/actions/runs/43644396454/attempts/1",
+    "commit": "f7fc110487f2e81a1729e8317ba0457b414a0bb2",
+    "fixture_id": "D26",
+    "cache_mode": "cold",
+    "benchmark_role": "measurement",
+    "scan_execution_mode": "parallel",
+    "runner_os": "Linux",
+    "runner_arch": "X64",
+    "scan_stage_started_at": "2026-11-14T21:44:30Z",
+    "scan_stage_ended_at": "2026-11-14T21:46:37Z",
+    "job_durations_seconds": {
+      "iac": 40,
+      "image": 127,
+      "security-scan": 28
+    },
+    "scan_stage_runner_minutes": 3.25,
+    "parallel_scan_stage_critical_path_seconds": 127,
+    "serial_sum_estimate_seconds": 195,
+    "interpretation": "Observed timings for three scanner jobs in one workflow run. The max is their parallel critical-path estimate; the sum is a serial-work estimate, not a measured serial run. Repeated runs and cache-on/off comparison are still required."
+  },
+  "trivy_runtime": {
+    "iac": {
+      "trivy_version": "0.76.1",
+      "databases": {},
+      "error": null
+    },
+    "image": {
+      "trivy_version": "0.76.1",
+      "databases": {
+        "Vulnerability DB": {
+          "version": "2",
+          "updated_at": "2026-11-14 19:00:12.815668408 +0000 UTC",
+          "next_update": "2026-11-15 19:00:12.815668137 +0000 UTC"
+        }
+      },
+      "error": null
+    },
+    "security-scan": {
+      "trivy_version": "0.76.1",
+      "databases": {
+        "Vulnerability DB": {
+          "version": "2",
+          "updated_at": "2026-11-14 19:00:12.815668408 +0000 UTC",
+          "next_update": "2026-11-15 19:00:12.815668137 +0000 UTC"
+        }
+      },
+      "error": null
+    }
+  },
+  "grype_runtime": {
+    "grype_version": "0.120.1",
+    "image_scan_skipped": false,
+    "db": {
+      "schema_version": "v6.1.10",
+      "built": "2026-11-14T06:19:25Z",
+      "from": "https://grype.anchore.io/databases/v6/vulnerability-db_v6.1.10_2026-11-14T00:20:33Z_1794637165.tar.zst?checksum=sha256%3A762b01ba9c79e6a250bd73f11ef62fbf44539ee8e08e043d80df4aaad3afc2aa",
+      "valid": true
+    },
+    "error": null
+  },
+  "issues": [],
+  "interpretation": "One patch observation only; aggregate independent runs before reporting recall. Negative controls and repeated timing comparisons are not inferred."
+}
