@@ -66,6 +66,10 @@ Actions và tuân theo thời hạn lưu artifact. Xem
 [E4](results/metrics/live-evidence-2026-11-16/e4_image_remediation.md) và
 [bằng chứng PR/ruleset](results/metrics/live-evidence-2026-11-16/PR_GATE_EVIDENCE.md).
 
+Hình tổng hợp của gói được sinh bằng `python tests/plot_live_evidence.py` (ghi vào
+`tests/results/figures/live-2026-11-16/`, kèm `e2_full_delta.csv` đếm quyết định G0, G1, G2 ở chế độ
+full và delta); thêm `--report --out <thư mục>` để có hình khổ nhỏ dùng trong báo cáo.
+
 Các tệp `e1_g0_metrics.json`, `e1_g1_metrics.json`, `e1_g2_metrics.json` và
 `e2_policy_comparison.json` ở thư mục `results/metrics/` là policy replay thăm
 dò từ `decisions.csv`; chúng được giữ để đối chiếu lịch sử, không thay cho kết
@@ -75,14 +79,15 @@ quả live trong gói ngày 2026-11-16.
 
 - E3 sử dụng 5 cold và 5 warm run thành công; một lượt warm-up được loại khỏi thống kê.
   Một số baseline có `WARN`, nhưng không có baseline nào bị G2 `BLOCK` trong nhóm đo.
-- PR #1 có lượt thử block/pass có kiểm soát: D01 SQL injection bị gate G2 chặn
+- PR #1 của kho thực nghiệm `gialong611/DevSecOps_Project` có lượt thử block/pass có kiểm soát: D01 SQL injection bị gate G2 chặn
   tại [run 43729980295](https://github.com/gialong611/DevSecOps_Project/actions/runs/43729980295);
   sau khi hoàn nguyên fixture, [run 43730231762](https://github.com/gialong611/DevSecOps_Project/actions/runs/43730231762)
   pass. Xem `tests/results/metrics/live-evidence-2026-11-16/PR_GATE_EVIDENCE.md`.
-- Ruleset `Protect main` đang active, yêu cầu PR và sáu check: DB snapshots,
-  Python tests, security scans, IaC, image và gate. PR #1 merge trước thời điểm
-  bật ruleset; cần PR tiếp theo để chứng minh ruleset chặn merge thật. Cấu hình
-  chi tiết có trong `PR_GATE_EVIDENCE.md`.
+- Ruleset `Protect main` của kho thực nghiệm yêu cầu PR và sáu check: DB snapshots,
+  Python tests, security scans, IaC, image và gate; PR #1 merge trước thời điểm bật ruleset
+  (chi tiết trong `PR_GATE_EVIDENCE.md`). Kho nộp bài dùng ruleset `main` khác: 1 lượt duyệt
+  của chủ sở hữu mã, bắt buộc check `gate (Conftest Rego)`, hai tài khoản có quyền bỏ qua
+  (xem README ở gốc kho).
 - T0 KEV/EPSS trong E4 là mô phỏng, không phải snapshot lịch sử CISA/FIRST.
 - Observation schema v6 tại `schemas/scan-observation.schema.json` lưu run URL,
   commit, tool versions, timing, cache profile, report SHA-256, quyết định G0/G1/G2

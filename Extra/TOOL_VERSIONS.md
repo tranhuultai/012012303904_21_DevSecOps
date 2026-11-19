@@ -2,20 +2,22 @@
 
 Mọi công cụ bảo mật và GitHub Action dùng trong pipeline đều được **ghim phiên bản**;
 binary bên ngoài được kiểm checksum theo tệp phát hành chính thức ngay khi cài (xem
-`.github/workflows/ci.yml`). Bảng này là nguồn sự thật duy nhất về phiên bản.
+`.github/workflows/ci.yml` và `iac-validate.yml`). Bảng này là nguồn sự thật duy nhất về phiên bản.
+Bước tải binary hiện dùng `curl -fsSL` và không tự thử lại khi lỗi mạng.
 
-Người chịu trách nhiệm cập nhật: Trần Hữu Tài (Tài) — mục 4.5 phân công.
-Khi nâng phiên bản: cập nhật bảng này + env trong `ci.yml` trong cùng một PR.
+Người chịu trách nhiệm cập nhật: Trần Hữu Tài (Tài), theo phân công ở Phụ lục B của báo cáo.
+Khi nâng phiên bản: cập nhật bảng này và env trong các workflow trong cùng một PR.
 
 ## 1. GitHub Actions (ghim SHA đầy đủ 40 ký tự)
 
 | Action | Tag | Commit SHA | Dùng ở job |
 |---|---|---|---|
-| actions/checkout | v7.0.1 | `3d3c42e5aac5ba805825da76410c181273ba90b1` | tất cả job |
-| actions/setup-python | v7.1.0 | `6d4fd22b20465ccc0f7354476588e8df7c9ca0e0` | test, security-scan, gate |
-| actions/setup-go | v7 | `b7ad1dad31e06c5925ef5d2fc7ad053ef454303e` | (dự phòng, chưa dùng) |
-| actions/upload-artifact | v7.0.0 | `cf430e030ddbb5b0abf93d22962f4752f3646cd9` | scan, iac, image, gate, release |
-| actions/download-artifact | v7.0.0 | `37930b1c2abaa49bbe596cd826c3c89aef350131` | gate |
+| actions/checkout | v7.0.1 | `3d3c42e5aac5ba805825da76410c181273ba90b1` | tất cả job, mọi workflow |
+| actions/setup-python | v7.1.0 | `6d4fd22b20465ccc0f7354476588e8df7c9ca0e0` | ci.yml: test, security-scan, iac, gate; workflow thực nghiệm |
+| actions/cache | v6.1.0 | `a7833574556fa59680c1b7cb190c1735db73ebf0` | ci.yml: trivy-db-snapshot (lưu); security-scan, iac, image (`cache/restore`) |
+| actions/cache | v5.0.5 | `27d5ce7f107fe9357f9df03efb73ab90386fccae` | e3-timing.yml (workflow đợt sơ bộ) |
+| actions/upload-artifact | v7.0.0 | `cf430e030ddbb5b0abf93d22962f4752f3646cd9` | scan, iac, image, gate, release; workflow thực nghiệm |
+| actions/download-artifact | v7.0.0 | `37930b1c2abaa49bbe596cd826c3c89aef350131` | gate; workflow thực nghiệm |
 | actions/attest | v4.2.2 | `1e69f48acb82d1966a394da916b4c1698aa569d6` | release provenance |
 
 Ghi chú: Trivy được gọi trực tiếp bằng CLI ghim phiên bản (không dùng trivy-action)
@@ -34,6 +36,8 @@ Ghi chú: Trivy được gọi trực tiếp bằng CLI ghim phiên bản (khôn
 | Semgrep | 1.183.0 | PyPI (pip) | ghim `==1.183.0` |
 | Cosign | 3.1.3 | github.com/sigstore/cosign | sha256 theo `cosign_checksums.txt` |
 | kind | 0.33.0 | github.com/kubernetes-sigs/kind | ghim tag + TLS (không có tệp checksums gộp) |
+| Terraform (iac-validate.yml) | 1.9.8 | releases.hashicorp.com | sha256 theo `terraform_*_SHA256SUMS` |
+| Provider AWS cho Terraform | 5.100.0 | registry.terraform.io/hashicorp/aws | ghim trong `infra/.terraform.lock.hcl` |
 
 ## 3. Môi trường runtime
 
@@ -49,7 +53,7 @@ Ghi chú: Trivy được gọi trực tiếp bằng CLI ghim phiên bản (khôn
 
 1. Không dùng tag trôi (`@v4`, `@latest`) cho action; luôn kèm SHA đầy đủ.
 2. Binary tải bằng HTTPS từ trang phát hành chính thức, kiểm `sha256sum -c` trước khi cài.
-3. Mỗi lần đổi phiên bản phải chạy lại: `run_policy_tests.ps1`, `pytest`, E1–E4
+3. Mỗi lần đổi phiên bản phải chạy lại: `run_policy_tests.ps1`, `pytest`, E1-E4
    và ghi kết quả mới vào `tests/results/metrics/`.
 4. E3 `cache_mode=warm` chỉ bật pip cache của setup-python; `cold` tắt cache đó.
    Không mô tả đây là cache của Trivy DB hay của scanner binary.
