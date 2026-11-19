@@ -14,9 +14,6 @@
 | Slide thuyết trình (theme UTH, có ghi chú người nói) | `PPTX/DeTai21_DevSecOps.pptx` |
 | Gói bằng chứng thực nghiệm | [`Code/DevSecOps/tests/results/metrics/live-evidence-2026-11-16/`](Code/DevSecOps/tests/results/metrics/live-evidence-2026-11-16/README.md) |
 
-`DOCX/bao_cao_do_an_DevSecOps.docx` và `PPTX/slide_thuyet_trinh_DevSecOps.pptx` là bản sinh tự động bằng
-`Extra/build_report_docs.py` từ số liệu đợt sơ bộ, không phải bản nộp.
-
 ## Giới thiệu
 
 Đề tài xây dựng một pipeline DevSecOps trên GitHub Actions nhằm phát hiện cấu hình sai và lỗ hổng trước khi triển khai.
